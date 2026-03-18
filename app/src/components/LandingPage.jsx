@@ -1,5 +1,7 @@
 import { ARCHETYPES } from '../engine'
 
+const APP_VERSION = 'v1.1.0'
+
 const ARCHETYPE_ICONS = {
   api_tech: '⬡',
   reseller: '↗',
@@ -18,7 +20,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
             <div className="w-6 h-6 bg-cyan-500 rounded-sm flex items-center justify-center text-slate-950 text-xs font-bold">P</div>
             <span className="text-sm font-medium text-slate-400">Partner Program Configurator</span>
           </div>
-          <span className="text-xs text-slate-600 font-mono">v1.0</span>
+          <span className="text-xs text-slate-600 font-mono">{APP_VERSION}</span>
         </div>
       </div>
 
