@@ -40,7 +40,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
             Get a tailored workflow specification.
           </p>
 
-          <p className="text-sm text-slate-600 mb-10">
+          <p className="text-sm text-slate-400 mb-10">
             Built on an 11-step partner lifecycle framework covering intake through renewal.
           </p>
 
@@ -79,7 +79,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
                   <h3 className="text-sm font-semibold text-slate-200 group-hover:text-white mb-1.5 leading-snug">
                     {archetype.name}
                   </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed">
+                  <p className="text-xs text-slate-400 leading-relaxed">
                     {archetype.description}
                   </p>
                   <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
