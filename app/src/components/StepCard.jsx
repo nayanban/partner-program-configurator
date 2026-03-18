@@ -77,7 +77,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           {/* Step 9 entry triggers */}
           {stepKey === 'step_9' && stepData.progression_gate && (
             <Section title="Entry Triggers">
-              <Step9EntryTriggers stepData={stepData} config={config} />
+              <Step9EntryTriggers contentData={contentData} />
             </Section>
           )}
 
@@ -129,14 +129,36 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                     <p className="text-xs text-slate-300">{mod.text}</p>
                   </div>
                 ))}
-                {stepContent?.configuration_notes && (
+                {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
+                  <div className="space-y-2">
+                    {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
+                      if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
+                      if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
+                      if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
+                      if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
+                      if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
+                      if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
+                      if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
+                      if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
+                      if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
+                      if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
+                      if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
+                      if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
+                      if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
+                      if (key.includes('DP4_no') && config.dp4 !== 'no') return null
+                      return (
+                        <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                          <div className="text-xs font-medium text-slate-400 mb-1">{key.replace(/_/g, ' ')}</div>
+                          <p className="text-xs text-slate-400">{text}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+                {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
                   <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
                     <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
-                    <p className="text-xs text-slate-400">{
-                      typeof stepContent.configuration_notes === 'string'
-                        ? stepContent.configuration_notes
-                        : JSON.stringify(stepContent.configuration_notes)
-                    }</p>
+                    <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
                   </div>
                 )}
               </div>
@@ -271,28 +293,29 @@ function evaluatePlayActive(play, config) {
   return true
 }
 
-function Step9EntryTriggers({ stepData, config }) {
-  const gate = stepData.progression_gate
-  if (!gate) return null
-
-  // Try to extract triggers from the gate description or conditions
-  const triggers = [
-    'At least one activation signal logged in Operations Record',
-    'Partner SLA compliance confirmed over trailing period',
-    'No open escalations or unresolved issues',
-    'RevOps/Finance payout mechanics confirmed (financial motions only)',
-    'Partner Manager readiness confirmed',
-  ]
+function Step9EntryTriggers({ contentData }) {
+  const triggers = contentData?.steps?.step_9?.entry_triggers
+  if (!triggers) return null
 
   return (
-    <ul className="space-y-1.5">
-      {triggers.map((t, i) => (
-        <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-          <span className="text-cyan-600 mt-0.5 text-xs">✓</span>
-          <span>{t}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="space-y-3">
+      {triggers.description && (
+        <p className="text-sm text-slate-400 italic">{triggers.description}</p>
+      )}
+      {triggers.gates && (
+        <ul className="space-y-1.5">
+          {triggers.gates.map((gate, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
+              <span className="text-cyan-600 mt-0.5 text-xs">✓</span>
+              <span>{gate}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {triggers.governance_note && (
+        <p className="text-xs text-slate-500 mt-2">{triggers.governance_note}</p>
+      )}
+    </div>
   )
 }
 
@@ -422,8 +445,8 @@ function FullDetailLayer({ stepContent, stepData, config }) {
           <div className="space-y-2">
             {stepContent.tie_breaker_escalation.map((item, i) => {
               const isInactive = item.configuration_dependent && (
-                (item.active_when === 'dp4_yes' && config.dp4 !== 'yes') ||
-                (item.active_when === 'dp4_no' && config.dp4 === 'yes')
+                (item.active_when && item.active_when.includes("'yes'") && config.dp4 !== 'yes') ||
+                (item.active_when && item.active_when.includes("'no'") && config.dp4 !== 'no')
               )
               return (
                 <div key={i} className={`flex gap-3 ${isInactive ? 'opacity-40' : ''}`}>
