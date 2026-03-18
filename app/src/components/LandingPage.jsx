@@ -40,18 +40,32 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
             Get a tailored workflow specification.
           </p>
 
-          <p className="text-sm text-slate-600 mb-16">
+          <p className="text-sm text-slate-600 mb-10">
             Built on an 11-step partner lifecycle framework covering intake through renewal.
           </p>
 
-          {/* Archetype Fast Path */}
-          <div className="text-left mb-10">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="h-px flex-1 bg-slate-800"></div>
-              <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Choose a program archetype</span>
-              <div className="h-px flex-1 bg-slate-800"></div>
-            </div>
+          {/* Primary CTA — Configure from scratch */}
+          <div className="mb-10">
+            <button
+              onClick={onDeepPath}
+              className="inline-flex items-center gap-2.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-200 shadow-lg shadow-cyan-500/20 group"
+            >
+              Configure from scratch
+              <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+          </div>
 
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-slate-800"></div>
+            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Or start with an archetype</span>
+            <div className="h-px flex-1 bg-slate-800"></div>
+          </div>
+
+          {/* Archetype Fast Path */}
+          <div className="text-left">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {ARCHETYPES.map((archetype) => (
                 <button
@@ -77,23 +91,6 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
               ))}
             </div>
           </div>
-
-          {/* Deep Path */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="h-px flex-1 bg-slate-800"></div>
-            <span className="text-xs font-medium text-slate-600 uppercase tracking-wider">or</span>
-            <div className="h-px flex-1 bg-slate-800"></div>
-          </div>
-
-          <button
-            onClick={onDeepPath}
-            className="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 text-sm font-medium transition-colors group"
-          >
-            Configure from scratch
-            <svg className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-            </svg>
-          </button>
         </div>
       </div>
 
