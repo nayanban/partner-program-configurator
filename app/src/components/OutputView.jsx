@@ -112,7 +112,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h2 className="text-base font-semibold text-slate-200">Workflow Overview</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Click any active step to view details</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Click any active step to view details</p>
                 </div>
                 <div className="text-xs text-slate-600 font-mono bg-slate-800 px-2 py-1 rounded">
                   {activeSteps.length} / 11 steps active
@@ -128,7 +128,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
 
               {/* Flow annotation */}
               <div className="mt-4 pt-4 border-t border-slate-800/50">
-                <p className="text-xs text-slate-500 leading-relaxed">{flowAnnotation}</p>
+                <p className="text-xs text-slate-300 leading-relaxed">{flowAnnotation}</p>
               </div>
             </div>
           </div>

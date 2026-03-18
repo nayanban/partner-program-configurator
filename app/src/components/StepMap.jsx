@@ -62,7 +62,7 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
 
                 {/* Owner */}
                 <div className={`text-[9px] mt-1 text-center leading-tight ${
-                  !active ? 'text-slate-800' : 'text-slate-600'
+                  !active ? 'text-slate-800' : 'text-slate-500'
                 }`}>
                   {active ? (stepData.primary_owner?.split('/')[0]?.trim() || '') : ''}
                 </div>
