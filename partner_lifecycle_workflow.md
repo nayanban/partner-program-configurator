@@ -6,11 +6,14 @@
 
 ## Step 0 — Partner Operating System: Definition & Maintenance
 
-### Purpose: Define and continuously maintain the partner ecosystem operating system so execution stays repeatable as strategy, products, tooling, and partner mix evolve.
+### Purpose: 
+Define and continuously maintain the partner ecosystem operating system so execution stays repeatable as strategy, products, tooling, and partner mix evolve.
 
-### Inputs: Company strategy, product/API roadmap, support capacity, risk posture, partner performance/health metrics, incident and support trends, tooling constraints.
+### Inputs: 
+Company strategy, product/API roadmap, support capacity, risk posture, partner performance/health metrics, incident and support trends, tooling constraints.
 
-### Primary owner: Partnerships Ops / Partner Programs — owns the partner “operating system” (tiers, templates, tooling, governance) and versioned updates.
+### Primary owner: 
+Partnerships Ops / Partner Programs — owns the partner “operating system” (tiers, templates, tooling, governance) and versioned updates.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -47,7 +50,8 @@
 - Case-by-case partner decisions (those start in Step 1)
 - Ad hoc exceptions outside the defined exception policy
 
-### Handoff to Step 1: Step 0 is considered current for execution when the latest OS version (tiers, templates, tooling, governance) is published and communicated by Partnerships Ops / Partner Programs; Step 1 is accepted by Partnerships (Partner Development / Partner Ops) using the current OS; progression is paused if the OS is under active hotfix or not yet published per Step 0 governance.
+### Handoff to Step 1: 
+Step 0 is considered current for execution when the latest OS version (tiers, templates, tooling, governance) is published and communicated by Partnerships Ops / Partner Programs; Step 1 is accepted by Partnerships (Partner Development / Partner Ops) using the current OS; progression is paused if the OS is under active hotfix or not yet published per Step 0 governance.
 
 ### Failure/exception handling paths
 
@@ -68,11 +72,14 @@
 
 ## Step 1 — Partner Intake, Minimum Qualification, Routing
 
-### Purpose: Convert a partner request into a clean, owned work item.
+### Purpose: 
+Convert a partner request into a clean, owned work item.
 
-### Inputs: Inbound request, referral, outbound response, conference intro, association lead.
+### Inputs: 
+Inbound request, referral, outbound response, conference intro, association lead.
 
-### Primary owner: Partnerships (Partner Development / Partner Ops) — owns intake, minimum qualification, routing, and creating the system-of-record entry.
+### Primary owner: 
+Partnerships (Partner Development / Partner Ops) — owns intake, minimum qualification, routing, and creating the system-of-record entry.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -95,11 +102,14 @@
 - Security/Compliance may block only for hard risk constraints.
 - If the dispute is strategic and unresolved → escalate to Partnerships leadership / program executive sponsor for resolution.
 
-### Outputs: Single partner record + status + owner + next-step assignment.
+### Outputs: 
+Single partner record + status + owner + next-step assignment.
 
-### Explicitly does NOT do: Deep technical scoping or solution design (save that for Step 3).
+### Explicitly does NOT do: 
+Deep technical scoping or solution design (save that for Step 3).
 
-### Handoff to Step 2: Step 1 is complete when Partnerships (Partner Development / Partner Ops) has created a single system-of-record entry with the minimum required intake fields and a recorded engage/decline/park decision; Step 2 is accepted by Partner Programs / Partnerships Ops for placement; progression can be blocked by Partnerships leadership (strategic no-go) or Security/Compliance (material red flags) until resolved.
+### Handoff to Step 2: 
+Step 1 is complete when Partnerships (Partner Development / Partner Ops) has created a single system-of-record entry with the minimum required intake fields and a recorded engage/decline/park decision; Step 2 is accepted by Partner Programs / Partnerships Ops for placement; progression can be blocked by Partnerships leadership (strategic no-go) or Security/Compliance (material red flags) until resolved.
 
 ### Failure/exception handling paths
 
@@ -115,11 +125,14 @@
 
 ## Step 2 — Program Placement, Tiering, Entitlements Assignment
 
-### Purpose: Apply the Step 0 rules to this partner.
+### Purpose: 
+Apply the Step 0 rules to this partner.
 
-### Inputs: Engaged partner record + basic context from Step 1.
+### Inputs: 
+Engaged partner record + basic context from Step 1.
 
-### Primary owner: Partner Programs / Partnerships Ops — applies tier criteria and assigns entitlements/gates consistently.
+### Primary owner: 
+Partner Programs / Partnerships Ops — applies tier criteria and assigns entitlements/gates consistently.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -147,11 +160,14 @@
 - Finance/RevOps on motion classification and economics guardrails.
 - If disputes persist, Partner Programs / Partnerships Ops escalates (Partnerships leadership/SteerCo) for resolution.
 
-### Outputs: Partner profile: tier + entitlements + required gates + engagement model.
+### Outputs: 
+Partner profile: tier + entitlements + required gates + engagement model.
 
-### Explicitly does NOT do: Negotiate bespoke commercial terms or redesign tiers; exceptions must follow a formal exception path.
+### Explicitly does NOT do: 
+Negotiate bespoke commercial terms or redesign tiers; exceptions must follow a formal exception path.
 
-### Handoff to Step 3: Step 2 is complete when Partner Programs / Partnerships Ops assigns track/tier/entitlements and flags required gates/prerequisites in the partner profile; Step 3 is accepted by Solutions Engineering / Partner Engineering for deep scoping; progression can be blocked by unmet access prerequisites (e.g., required security/compliance gate or contracting prerequisite) per the partner profile.
+### Handoff to Step 3: 
+Step 2 is complete when Partner Programs / Partnerships Ops assigns track/tier/entitlements and flags required gates/prerequisites in the partner profile; Step 3 is accepted by Solutions Engineering / Partner Engineering for deep scoping; progression can be blocked by unmet access prerequisites (e.g., required security/compliance gate or contracting prerequisite) per the partner profile.
 
 ### Failure/exception handling paths
 
@@ -167,11 +183,14 @@
 
 ## Step 3 — Integration Request Triage, Deep Scoping, Commitment
 
-### Purpose: Decide what work you’ll do and what you’ll commit to.
+### Purpose: 
+Decide what work you’ll do and what you’ll commit to.
 
-### Inputs: Partner profile (Step 2) + use case + initial technical context.
+### Inputs: 
+Partner profile (Step 2) + use case + initial technical context.
 
-### Primary owner: Solutions Engineering / Partner Engineering — owns integration path selection, deep scoping, and the committed plan/spec.
+### Primary owner: 
+Solutions Engineering / Partner Engineering — owns integration path selection, deep scoping, and the committed plan/spec.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -198,11 +217,14 @@
 - Compliance/Risk on regulatory/policy constraints.
 - If strategic priority conflicts with feasibility or commitments, Solutions Engineering / Partner Engineering escalates (Partnerships leadership/SteerCo) for resolution.
 
-### Outputs: Approved integration plan/spec (scope + owners + timeline + success criteria).
+### Outputs: 
+Approved integration plan/spec (scope + owners + timeline + success criteria).
 
-### Explicitly does NOT do: Execute implementation; no building here—only committed plan.
+### Explicitly does NOT do: 
+Execute implementation; no building here—only committed plan.
 
-### Handoff to Step 4: Step 3 is complete when Solutions Engineering / Partner Engineering publishes an approved integration plan/spec (scope, owners, success criteria, and expected timeline) and the partner confirms intent to proceed; Step 4 is accepted by Partnerships Deal Desk / Program Manager to initiate parallel approval tracks; progression can be blocked by Product (unapproved scope/roadmap commitment) or Security/Privacy / Compliance-Risk (prohibited use/policy constraint) until re-scoped.
+### Handoff to Step 4: 
+Step 3 is complete when Solutions Engineering / Partner Engineering publishes an approved integration plan/spec (scope, owners, success criteria, and expected timeline) and the partner confirms intent to proceed; Step 4 is accepted by Partnerships Deal Desk / Program Manager to initiate parallel approval tracks; progression can be blocked by Product (unapproved scope/roadmap commitment) or Security/Privacy / Compliance-Risk (prohibited use/policy constraint) until re-scoped.
 
 ### Failure/exception handling paths
 
@@ -218,11 +240,14 @@
 
 ## Step 4 — Approvals & Agreements Gate (Parallel Workstreams + Unblock Criteria)
 
-### Purpose: Secure the required approvals and binding obligations without creating a serial bottleneck—by running reviews in parallel and defining what is needed to start implementation vs. what is needed to go live.
+### Purpose: 
+Secure the required approvals and binding obligations without creating a serial bottleneck—by running reviews in parallel and defining what is needed to start implementation vs. what is needed to go live.
 
-### Inputs: Approved integration plan/spec (Step 3), partner profile (Step 2), and required gate flags (from Step 2/3).
+### Inputs: 
+Approved integration plan/spec (Step 3), partner profile (Step 2), and required gate flags (from Step 2/3).
 
-### Primary owner: Partnerships Deal Desk / Program Manager — coordinates parallel approval tracks, tracks conditions, and ensures a single decision record.
+### Primary owner: 
+Partnerships Deal Desk / Program Manager — coordinates parallel approval tracks, tracks conditions, and ensures a single decision record.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -235,21 +260,21 @@
 ### Owns (run in parallel)
 
 - Security & Privacy track
-- Data classification and data-flow review (what data, where it moves, retention)
-- Required controls (auth, encryption, access logging, incident response obligations)
-- Security testing requirements and evidence expectations (as applicable)
+  - Data classification and data-flow review (what data, where it moves, retention)
+  - Required controls (auth, encryption, access logging, incident response obligations)
+  - Security testing requirements and evidence expectations (as applicable)
 - Compliance / Risk track (as applicable)
-- Regulatory/policy mapping for the use case (if regulated activity is involved)
-- Required operational controls, disclosures, approvals, and auditability
-- Risk acceptance or mitigation requirements
+  - Regulatory/policy mapping for the use case (if regulated activity is involved)
+  - Required operational controls, disclosures, approvals, and auditability
+  - Risk acceptance or mitigation requirements
 - Legal track
-- Agreement selection (template/archetype) and redline negotiation
-- Binding obligations captured (liability, IP, termination, SLAs, data handling)
-- Version control of approved language and final form routing
+  - Agreement selection (template/archetype) and redline negotiation
+  - Binding obligations captured (liability, IP, termination, SLAs, data handling)
+  - Version control of approved language and final form routing
 - Commercial / Finance track
-- Deal economics confirmation (pricing, referral/rev-share definitions, payout triggers)
-- Billing/invoicing/payout mechanics (including dispute handling if applicable)
-- Internal approvals for commercial exceptions (if allowed under Step 0 policy)
+  - Deal economics confirmation (pricing, referral/rev-share definitions, payout triggers)
+  - Billing/invoicing/payout mechanics (including dispute handling if applicable)
+  - Internal approvals for commercial exceptions (if allowed under Step 0 policy)
 
 ### Tie-breaker / escalation decision rights
 
@@ -267,17 +292,17 @@
 
 ### Minimum-to-unblock criteria (to start Step 5 implementation)
 
-### Implementation may begin when
+Implementation may begin when
 
 - Security/Privacy provides preliminary approval for non-production work (e.g., sandbox/dev) or explicitly states acceptable scope for implementation work to proceed, and
 - Legal provides an approved agreement path (e.g., template selected + redline boundaries / fallback positions agreed), and
-
 - Any hard “no-go” risks have been resolved (e.g., prohibited data use, unacceptable control gaps).
-- (If Compliance/Risk is required for the use case, include either preliminary approval or a defined set of constraints that implementation can proceed under.)
+
+*(If Compliance/Risk is required for the use case, include either preliminary approval or a defined set of constraints that implementation can proceed under.)*
 
 ### Go-live criteria (to proceed to Step 6/7 launch)
 
-### Production go-live requires
+Production go-live requires
 
 - Final Security/Privacy sign-off (production scope) and required evidence completed
 - Final Compliance/Risk sign-off (if applicable)
@@ -290,7 +315,8 @@
 - Start implementation work itself (that is Step 5), except for coordinating reviews and capturing decisions
 - Allow indefinite “conditional approvals” without owners and deadlines (conditions must be tracked and time-bound)
 
-### Handoff to Step 5: Step 4 is complete (to start implementation) when the minimum-to-unblock criteria are met and all remaining approval conditions are documented with owners and deadlines by Partnerships Deal Desk / Program Manager; Step 5 is accepted by Solutions Engineering / Partner Engineering for implementation; progression can be blocked by Security/Privacy, Legal, and (where applicable) Compliance/Risk until minimum-to-unblock conditions are satisfied.
+### Handoff to Step 5: 
+Step 4 is complete (to start implementation) when the minimum-to-unblock criteria are met and all remaining approval conditions are documented with owners and deadlines by Partnerships Deal Desk / Program Manager; Step 5 is accepted by Solutions Engineering / Partner Engineering for implementation; progression can be blocked by Security/Privacy, Legal, and (where applicable) Compliance/Risk until minimum-to-unblock conditions are satisfied.
 
 ### Failure/exception handling paths
 
@@ -305,11 +331,14 @@
 
 ## Step 5 — Onboarding & Implementation Execution
 
-### Purpose: Build/integrate according to the approved spec.
+### Purpose: 
+Build/integrate according to the approved spec.
 
-### Inputs: Approved plan (Step 3) + cleared gate (Step 4).
+### Inputs: 
+Approved plan (Step 3) + cleared gate (Step 4).
 
-### Primary owner: Solutions Engineering / Partner Engineering — leads implementation coordination and acceptance against the approved spec.
+### Primary owner: 
+Solutions Engineering / Partner Engineering — leads implementation coordination and acceptance against the approved spec.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -332,11 +361,14 @@
 - Any request that materially changes scope must return to Step 3 (re-triage/re-scope).
 - If the dispute is strategic and unresolved after re-triage → escalate to Partnerships leadership / program executive sponsor for prioritization tradeoffs.
 
-### Outputs: Working integration meeting the spec + ready-for-launch checklist inputs.
+### Outputs: 
+Working integration meeting the spec + ready-for-launch checklist inputs.
 
-### Explicitly does NOT do: Post-launch operations ownership (that starts after go-live/handoff).
+### Explicitly does NOT do: 
+Post-launch operations ownership (that starts after go-live/handoff).
 
-### Handoff to Step 6: Step 5 is complete when Solutions Engineering / Partner Engineering confirms the integration meets the approved spec and provides the required launch-readiness inputs (test results/evidence, known limitations, support contacts); Step 6 is accepted by Partnerships (Partner Enablement / Partner Ops) for packaging; progression can be blocked by Product (functional acceptance) or Security/Privacy (required evidence/controls not met) until resolved.
+### Handoff to Step 6: 
+Step 5 is complete when Solutions Engineering / Partner Engineering confirms the integration meets the approved spec and provides the required launch-readiness inputs (test results/evidence, known limitations, support contacts); Step 6 is accepted by Partnerships (Partner Enablement / Partner Ops) for packaging; progression can be blocked by Product (functional acceptance) or Security/Privacy (required evidence/controls not met) until resolved.
 
 ### Failure/exception handling paths
 
@@ -352,11 +384,14 @@
 
 ## Step 6 — Launch Readiness & Enablement Packaging
 
-### Purpose: Make the integration “real” for users and internal teams.
+### Purpose: 
+Make the integration “real” for users and internal teams.
 
-### Inputs: Working integration (Step 5) + contractual/support obligations (Step 4).
+### Inputs: 
+Working integration (Step 5) + contractual/support obligations (Step 4).
 
-### Primary owner: Partnerships (Partner Enablement / Partner Ops) — owns launch packaging, enablement coordination, and readiness artifacts.
+### Primary owner: 
+Partnerships (Partner Enablement / Partner Ops) — owns launch packaging, enablement coordination, and readiness artifacts.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -381,11 +416,14 @@
 - Marketing/Comms owns channel/timing once approvals are secured.
 - If stakeholders disagree on timing tradeoffs after approvals → escalate to Partnerships leadership / program executive sponsor for resolution.
 
-### Outputs: Launch package + enablement artifacts + comms/listing readiness.
+### Outputs: 
+Launch package + enablement artifacts + comms/listing readiness.
 
-### Explicitly does NOT do: Major engineering changes (those go back to Step 5 / Step 3 if scope changes).
+### Explicitly does NOT do: 
+Major engineering changes (those go back to Step 5 / Step 3 if scope changes).
 
-### Handoff to Step 7: Step 6 is complete when Partnerships (Partner Enablement / Partner Ops) confirms launch artifacts are complete and required approvals for partner-facing/public assets are obtained; Step 7 is accepted by Engineering (integration owner / SRE-on-point) to schedule cutover; progression can be blocked by Engineering (readiness/cutover prerequisites unmet) or Security/Privacy / Compliance-Risk / Legal (production go-live prerequisites not satisfied) until cleared.
+### Handoff to Step 7: 
+Step 6 is complete when Partnerships (Partner Enablement / Partner Ops) confirms launch artifacts are complete and required approvals for partner-facing/public assets are obtained; Step 7 is accepted by Engineering (integration owner / SRE-on-point) to schedule cutover; progression can be blocked by Engineering (readiness/cutover prerequisites unmet) or Security/Privacy / Compliance-Risk / Legal (production go-live prerequisites not satisfied) until cleared.
 
 ### Failure/exception handling paths
 
@@ -401,11 +439,14 @@
 
 ## Step 7 — Go-live & Stabilization
 
-### Purpose: Launch safely and confirm the handoff is real.
+### Purpose: 
+Launch safely and confirm the handoff is real.
 
-### Inputs: Launch package (Step 6) + production-ready integration (Step 5).
+### Inputs: 
+Launch package (Step 6) + production-ready integration (Step 5).
 
-### Primary owner: Engineering (integration owner / SRE-on-point) — owns production cutover, monitoring, rollback readiness, and stabilization.
+### Primary owner: 
+Engineering (integration owner / SRE-on-point) — owns production cutover, monitoring, rollback readiness, and stabilization.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -430,11 +471,14 @@
 - Product has final authority on product readiness/feature scope.
 - If a go-live decision is disputed after mandatory approvals, Primary Owner escalates for resolution.
 
-### Outputs: Live integration + stabilized baseline + confirmed operational handoff.
+### Outputs: 
+Live integration + stabilized baseline + confirmed operational handoff.
 
-### Explicitly does NOT do: Long-term support and continuous improvement (that’s Step 8).
+### Explicitly does NOT do: 
+Long-term support and continuous improvement (that’s Step 8).
 
-### Handoff to Step 8: Step 7 is complete when Engineering (integration owner / SRE-on-point) confirms stabilization/hypercare exit criteria are met and the operational handoff package is complete; Step 8 is accepted by Support / Operations as the new owner of steady-state SLAs and incident response; progression can be blocked if Support / Operations does not accept the handoff due to missing runbooks, contacts, or unresolved critical issues.
+### Handoff to Step 8: 
+Step 7 is complete when Engineering (integration owner / SRE-on-point) confirms stabilization/hypercare exit criteria are met and the operational handoff package is complete; Step 8 is accepted by Support / Operations as the new owner of steady-state SLAs and incident response; progression can be blocked if Support / Operations does not accept the handoff due to missing runbooks, contacts, or unresolved critical issues.
 
 ### Failure/exception handling paths
 
@@ -450,11 +494,14 @@
 
 ## Step 8 — Post-launch Operations, Support, Continuous Improvement
 
-### Purpose: Keep integrations healthy and reduce recurring friction over time.
+### Purpose: 
+Keep integrations healthy and reduce recurring friction over time.
 
-### Inputs: Live integration + handoff package (Step 7).
+### Inputs: 
+Live integration + handoff package (Step 7).
 
-### Primary owner: Support / Operations (Technical Support + Incident Management) — owns steady-state SLAs, ticket triage, and incident response.
+### Primary owner: 
+Support / Operations (Technical Support + Incident Management) — owns steady-state SLAs, ticket triage, and incident response.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -479,11 +526,14 @@
 - Product on prioritization tradeoffs.
 - If disputes impact partner entitlements or whether to pause Step 9 growth motions, Primary Owner escalates for resolution (and log for Step 10 review).
 
-### Outputs: Stable operations + improved docs/tooling + prioritized improvement backlog.
+### Outputs: 
+Stable operations + improved docs/tooling + prioritized improvement backlog.
 
-### Explicitly does NOT do: Growth motions or commercial expansion unless explicitly triggered (Step 9).
+### Explicitly does NOT do: 
+Growth motions or commercial expansion unless explicitly triggered (Step 9).
 
-### Handoff to Step 9: Step 8 is complete (for growth activation) when Support / Operations confirms the integration is stable and the agreed activation signals are met; Step 9 is accepted by Partnerships (Partner GTM / Strategic Partnerships) to initiate growth plays; progression can be blocked by Support / Operations if stability/support-burden thresholds are not met or by RevOps/Finance if attribution/payout mechanics are not ready where required.
+### Handoff to Step 9: 
+Step 8 is complete (for growth activation) when Support / Operations confirms the integration is stable and the agreed activation signals are met; Step 9 is accepted by Partnerships (Partner GTM / Strategic Partnerships) to initiate growth plays; progression can be blocked by Support / Operations if stability/support-burden thresholds are not met or by RevOps/Finance if attribution/payout mechanics are not ready where required.
 
 ### Failure/exception handling paths
 
@@ -499,19 +549,18 @@
 
 ## Step 9 — Value Realization: Triggered Growth Motions (Co-sell / Co-marketing / Expansion)
 
-### Purpose: Convert a stable integration and healthy partner relationship into measurable business outcomes using repeatable growth plays, clear triggers, and auditable attribution/economics.
+### Purpose: 
+Convert a stable integration and healthy partner relationship into measurable business outcomes using repeatable growth plays, clear triggers, and auditable attribution/economics.
 
 ### Inputs
 
-Integration health + operational readiness signals (Step 8)
+- Integration health + operational readiness signals (Step 8)
+- Partner tier/entitlements (Step 2) and any commercial terms (Step 4)
+- Current performance data: adoption, pipeline, revenue, support burden, segment coverage
+- Joint priorities (partner + internal)
 
-Partner tier/entitlements (Step 2) and any commercial terms (Step 4)
-
-Current performance data: adoption, pipeline, revenue, support burden, segment coverage
-
-Joint priorities (partner + internal)
-
-### Primary owner: Partnerships (Partner GTM / Strategic Partnerships) — owns selecting and executing growth plays with the partner and tracking outcomes.
+### Primary owner: 
+Partnerships (Partner GTM / Strategic Partnerships) — owns selecting and executing growth plays with the partner and tracking outcomes.
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -525,53 +574,47 @@ Joint priorities (partner + internal)
 
 ### Entry triggers (when Step 9 activates)
 
-### Step 9 starts when at least one of the following is true (and Step 8 indicates acceptable stability)
+Step 9 starts when at least one of the following is true (and Step 8 indicates acceptable stability)
 
-**Stability gate:** integration has met baseline reliability/support thresholds over a defined period (e.g., “stable” status from ops)
+- **Stability gate:** integration has met baseline reliability/support thresholds over a defined period (e.g., “stable” status from ops)
+- **Adoption gate:** usage crosses a defined threshold or shows sustained growth
+- **Revenue/pipeline gate:** partner-sourced or partner-influenced pipeline exceeds a threshold (absolute or growth rate)
+- **Strategic gate:** partner unlocks a priority segment/geo/vertical or a platform distribution channel
+- **Efficiency gate:** support burden is within acceptable limits (or improving) such that scaling won’t create operational debt
 
-**Adoption gate:** usage crosses a defined threshold or shows sustained growth
-
-**Revenue/pipeline gate:** partner-sourced or partner-influenced pipeline exceeds a threshold (absolute or growth rate)
-
-**Strategic gate:** partner unlocks a priority segment/geo/vertical or a platform distribution channel
-
-**Efficiency gate:** support burden is within acceptable limits (or improving) such that scaling won’t create operational debt
-
-- Activation thresholds and periods referenced above (stability baseline period, adoption/pipeline thresholds, and support-burden limits) are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0) as the canonical metrics/threshold definitions; reviewed at least quarterly and after material incidents or strategic changes.
+Activation thresholds and periods referenced above (stability baseline period, adoption/pipeline thresholds, and support-burden limits) are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0) as the canonical metrics/threshold definitions; reviewed at least quarterly and after material incidents or strategic changes.
 
 ### Owns
 
 - Co-sell play
-- Account mapping and lead-sharing rules
-- Joint pitch narrative, pricing positioning, objection handling
-- Opportunity stages, required artifacts, handoff rules between teams
-- Weekly pipeline review cadence and close-plan ownership
+  - Account mapping and lead-sharing rules
+  - Joint pitch narrative, pricing positioning, objection handling
+  - Opportunity stages, required artifacts, handoff rules between teams
+  - Weekly pipeline review cadence and close-plan ownership
 - Co-marketing campaign sprint
-- Campaign type selection (webinar, content, event, community, partner newsletter)
-- Asset creation + approvals workflow (brand/legal/compliance if needed)
-- Lead capture + routing rules and follow-up SLA
-- Post-campaign performance review and learnings
+  - Campaign type selection (webinar, content, event, community, partner newsletter)
+  - Asset creation + approvals workflow (brand/legal/compliance if needed)
+  - Lead capture + routing rules and follow-up SLA
+  - Post-campaign performance review and learnings
 - Marketplace/listing amplification play (if applicable)
-- Listing quality standards (positioning, screenshots, compatibility, known limits)
-- Release notes / feature announcements
-- Promotion schedule and performance tracking (views → installs → active usage)
+  - Listing quality standards (positioning, screenshots, compatibility, known limits)
+  - Release notes / feature announcements
+  - Promotion schedule and performance tracking (views → installs → active usage)
 - Expansion play
-- New use case activation (additional workflows, vertical templates)
-- Deeper integration depth (additional endpoints/modules)
-- New segment rollout (new geography, new customer cohort)
-- Enablement refresh (partner team + internal sales/CS/support)
+  - New use case activation (additional workflows, vertical templates)
+  - Deeper integration depth (additional endpoints/modules)
+  - New segment rollout (new geography, new customer cohort)
+  - Enablement refresh (partner team + internal sales/CS/support)
 
 ### Attribution & economics mechanics
 
-- If the relationship includes referral/rev-share/co-sell credit, Step 9 owns:
-- Credit definitions: sourced vs influenced vs assisted (and what evidence qualifies)
-- Timestamp rules: when credit is assigned and how it expires
-
-- System fields: required CRM/PRM fields + validation (single source of truth)
-- Payout triggers: what event triggers payment (e.g., contract signed, invoice paid)
-
-- Payout schedule + reconciliation: cadence, reporting format, dispute process, and approvers
-- Exception handling: how disputes are escalated and resolved
+If the relationship includes referral/rev-share/co-sell credit, Step 9 owns:
+- **Credit definitions:** sourced vs influenced vs assisted (and what evidence qualifies)
+- **Timestamp rules:** when credit is assigned and how it expires
+- **System fields:** required CRM/PRM fields + validation (single source of truth)
+- **Payout triggers:** what event triggers payment (e.g., contract signed, invoice paid)
+- **Payout schedule + reconciliation:** cadence, reporting format, dispute process, and approvers
+- **Exception handling:** how disputes are escalated and resolved
 
 ### Tie-breaker / escalation decision rights
 
@@ -593,7 +636,8 @@ Joint priorities (partner + internal)
 - Change core integration scope without re-entering Step 3 (expansion that materially changes scope triggers Step 3)
 - Redefine attribution rules ad hoc outside the approved program definitions (Step 0 governs definitions; Step 9 executes them)
 
-### Handoff to Step 10: Step 9 is complete when Partnerships (Partner GTM / Strategic Partnerships) records executed plays, outcomes, and any re-tier/remediation recommendations; Step 10 is accepted by Partnerships (Partner Management) for QBR/annual review; progression may be delayed if required performance, economics, or risk inputs from RevOps/Finance, Support/Operations, or Security/Compliance are not available.
+### Handoff to Step 10: 
+Step 9 is complete when Partnerships (Partner GTM / Strategic Partnerships) records executed plays, outcomes, and any re-tier/remediation recommendations; Step 10 is accepted by Partnerships (Partner Management) for QBR/annual review; progression may be delayed if required performance, economics, or risk inputs from RevOps/Finance, Support/Operations, or Security/Compliance are not available.
 
 ### Failure/exception handling paths
 
@@ -608,13 +652,14 @@ Joint priorities (partner + internal)
 
 ## Step 10 — Periodic Review: Renew / Re-tier / Exit (and Program Feedback)
 
-### Purpose: Make intentional lifecycle decisions for each partner and feed learnings back into the partner operating system.
+### Purpose: 
+Make intentional lifecycle decisions for each partner and feed learnings back into the partner operating system.
 
-### Inputs: Performance and health data (Steps 8/9), contractual terms and obligations (Step 4), tier/entitlement criteria (Step 0), and any open risks/incidents.
+### Inputs: 
+Performance and health data (Steps 8/9), contractual terms and obligations (Step 4), tier/entitlement criteria (Step 0), and any open risks/incidents.
 
-### Primary owner: Partnerships (Partner Management) — owns QBR/annual reviews and lifecycle decisions (renew, re-tier, remediate, exit).
-
-Tie-breaker / escalation decision rights: Support/Operations has final decision authority on unsustainable operational risk and required remediation before renewal; Security/Compliance on unacceptable risk posture; Finance/RevOps on economics viability; Legal on contractual constraints. If stakeholders disagree on renew/re-tier/exit outcomes, escalate to the Step 0 decision forum (Partnerships leadership/SteerCo) for final decision within the decision SLA.
+### Primary owner: 
+Partnerships (Partner Management) — owns QBR/annual reviews and lifecycle decisions (renew, re-tier, remediate, exit).
 
 | Key contributors/approvers | Function and Responsibility |
 | --- | --- |
@@ -633,6 +678,9 @@ Tie-breaker / escalation decision rights: Support/Operations has final decision 
 - Renewal, amendment, termination decisions (and who needs to approve)
 - Exit planning: deprecation timeline, migrations, comms, and data retention obligations
 - Identification of systemic issues and improvement opportunities (process, tooling, standards)
+
+### Tie-breaker / escalation decision rights: 
+Support/Operations has final decision authority on unsustainable operational risk and required remediation before renewal; Security/Compliance on unacceptable risk posture; Finance/RevOps on economics viability; Legal on contractual constraints. If stakeholders disagree on renew/re-tier/exit outcomes, escalate to the Step 0 decision forum (Partnerships leadership/SteerCo) for final decision within the decision SLA.
 
 ### Outputs
 
