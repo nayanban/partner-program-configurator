@@ -10,6 +10,9 @@ export default function DataModelView({ config, spec }) {
 
   return (
     <div className="space-y-3">
+      <p className="text-sm text-slate-400 mb-1 leading-relaxed">
+        The data model behind the workflow — every entity, field, and state a partner operating system needs to track. Fields marked as conditional activate or deactivate based on your configuration. This structured schema is what makes the workflow machine-executable, not just a process document.
+      </p>
       <p className="text-xs text-slate-500 mb-4">
         Active objects in this configuration. Click to expand and view field-level detail.
       </p>
@@ -92,7 +95,10 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
 
       {expanded && (
         <div className="px-4 pb-4 border-t border-slate-800">
-          <table className="w-full mt-3">
+          <p className="text-xs text-slate-500 mt-3 mb-2">
+            Fields your system of record needs for this object. Conditional fields (Cond. = Y) are active only when specific decision points are set.
+          </p>
+          <table className="w-full">
             <thead>
               <tr className="text-left">
                 <th className="text-xs text-slate-600 font-medium pb-2 w-2/5">Field</th>

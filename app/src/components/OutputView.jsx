@@ -25,13 +25,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
     })
   }
 
-  function handleCopyJSON() {
-    navigator.clipboard.writeText(JSON.stringify(config, null, 2)).then(() => {
-      setCopyStatus('json')
-      setTimeout(() => setCopyStatus(null), 2000)
-    })
-  }
-
   function handleStepClick(stepKey) {
     setActiveStepKey(prev => prev === stepKey ? null : stepKey)
     setActiveTab('workflow')
@@ -63,6 +56,14 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            href="https://www.linkedin.com/in/banerjee-nayan/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-600 hover:text-slate-400 transition-colors hidden sm:inline"
+          >
+            Built by Nayan Banerjee
+          </a>
           <button
             onClick={handleCopyLink}
             className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-all"
@@ -71,15 +72,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
             </svg>
             {copyStatus === 'link' ? 'Copied!' : 'Share Link'}
-          </button>
-          <button
-            onClick={handleCopyJSON}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-all"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            {copyStatus === 'json' ? 'Copied!' : 'Copy JSON'}
           </button>
         </div>
       </div>
@@ -104,7 +96,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h2 className="text-base font-semibold text-slate-200">Workflow Overview</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Click any active step to view details</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Click any active step to view details</p>
                 </div>
                 <div className="text-xs text-slate-600 font-mono bg-slate-800 px-2 py-1 rounded">
                   {activeSteps.length} / 11 steps active
@@ -120,7 +112,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
 
               {/* Flow annotation */}
               <div className="mt-4 pt-4 border-t border-slate-800/50">
-                <p className="text-xs text-slate-500 leading-relaxed">{flowAnnotation}</p>
+                <p className="text-xs text-slate-300 leading-relaxed">{flowAnnotation}</p>
               </div>
             </div>
           </div>

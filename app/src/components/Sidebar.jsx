@@ -80,7 +80,7 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
       <div className="w-12 flex-shrink-0 border-r border-slate-800 flex flex-col items-center pt-4 bg-slate-900/50">
         <button
           onClick={onToggleCollapse}
-          className="text-slate-500 hover:text-slate-300 transition-colors p-2"
+          className="text-slate-400 hover:text-slate-200 transition-colors p-2"
           title="Expand sidebar"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -106,7 +106,7 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
         </div>
         <button
           onClick={onToggleCollapse}
-          className="text-slate-600 hover:text-slate-400 transition-colors"
+          className="text-slate-400 hover:text-slate-200 transition-colors"
           title="Collapse sidebar"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>

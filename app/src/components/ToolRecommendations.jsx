@@ -5,6 +5,9 @@ export default function ToolRecommendations({ config }) {
 
   return (
     <div>
+      <p className="text-sm text-slate-400 mb-4 leading-relaxed">
+        Tool categories relevant to your configured workflow. Categories appear or disappear based on your decision point answers — the same conditional logic that drives the workflow also drives these recommendations.
+      </p>
       <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-3 mb-5">
         <p className="text-xs text-slate-500">
           These are representative tools in each category, not recommendations. Your choice depends on existing stack, budget, and scale.
