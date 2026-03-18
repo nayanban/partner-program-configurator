@@ -67,39 +67,71 @@ export function getActiveWorkflowModifications(stepKey, stepData, spec, config) 
     const ruleSet = rules[ruleKey]
     if (!ruleSet) continue
 
-    // Find matching variant
-    let matched = null
+    // Collect ALL matching variants independently (not else-if)
+    const variants = []
+
+    // DP1 variants
     if (config.dp1 === 'entity_to_partner' && ruleSet.when_DP1_is_entity_to_partner)
-      matched = { label: 'Integration direction (entity → partner)', text: ruleSet.when_DP1_is_entity_to_partner }
-    else if (config.dp1 === 'partner_to_entity' && ruleSet.when_DP1_is_partner_to_entity)
-      matched = { label: 'Integration direction (partner → entity)', text: ruleSet.when_DP1_is_partner_to_entity }
-    else if (config.dp1 === 'bidirectional' && ruleSet.when_DP1_is_bidirectional)
-      matched = { label: 'Integration direction (bidirectional)', text: ruleSet.when_DP1_is_bidirectional }
-    else if (config.dp1 === 'no_integration' && ruleSet.when_DP1_is_no_integration)
-      matched = { label: 'No technical integration', text: ruleSet.when_DP1_is_no_integration }
-    else if (config.dp4 === 'yes' && ruleSet.when_DP4_is_yes)
-      matched = { label: 'Regulated industries active', text: ruleSet.when_DP4_is_yes }
-    else if (config.dp4 === 'no' && ruleSet.when_DP4_is_no)
-      matched = { label: 'No regulated industries', text: ruleSet.when_DP4_is_no }
-    else if (config.dp2.motions.includes('reseller_partner') && ruleSet.when_reseller_partner_selected)
-      matched = { label: 'Reseller (partner) motion', text: ruleSet.when_reseller_partner_selected }
-    else if (config.dp2.motions.includes('reseller_entity') && ruleSet.when_reseller_entity_selected)
-      matched = { label: 'Reseller (entity) motion', text: ruleSet.when_reseller_entity_selected }
-    else if (config.dp2.motions.includes('marketplace_third_party') && ruleSet.when_marketplace_third_party_selected)
-      matched = { label: 'Third-party marketplace', text: ruleSet.when_marketplace_third_party_selected }
-    else if (computeHasFinancialMotion(config) || config.dp2.motions.includes('co_sell')) {
-      if (ruleSet.when_co_sell_is_entity_led && config.dp2.co_sell_direction === 'entity_led')
-        matched = { label: 'Co-sell: entity-led', text: ruleSet.when_co_sell_is_entity_led }
-      else if (ruleSet.when_co_sell_is_partner_led && config.dp2.co_sell_direction === 'partner_led')
-        matched = { label: 'Co-sell: partner-led', text: ruleSet.when_co_sell_is_partner_led }
-      else if (ruleSet.when_co_sell_is_jointly_led && config.dp2.co_sell_direction === 'jointly_led')
-        matched = { label: 'Co-sell: jointly-led', text: ruleSet.when_co_sell_is_jointly_led }
+      variants.push({ label: 'Integration direction (entity → partner)', text: ruleSet.when_DP1_is_entity_to_partner })
+    if (config.dp1 === 'partner_to_entity' && ruleSet.when_DP1_is_partner_to_entity)
+      variants.push({ label: 'Integration direction (partner → entity)', text: ruleSet.when_DP1_is_partner_to_entity })
+    if (config.dp1 === 'bidirectional' && ruleSet.when_DP1_is_bidirectional)
+      variants.push({ label: 'Integration direction (bidirectional)', text: ruleSet.when_DP1_is_bidirectional })
+    if (config.dp1 === 'no_integration' && ruleSet.when_DP1_is_no_integration)
+      variants.push({ label: 'No technical integration', text: ruleSet.when_DP1_is_no_integration })
+
+    // DP4 variants
+    if (config.dp4 === 'yes' && ruleSet.when_DP4_is_yes)
+      variants.push({ label: 'Regulated industries active', text: ruleSet.when_DP4_is_yes })
+    if (config.dp4 === 'no' && ruleSet.when_DP4_is_no)
+      variants.push({ label: 'No regulated industries', text: ruleSet.when_DP4_is_no })
+
+    // DP2 motion variants
+    if (config.dp2.motions.includes('reseller_partner') && ruleSet.when_reseller_partner_selected)
+      variants.push({ label: 'Reseller (partner) motion', text: ruleSet.when_reseller_partner_selected })
+    if (config.dp2.motions.includes('reseller_entity') && ruleSet.when_reseller_entity_selected)
+      variants.push({ label: 'Reseller (entity) motion', text: ruleSet.when_reseller_entity_selected })
+    if (config.dp2.motions.includes('marketplace_third_party') && ruleSet.when_marketplace_third_party_selected)
+      variants.push({ label: 'Third-party marketplace', text: ruleSet.when_marketplace_third_party_selected })
+    if (config.dp2.motions.includes('referral_inbound') && ruleSet.when_referral_inbound_selected)
+      variants.push({ label: 'Referral (inbound) motion', text: ruleSet.when_referral_inbound_selected })
+    if (config.dp2.motions.includes('referral_outbound') && ruleSet.when_referral_outbound_selected)
+      variants.push({ label: 'Referral (outbound) motion', text: ruleSet.when_referral_outbound_selected })
+    if (config.dp2.motions.includes('marketplace_entity') && ruleSet.when_marketplace_entity_selected)
+      variants.push({ label: 'Marketplace (entity) motion', text: ruleSet.when_marketplace_entity_selected })
+    if (config.dp2.motions.includes('co_sell') && ruleSet.when_co_sell_selected)
+      variants.push({ label: 'Co-sell motion', text: ruleSet.when_co_sell_selected })
+    if (config.dp2.motions.includes('co_marketing') && ruleSet.when_co_marketing_selected)
+      variants.push({ label: 'Co-marketing motion', text: ruleSet.when_co_marketing_selected })
+
+    // Financial motion variants
+    if (computeHasFinancialMotion(config) && ruleSet.when_financial_motion_selected)
+      variants.push({ label: 'Financial motion active', text: ruleSet.when_financial_motion_selected })
+    if (!computeHasFinancialMotion(config) && ruleSet.when_no_financial_motion)
+      variants.push({ label: 'No financial motion', text: ruleSet.when_no_financial_motion })
+
+    // Co-sell direction variants
+    if (config.dp2.motions.includes('co_sell')) {
+      if (config.dp2.co_sell_direction === 'entity_led' && ruleSet.when_direction_is_entity_led)
+        variants.push({ label: 'Co-sell: entity-led', text: ruleSet.when_direction_is_entity_led })
+      if (config.dp2.co_sell_direction === 'partner_led' && ruleSet.when_direction_is_partner_led)
+        variants.push({ label: 'Co-sell: partner-led', text: ruleSet.when_direction_is_partner_led })
+      if (config.dp2.co_sell_direction === 'jointly_led' && ruleSet.when_direction_is_jointly_led)
+        variants.push({ label: 'Co-sell: jointly-led', text: ruleSet.when_direction_is_jointly_led })
+      // Also check old key names used in some rules
+      if (config.dp2.co_sell_direction === 'entity_led' && ruleSet.when_co_sell_is_entity_led)
+        variants.push({ label: 'Co-sell: entity-led', text: ruleSet.when_co_sell_is_entity_led })
+      if (config.dp2.co_sell_direction === 'partner_led' && ruleSet.when_co_sell_is_partner_led)
+        variants.push({ label: 'Co-sell: partner-led', text: ruleSet.when_co_sell_is_partner_led })
+      if (config.dp2.co_sell_direction === 'jointly_led' && ruleSet.when_co_sell_is_jointly_led)
+        variants.push({ label: 'Co-sell: jointly-led', text: ruleSet.when_co_sell_is_jointly_led })
     }
 
-    if (!matched && ruleSet.when_no_referral_or_reseller_motion && !computeHasFinancialMotion(config))
-      matched = { label: 'No commercial motion', text: ruleSet.when_no_referral_or_reseller_motion }
+    // Fallback: no commercial motion
+    if (variants.length === 0 && ruleSet.when_no_referral_or_reseller_motion && !computeHasFinancialMotion(config))
+      variants.push({ label: 'No commercial motion', text: ruleSet.when_no_referral_or_reseller_motion })
 
-    if (matched) result.push(matched)
+    result.push(...variants)
   }
 
   return result
