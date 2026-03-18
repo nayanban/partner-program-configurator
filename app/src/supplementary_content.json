@@ -1,0 +1,975 @@
+{
+  "_meta": {
+    "title": "Partner Integration Lifecycle Workflow — Supplementary Content",
+    "version": "1.0",
+    "description": "Prose content extracted from Partner_Program_Dev_App_v14.docx and structured for the configurator app. Contains the six content categories not present in the structured specification: purpose, inputs, owns (scope of work), tie-breaker/escalation decision rights, outputs, explicitly does not do, failure/exception handling paths, and loop-back triggers. Keyed by step to align with structured_specification.json workflow_steps.",
+    "source_document": "Partner_Program_Dev_App_v14.docx",
+    "companion_to": "structured_specification.json",
+    "content_categories": [
+      "purpose — one-line statement of what this step achieves",
+      "inputs — what this step receives from prior steps or external sources",
+      "owns — the scope of work performed in this step",
+      "tie_breaker_escalation — who has final authority on what, and how disputes are resolved",
+      "outputs — what this step produces",
+      "explicitly_does_not_do — boundaries that prevent scope creep",
+      "handoff — conditions for completion and acceptance by the next step",
+      "failure_exception_paths — non-happy-path scenarios and prescribed responses",
+      "loop_back_triggers — conditions under which work returns to a prior step"
+    ],
+    "configuration_dependent_content_note": "Some content within tie_breaker_escalation, failure_exception_paths, owns, and handoff varies by decision point configuration. Where applicable, these are tagged with a 'configuration_notes' object indicating which decision point answers modify the content. The structured_specification.json conditional_variations and workflow_modification_rules provide the definitive conditional logic; this file provides the base prose that those rules modify."
+  },
+  "steps": {
+    "step_0": {
+      "step_name": "Partner Operating System: Definition & Maintenance",
+      "purpose": "Define and continuously maintain the partner ecosystem operating system so execution stays repeatable as strategy, products, tooling, and partner mix evolve.",
+      "inputs": [
+        "Company strategy",
+        "Product/API roadmap",
+        "Support capacity",
+        "Risk posture",
+        "Partner performance/health metrics",
+        "Incident and support trends",
+        "Tooling constraints"
+      ],
+      "owns": [
+        "Partner categories + tier definitions (eligibility, benefits, SLAs) and periodic recalibration",
+        "Default engagement motions (integration-only, referral, reseller, marketplace, etc.) and rules of engagement",
+        "Standard artifacts: intake form, triage checklist, security/legal templates, launch/support templates and their versioning",
+        "Governance: decision owners, escalation paths, operating cadences (weekly triage, monthly ops review, quarterly program review)",
+        "Tooling + data model: CRM/PRM fields, definitions, validation rules, single source of truth and ongoing data governance",
+        "Timing standards ownership: SLAs and timeboxes defined and maintained by Partnerships Ops / Partner Programs, in collaboration with functional owners (e.g., Support for support SLAs, Security/Privacy for security review SLAs, Legal for contracting timelines). Reviewed at least quarterly and after material incidents or policy changes.",
+        "Success metrics definitions and reporting standards and revisions when metrics become gameable or stale",
+        "Exception policy: when exceptions are allowed, who can approve, how long they last, how they're documented"
+      ],
+      "tie_breaker_escalation": null,
+      "tie_breaker_escalation_note": "Step 0 is a design-time and stewardship step. It does not have case-level tie-breaker decision rights. Governance deadlocks are handled via the failure/exception paths below.",
+      "outputs": [
+        "Published 'rules of the game' (current version) + templates + configured systems",
+        "Versioned change log (what changed, why, effective date) + communications to internal stakeholders",
+        "Updated governance calendar and role/accountability map (as needed)"
+      ],
+      "explicitly_does_not_do": [
+        "Case-by-case partner decisions (those start in Step 1)",
+        "Ad hoc exceptions outside the defined exception policy"
+      ],
+      "handoff": "Step 0 is considered current for execution when the latest OS version (tiers, templates, tooling, governance) is published and communicated by Partnerships Ops / Partner Programs; Step 1 is accepted by Partnerships (Partner Development / Partner Ops) using the current OS; progression is paused if the OS is under active hotfix or not yet published per Step 0 governance.",
+      "failure_exception_paths": [
+        {
+          "condition": "Urgent regulatory/security change or severe incident trend requires immediate program changes",
+          "response": "Invoke an 'OS Hotfix' (timeboxed interim rule/template/control with named owner + expiry date), communicate immediately, and fold into the next versioned OS release."
+        },
+        {
+          "condition": "CRM/PRM (or reporting pipeline) is down or data integrity is compromised",
+          "response": "Switch to the designated fallback tracker, freeze non-critical edits, assign a re-sync owner, reconcile on restoration, and publish a data correction/prevention note."
+        },
+        {
+          "condition": "Governance repeatedly deadlocks across Product/Security/Legal/Partnerships beyond the decision SLA",
+          "response": "Escalate to the defined decision forum, force a decision within SLA, document rationale/guardrails, and update OS artifacts to prevent recurrence."
+        },
+        {
+          "condition": "Exception requests spike ('exception debt') or cluster around the same policy area",
+          "response": "Temporarily tighten exception approvals and timebox existing exceptions, run a focused OS review, and adjust defaults (tier criteria/entitlements/standards) to eliminate repeat exceptions."
+        },
+        {
+          "condition": "Metrics are being gamed or no longer reflect operational reality",
+          "response": "Trigger a metrics definition review, revise definitions and add counter-metrics/guardrails, update dashboards, and publish the new definitions with an effective date."
+        },
+        {
+          "condition": "Templates/playbooks drift (multiple conflicting versions in circulation)",
+          "response": "Declare a single canonical library, deprecate duplicates, enforce versioning, and schedule a periodic audit to keep artifacts current."
+        },
+        {
+          "condition": "Capacity changes make SLAs/tiers infeasible (support/engineering bandwidth shock)",
+          "response": "Invoke the capacity adjustment protocol, temporarily adjust SLAs/entitlements and throttle intake/prioritization, communicate changes, and update resourcing assumptions in the next OS version."
+        },
+        {
+          "condition": "Repeated out-of-scope requests create program creep and one-off delivery/support burden",
+          "response": "Update 'supported vs not supported' boundaries, refine intake/triage criteria, add standardized reject/defer patterns and comms templates, and incorporate into the next OS release."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "source": "Step 10",
+          "trigger": "Review results (re-tiering patterns, renewals/exits)"
+        },
+        {
+          "source": "Step 8",
+          "trigger": "Support/incident trends (recurring failure modes)"
+        },
+        {
+          "source": "Step 9",
+          "trigger": "GTM outcomes (what's working/not working in expansion motions)"
+        }
+      ],
+      "configuration_notes": null
+    },
+    "step_1": {
+      "step_name": "Partner Intake, Minimum Qualification, Routing",
+      "purpose": "Convert a partner request into a clean, owned work item.",
+      "inputs": [
+        "Inbound request",
+        "Referral",
+        "Outbound response",
+        "Conference intro",
+        "Association lead"
+      ],
+      "owns": [
+        "Capture essentials: who they are, why now, partner type hypothesis, intended motion, basic compliance flags",
+        "Quick decision: engage / decline / park",
+        "Assign internal owner(s) and log into the system"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Partnerships (Primary owner)",
+          "scope": "Final call on whether to engage/decline/park a partner at intake, within the Step 0 intake criteria"
+        },
+        {
+          "authority": "Security/Compliance",
+          "scope": "May block only for hard risk constraints"
+        },
+        {
+          "authority": "Partnerships leadership / program executive sponsor",
+          "scope": "Escalation target if the dispute is strategic and unresolved"
+        }
+      ],
+      "outputs": [
+        "Single partner record + status + owner + next-step assignment"
+      ],
+      "explicitly_does_not_do": [
+        "Deep technical scoping or solution design (save that for Step 3)"
+      ],
+      "handoff": "Step 1 is complete when Partnerships (Partner Development / Partner Ops) has created a single system-of-record entry with the minimum required intake fields and a recorded engage/decline/park decision; Step 2 is accepted by Partner Programs / Partnerships Ops for placement; progression can be blocked by Partnerships leadership (strategic no-go) or Security/Compliance (material red flags) until resolved.",
+      "failure_exception_paths": [
+        {
+          "condition": "Request is spam/low-quality or clearly out of scope",
+          "response": "Decline and record the reason; optionally suppress future intake from the same source per policy."
+        },
+        {
+          "condition": "Multiple internal teams claim ownership (or duplicate records exist)",
+          "response": "Merge to a single system-of-record, assign one accountable owner, and resolve conflicts via the escalation path defined in Step 0."
+        },
+        {
+          "condition": "High-priority partner requires expedited handling",
+          "response": "Initiate a timeboxed fast-track with minimum required intake fields; if requirements are not met within the timebox, park the request."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 1 (remain)",
+          "trigger": "Intake information is insufficient to determine engagement or routing — remain until missing information is provided (or park/decline per policy)"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Recurring intake issues reveal missing fields, definitions, or routing logic — send update request to Step 0"
+        },
+        {
+          "target": "Step 1 (re-run)",
+          "trigger": "Partner's stated motion/use case changes materially before placement — re-run Step 1 qualification and routing before proceeding"
+        }
+      ],
+      "configuration_notes": null
+    },
+    "step_2": {
+      "step_name": "Program Placement, Tiering, Entitlements Assignment",
+      "purpose": "Apply the Step 0 rules to this partner.",
+      "inputs": [
+        "Engaged partner record + basic context from Step 1"
+      ],
+      "owns": [
+        "Determine partner track + tier (based on predefined criteria)",
+        "Assign entitlements: access, SLAs, support model, co-marketing eligibility",
+        "Flag required gates (security review needed? contract needed before sandbox access?)",
+        "Set expectations for engagement model"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Partnerships leadership",
+          "scope": "Final decision authority on tier placement and exceptions"
+        },
+        {
+          "authority": "Support/CS",
+          "scope": "Support SLAs/escalation design"
+        },
+        {
+          "authority": "Security/Privacy",
+          "scope": "Access gating"
+        },
+        {
+          "authority": "Legal",
+          "scope": "Contracting prerequisites"
+        },
+        {
+          "authority": "Finance/RevOps",
+          "scope": "Motion classification and economics guardrails"
+        },
+        {
+          "authority": "Partnerships leadership/SteerCo",
+          "scope": "Escalation target if disputes persist (via Partner Programs / Partnerships Ops)"
+        }
+      ],
+      "outputs": [
+        "Partner profile: tier + entitlements + required gates + engagement model"
+      ],
+      "explicitly_does_not_do": [
+        "Negotiate bespoke commercial terms or redesign tiers; exceptions must follow a formal exception path"
+      ],
+      "handoff": "Step 2 is complete when Partner Programs / Partnerships Ops assigns track/tier/entitlements and flags required gates/prerequisites in the partner profile; Step 3 is accepted by Solutions Engineering / Partner Engineering for deep scoping; progression can be blocked by unmet access prerequisites (e.g., required security/compliance gate or contracting prerequisite) per the partner profile.",
+      "failure_exception_paths": [
+        {
+          "condition": "Partner disputes the assigned tier/entitlements",
+          "response": "Reference the published criteria, document the decision, and route any exception request through the Step 0 exception policy (timeboxed)."
+        },
+        {
+          "condition": "Required prerequisites for access (contract, security gate, or compliance condition) are not met",
+          "response": "Limit access per policy and hold progression until satisfied; if unresolved, park/exit with rationale."
+        },
+        {
+          "condition": "Motion classification is ambiguous (e.g., referral vs reseller vs integration-only) and drives conflicting expectations",
+          "response": "Escalate to Finance/RevOps and Partnerships leadership to finalize the archetype before proceeding."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 1",
+          "trigger": "Information needed to assign tier/entitlements is missing or contradictory — return to Step 1 to collect/clarify"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Partner does not fit existing tier criteria and an exception is required — escalate via Step 0 exception policy (and route any criteria/template improvements to Step 0)"
+        },
+        {
+          "target": "Step 1",
+          "trigger": "Placement decisions materially change required gates or engagement model — re-validate with Step 1 inputs before proceeding"
+        }
+      ],
+      "configuration_notes": {
+        "DP2": "Entitlements assigned in this step vary by selected commercial motions. See structured_specification.json workflow_modification_rules.step2_entitlements_by_motion for motion-specific entitlements.",
+        "DP3_partner_cert": "When DP3 includes partner competency certification, certification status becomes a gating condition or entitlement in this step."
+      }
+    },
+    "step_3": {
+      "step_name": "Integration Request Triage, Deep Scoping, Commitment",
+      "purpose": "Decide what work you'll do and what you'll commit to.",
+      "inputs": [
+        "Partner profile (Step 2) + use case + initial technical context"
+      ],
+      "owns": [
+        "Choose integration path (certified vs supported vs partner-built)",
+        "Define scope: endpoints, auth, data flow, environments, testing approach",
+        "Identify dependencies: product gaps, security/privacy needs, legal prerequisites",
+        "Set success criteria + 'definition of done'",
+        "Make a commitment: approve / defer / reject, with owners + rough timeline"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Product",
+          "scope": "Final decision authority on scope and roadmap commitments"
+        },
+        {
+          "authority": "Engineering",
+          "scope": "Feasibility/effort estimates"
+        },
+        {
+          "authority": "Security/Privacy",
+          "scope": "Data and control constraints"
+        },
+        {
+          "authority": "Compliance/Risk",
+          "scope": "Regulatory/policy constraints",
+          "configuration_dependent": true,
+          "active_when": "DP4 == 'yes'",
+          "when_inactive": "This tie-breaker authority is absent when DP4 = no"
+        },
+        {
+          "authority": "Partnerships leadership/SteerCo",
+          "scope": "Escalation target if strategic priority conflicts with feasibility or commitments (via Solutions Engineering / Partner Engineering)"
+        }
+      ],
+      "outputs": [
+        "Approved integration plan/spec (scope + owners + timeline + success criteria)"
+      ],
+      "explicitly_does_not_do": [
+        "Execute implementation; no building here — only committed plan"
+      ],
+      "handoff": "Step 3 is complete when Solutions Engineering / Partner Engineering publishes an approved integration plan/spec (scope, owners, success criteria, and expected timeline) and the partner confirms intent to proceed; Step 4 is accepted by Partnerships Deal Desk / Program Manager to initiate parallel approval tracks; progression can be blocked by Product (unapproved scope/roadmap commitment) or Security/Privacy / Compliance-Risk (prohibited use/policy constraint) until re-scoped.",
+      "failure_exception_paths": [
+        {
+          "condition": "Partner goes dark during scoping",
+          "response": "Pause the scoping clock, timebox re-engagement, and park/close as 'Dormant' per policy; resume scoping only after re-confirming intent and context."
+        },
+        {
+          "condition": "Critical dependencies (product/engineering/security) cannot be met in the required timeframe",
+          "response": "Defer with a revisit date and/or switch to an alternate integration path; if no viable path exists, exit with a documented rationale."
+        },
+        {
+          "condition": "Scoping surfaces a prohibited data use or non-negotiable policy constraint",
+          "response": "Reject the request and document the reason; route any missing standards/templates to Step 0."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 2",
+          "trigger": "Scoping reveals the partner's track/tier/entitlements should change — return to Step 2 for re-placement"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Scoping reveals gaps in standards, templates, or integration paths — route a change request to Step 0"
+        },
+        {
+          "target": "Step 3 (re-scope)",
+          "trigger": "Requirements change materially after the plan/spec is approved — return to Step 3 before entering Step 4"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "This entire step is REMOVED when DP1 = no_integration. Handoff routes directly from Step 2 to Step 4.",
+        "DP1_direction": "Scoping ownership and focus varies by integration direction. See structured_specification.json workflow_modification_rules.step3_scoping_ownership.",
+        "DP3_neither": "When DP3 = neither, 'certified' integration path is not available. Selection is between 'supported' and 'partner-built' only.",
+        "DP3_integration_cert": "When DP3 includes integration certification, 'certified' path is available and if selected, certification is a required deliverable.",
+        "DP4_yes": "Compliance/Risk becomes an active tie-breaker authority and can block handoff to Step 4."
+      }
+    },
+    "step_4": {
+      "step_name": "Approvals & Agreements Gate (Parallel Workstreams + Unblock Criteria)",
+      "purpose": "Secure the required approvals and binding obligations without creating a serial bottleneck — by running reviews in parallel and defining what is needed to start implementation vs. what is needed to go live.",
+      "inputs": [
+        "Approved integration plan/spec (Step 3)",
+        "Partner profile (Step 2)",
+        "Required gate flags (from Step 2/3)"
+      ],
+      "owns": [
+        {
+          "track": "Security & Privacy",
+          "items": [
+            "Data classification and data-flow review (what data, where it moves, retention)",
+            "Required controls (auth, encryption, access logging, incident response obligations)",
+            "Security testing requirements and evidence expectations (as applicable)"
+          ],
+          "always_active": true,
+          "configuration_note": "Scope significantly reduced when DP1 = no_integration (limited to data handling obligations in legal agreement only). Security testing requirements become mandatory (not 'as applicable') when DP3 includes integration certification."
+        },
+        {
+          "track": "Compliance / Risk",
+          "items": [
+            "Regulatory/policy mapping for the use case (if regulated activity is involved)",
+            "Required operational controls, disclosures, approvals, and auditability",
+            "Risk acceptance or mitigation requirements"
+          ],
+          "always_active": false,
+          "configuration_note": "This entire track is REMOVED when DP4 = no. Fully active and required when DP4 = yes."
+        },
+        {
+          "track": "Legal",
+          "items": [
+            "Agreement selection (template/archetype) and redline negotiation",
+            "Binding obligations captured (liability, IP, termination, SLAs, data handling)",
+            "Version control of approved language and final form routing"
+          ],
+          "always_active": true,
+          "configuration_note": "Agreement type varies by DP2 selections. Reseller agreement required when reseller motion selected. Additional marketplace platform agreement required when third-party marketplace selected."
+        },
+        {
+          "track": "Commercial / Finance",
+          "items": [
+            "Deal economics confirmation (pricing, referral/rev-share definitions, payout triggers)",
+            "Billing/invoicing/payout mechanics (including dispute handling if applicable)",
+            "Internal approvals for commercial exceptions (if allowed under Step 0 policy)"
+          ],
+          "always_active": false,
+          "configuration_note": "Fully active when any financial motion is selected (referral, reseller, marketplace, co-sell) or when co-marketing is selected (for budget mechanics). Absent when no financial motions and no co-marketing are selected."
+        }
+      ],
+      "minimum_to_unblock_criteria": {
+        "description": "Conditions required before Step 5 (implementation) may begin",
+        "conditions": [
+          "Security/Privacy provides preliminary approval for non-production work (e.g., sandbox/dev) or explicitly states acceptable scope for implementation work to proceed",
+          "Legal provides an approved agreement path (e.g., template selected + redline boundaries / fallback positions agreed)",
+          "Any hard 'no-go' risks have been resolved (e.g., prohibited data use, unacceptable control gaps)"
+        ],
+        "when_DP4_yes": "If Compliance/Risk is required for the use case, include either preliminary approval or a defined set of constraints that implementation can proceed under.",
+        "when_DP1_no_integration": "Step 5 is skipped entirely — minimum-to-unblock criteria apply to proceeding to Step 6 instead."
+      },
+      "go_live_criteria": {
+        "description": "Conditions required before production go-live (Step 6/7)",
+        "conditions": [
+          "Final Security/Privacy sign-off (production scope) and required evidence completed",
+          "Executed legal agreement(s) (or documented executive exception per Step 0 policy)",
+          "Confirmed commercial/finance mechanics (including attribution/payout setup if relevant)"
+        ],
+        "when_DP4_yes": "Final Compliance/Risk sign-off is also required.",
+        "when_DP4_no": "Compliance/Risk sign-off is absent from go-live criteria."
+      },
+      "tie_breaker_escalation": [
+        {
+          "authority": "Security & Privacy",
+          "scope": "Final decision authority on security controls and production risk acceptance"
+        },
+        {
+          "authority": "Compliance/Risk",
+          "scope": "Regulatory/policy constraints (when applicable)",
+          "configuration_dependent": true,
+          "active_when": "DP4 == 'yes'",
+          "when_inactive": "This tie-breaker authority is absent when DP4 = no"
+        },
+        {
+          "authority": "Legal",
+          "scope": "Legal terms"
+        },
+        {
+          "authority": "Finance/RevOps",
+          "scope": "Economics and payout mechanics"
+        },
+        {
+          "authority": "Partnerships leadership/SteerCo",
+          "scope": "Escalation target if required approvals conflict or stall (via Partnerships Deal Desk)"
+        }
+      ],
+      "outputs": [
+        "Track-level decisions: approved / conditional approval / rejected, with documented conditions",
+        "Executed agreement(s) or approved near-final form + recorded obligations/controls",
+        "Approval record: who approved what, on which version, and what conditions remain"
+      ],
+      "explicitly_does_not_do": [
+        "Re-scope the integration (material scope changes route back to Step 3)",
+        "Start implementation work itself (that is Step 5), except for coordinating reviews and capturing decisions",
+        "Allow indefinite 'conditional approvals' without owners and deadlines (conditions must be tracked and time-bound)"
+      ],
+      "handoff": "Step 4 is complete (to start implementation) when the minimum-to-unblock criteria are met and all remaining approval conditions are documented with owners and deadlines by Partnerships Deal Desk / Program Manager; Step 5 is accepted by Solutions Engineering / Partner Engineering for implementation; progression can be blocked by Security/Privacy, Legal, and (where applicable) Compliance/Risk until minimum-to-unblock conditions are satisfied.",
+      "failure_exception_paths": [
+        {
+          "condition": "Security/Privacy or Compliance/Risk review fails (or imposes unacceptable conditions)",
+          "response": "Return to Step 3 to redesign scope/data flows or downgrade the integration path; if not feasible, park/exit per governance."
+        },
+        {
+          "condition": "Legal negotiation stalls beyond the defined timebox or the partner insists on non-negotiable terms",
+          "response": "Escalate per Step 0 governance; if unresolved, park/exit and record the decision."
+        },
+        {
+          "condition": "Conditional approvals are not met by the agreed deadline",
+          "response": "Pause Step 5 work, escalate owners, and either re-timebox with explicit deliverables or close the effort."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 3",
+          "trigger": "Any track rejects or imposes scope-changing conditions — return to Step 3 (re-triage / re-scope)"
+        },
+        {
+          "target": "Step 0 governance / park / exit",
+          "trigger": "Negotiation stalls past a defined threshold — escalate per Step 0 governance (or decide to park/exit)"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "Security & Privacy track scope significantly reduced — limited to data handling obligations in legal agreement only. No data-flow review, auth/encryption controls, or security testing. Step 5 is skipped — handoff goes to Step 6.",
+        "DP2_motions": "Commercial/Finance track depth varies by selected motions. Legal agreement type varies (reseller agreement, marketplace platform agreement, standard partnership). See structured_specification.json for details.",
+        "DP3_integration_cert": "Security testing requirements become mandatory. Specific certification standard and evidence requirements must be defined as explicit gate conditions.",
+        "DP4_yes": "Compliance/Risk track fully activated. Preliminary approval required before Step 5. Final sign-off required before go-live.",
+        "DP4_no": "Compliance/Risk track entirely removed."
+      }
+    },
+    "step_5": {
+      "step_name": "Onboarding & Implementation Execution",
+      "purpose": "Build/integrate according to the approved spec.",
+      "inputs": [
+        "Approved plan (Step 3) + cleared gate (Step 4)"
+      ],
+      "owns": [
+        "Access provisioning, credentials, sandbox setup",
+        "Implementation and coordination across teams (partner + internal)",
+        "Joint testing, certification (if applicable), issue resolution during build",
+        "Evidence collection required for launch readiness (logs, controls, test results)"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Engineering lead",
+          "scope": "Final authority on delivery feasibility and sequencing for disputes about scope, feasibility, or timeline during implementation"
+        },
+        {
+          "authority": "Step 3 (re-triage/re-scope)",
+          "scope": "Any request that materially changes scope must return to Step 3"
+        },
+        {
+          "authority": "Partnerships leadership / program executive sponsor",
+          "scope": "Escalation target if the dispute is strategic and unresolved after re-triage — for prioritization tradeoffs"
+        }
+      ],
+      "outputs": [
+        "Working integration meeting the spec + ready-for-launch checklist inputs"
+      ],
+      "explicitly_does_not_do": [
+        "Post-launch operations ownership (that starts after go-live/handoff)"
+      ],
+      "handoff": "Step 5 is complete when Solutions Engineering / Partner Engineering confirms the integration meets the approved spec and provides the required launch-readiness inputs (test results/evidence, known limitations, support contacts); Step 6 is accepted by Partnerships (Partner Enablement / Partner Ops) for packaging; progression can be blocked by Product (functional acceptance) or Security/Privacy (required evidence/controls not met) until resolved.",
+      "failure_exception_paths": [
+        {
+          "condition": "Partner goes dark mid-implementation",
+          "response": "Pause work, stop internal effort after timeboxed follow-ups, and close as 'Dormant'; require re-confirmation of scope via Step 3 before resuming."
+        },
+        {
+          "condition": "Implementation reveals blockers that invalidate the committed plan (access, environments, repeated test failures)",
+          "response": "Escalate per governance; return to Step 3 for re-scope and/or Step 4 for revised conditions as needed."
+        },
+        {
+          "condition": "Build outcomes cannot satisfy Step 4 production conditions",
+          "response": "Do not proceed to launch; remain in Step 5 until conditions are met or formally de-scope/exit."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 3",
+          "trigger": "Implementation uncovers scope gaps or new requirements — return to Step 3 (re-triage / re-scope)"
+        },
+        {
+          "target": "Step 4 (and Step 3 if scope changes)",
+          "trigger": "Implementation cannot satisfy Step 4 approval conditions or requires different controls — return to Step 4 for updated review/conditions"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Repeated implementation blockers indicate missing standards or templates — route an improvement request to Step 0"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "This entire step is REMOVED when DP1 = no_integration. Handoff routes directly from Step 4 to Step 6.",
+        "DP1_direction": "Implementation ownership varies by integration direction. See structured_specification.json workflow_modification_rules.step5_implementation_ownership.",
+        "DP3_integration_cert": "Certification becomes a required deliverable before handoff to Step 6. 'Joint testing, certification' is a mandatory sub-item, not conditional. Evidence collection must include certification artifacts."
+      }
+    },
+    "step_6": {
+      "step_name": "Launch Readiness & Enablement Packaging",
+      "purpose": "Make the integration 'real' for users and internal teams.",
+      "inputs": [
+        "Working integration (Step 5) + contractual/support obligations (Step 4)"
+      ],
+      "owns": [
+        "Partner-facing launch kit: docs, integration guide, known limitations, support contacts",
+        "Internal enablement: support playbook, escalation procedures, sales/CS notes",
+        "Marketplace/listing readiness (if applicable): metadata, positioning, compatibility notes",
+        "Launch comms plan + approvals (brand/legal/compliance as needed)"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Legal/Compliance",
+          "scope": "Final authority on what can be approved/published for disputes on launch readiness or public-facing assets (docs, listing copy, announcements)"
+        },
+        {
+          "authority": "Product",
+          "scope": "Final authority on technical/product claims"
+        },
+        {
+          "authority": "Marketing/Comms",
+          "scope": "Owns channel/timing once approvals are secured"
+        },
+        {
+          "authority": "Partnerships leadership / program executive sponsor",
+          "scope": "Escalation target if stakeholders disagree on timing tradeoffs after approvals"
+        }
+      ],
+      "outputs": [
+        "Launch package + enablement artifacts + comms/listing readiness"
+      ],
+      "explicitly_does_not_do": [
+        "Major engineering changes (those go back to Step 5 / Step 3 if scope changes)"
+      ],
+      "handoff": "Step 6 is complete when Partnerships (Partner Enablement / Partner Ops) confirms launch artifacts are complete and required approvals for partner-facing/public assets are obtained; Step 7 is accepted by Engineering (integration owner / SRE-on-point) to schedule cutover; progression can be blocked by Engineering (readiness/cutover prerequisites unmet) or Security/Privacy / Compliance-Risk / Legal (production go-live prerequisites not satisfied) until cleared.",
+      "failure_exception_paths": [
+        {
+          "condition": "Legal/compliance/brand approval blocks public-facing assets or announcements",
+          "response": "Timebox revisions, remove/adjust claims as required, and postpone launch communications if approvals cannot be secured."
+        },
+        {
+          "condition": "Documentation, runbooks, or internal enablement are incomplete",
+          "response": "Do not proceed to Step 7; complete Step 6 deliverables or route necessary fixes to Step 5 (and Step 4 if new obligations emerge)."
+        },
+        {
+          "condition": "Marketplace/listing requirements are rejected or cannot be met in time",
+          "response": "Proceed without the listing (if acceptable) or postpone go-live until listing/readiness criteria are satisfied, per governance."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 4",
+          "trigger": "Launch readiness identifies missing approvals/evidence or unresolved obligations — return to Step 4"
+        },
+        {
+          "target": "Step 5 (or Step 3 if scope materially changes)",
+          "trigger": "Launch readiness requires technical fixes or additional testing — return to Step 5"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Documentation/enablement gaps are systemic — route updates to Step 0 for versioned improvements"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "Launch kit covers commercial motion only — referral submission process, reseller ordering, marketplace listing usage. No integration guide or technical documentation.",
+        "DP1_has_integration": "Launch kit includes integration guide, technical documentation, and known technical limitations in addition to commercial content.",
+        "DP2_marketplace": "Marketplace/listing readiness items are active when any marketplace motion is selected.",
+        "DP2_co_marketing": "Launch comms plan and brand/legal/compliance approvals are required (not optional) when co-marketing is active.",
+        "DP3_partner_cert": "Partner-facing enablement packaging must include certification program materials: training content, assessment details, certification pathway, and badge/credential information.",
+        "DP3_integration_cert": "Launch readiness checklist must include certification evidence as a confirmed item."
+      }
+    },
+    "step_7": {
+      "step_name": "Go-live & Stabilization",
+      "purpose": "Launch safely and confirm the handoff is real.",
+      "inputs": [
+        "Launch package (Step 6) + production-ready integration (Step 5)"
+      ],
+      "owns": [
+        "Go-live decision and cutover",
+        "Hypercare window: monitoring, rapid triage, rollback plan readiness",
+        "Confirm escalation works (who responds, in what time)",
+        "Formal handoff confirmation from build team to ops/support ownership"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Engineering (integration owner / SRE-on-point)",
+          "scope": "Final authority on technical cutover readiness and rollback"
+        },
+        {
+          "authority": "Security & Privacy",
+          "scope": "Final authority on production control readiness"
+        },
+        {
+          "authority": "Product",
+          "scope": "Final authority on product readiness/feature scope"
+        },
+        {
+          "authority": "Primary Owner",
+          "scope": "Escalation target if a go-live decision is disputed after mandatory approvals"
+        }
+      ],
+      "outputs": [
+        "Live integration + stabilized baseline + confirmed operational handoff"
+      ],
+      "explicitly_does_not_do": [
+        "Long-term support and continuous improvement (that's Step 8)"
+      ],
+      "handoff": "Step 7 is complete when Engineering (integration owner / SRE-on-point) confirms stabilization/hypercare exit criteria are met and the operational handoff package is complete; Step 8 is accepted by Support / Operations as the new owner of steady-state SLAs and incident response; progression can be blocked if Support / Operations does not accept the handoff due to missing runbooks, contacts, or unresolved critical issues.",
+      "failure_exception_paths": [
+        {
+          "condition": "Go-live is rolled back",
+          "response": "Execute the rollback plan, open an incident, extend hypercare, return to Step 5 for fixes, and refresh Step 6 readiness artifacts before re-attempting Step 7."
+        },
+        {
+          "condition": "Sev1/critical incident occurs during hypercare",
+          "response": "Activate incident response, freeze further rollout, and exit hypercare only after stability criteria are met; then proceed to Step 8."
+        },
+        {
+          "condition": "Partner cutover activities are incomplete or readiness is not met at launch time",
+          "response": "Postpone the launch and return to Step 6 (and Step 5 as needed) before re-scheduling Step 7."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 6 and/or Step 5",
+          "trigger": "Go-live readiness conditions are not met at cutover — return to Step 6 (readiness packaging) and/or Step 5 (implementation fixes) as needed"
+        },
+        {
+          "target": "Step 5 (or Step 3 if scope materially changes)",
+          "trigger": "Stabilization/hypercare uncovers issues requiring material technical changes — return to Step 5"
+        },
+        {
+          "target": "Step 6",
+          "trigger": "Rollback or launch delay materially changes readiness artifacts or obligations — re-run Step 6 before re-attempting Step 7"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "No technical cutover. No rollback plan. Hypercare is limited to monitoring commercial motion activation (e.g., first referral submitted, first listing live) rather than technical stability."
+      }
+    },
+    "step_8": {
+      "step_name": "Post-launch Operations, Support, Continuous Improvement",
+      "purpose": "Keep integrations healthy and reduce recurring friction over time.",
+      "inputs": [
+        "Live integration + handoff package (Step 7)"
+      ],
+      "owns": [
+        "Ticket triage, incident management, escalation per SLA",
+        "Health metrics: uptime, error rates, volume, latency (as applicable)",
+        "Root cause + prevention loops: docs updates, tooling fixes, backlog creation",
+        "Operational reporting: support burden, partner health, reliability trends"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Support / Operations",
+          "scope": "Final decision authority on incident severity, communications, and SLA enforcement"
+        },
+        {
+          "authority": "Engineering",
+          "scope": "Technical remediation path and deployment readiness"
+        },
+        {
+          "authority": "Security/Privacy",
+          "scope": "Security incidents and production risk response"
+        },
+        {
+          "authority": "Product",
+          "scope": "Prioritization tradeoffs"
+        },
+        {
+          "authority": "Primary Owner escalation",
+          "scope": "If disputes impact partner entitlements or whether to pause Step 9 growth motions — escalate for resolution and log for Step 10 review"
+        }
+      ],
+      "outputs": [
+        "Stable operations + improved docs/tooling + prioritized improvement backlog"
+      ],
+      "explicitly_does_not_do": [
+        "Growth motions or commercial expansion unless explicitly triggered (Step 9)"
+      ],
+      "handoff": "Step 8 is complete (for growth activation) when Support / Operations confirms the integration is stable and the agreed activation signals are met; Step 9 is accepted by Partnerships (Partner GTM / Strategic Partnerships) to initiate growth plays; progression can be blocked by Support / Operations if stability/support-burden thresholds are not met or by RevOps/Finance if attribution/payout mechanics are not ready where required.",
+      "failure_exception_paths": [
+        {
+          "condition": "Repeated incidents cross a defined threshold",
+          "response": "Initiate a root-cause program; route systemic standards/template updates to Step 0; if redesign is required, return to Step 3 (then Steps 4-7 as needed)."
+        },
+        {
+          "condition": "SLA breaches persist or support burden becomes unsustainable",
+          "response": "Trigger a remediation plan and/or a re-tier recommendation for Step 10; pause Step 9 growth motions if required to protect reliability."
+        },
+        {
+          "condition": "Partner repeatedly fails to follow required support inputs/processes",
+          "response": "Enforce the playbook, escalate via governance, and address behavior/terms in Step 10 (and Step 0 if standards need updating)."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 0",
+          "trigger": "Recurring incidents/failure modes indicate missing program standards, templates, or SLAs — route improvements to Step 0"
+        },
+        {
+          "target": "Step 3 (then Steps 4-7 as needed)",
+          "trigger": "Operational issues require material technical changes beyond routine fixes — return to Step 3"
+        },
+        {
+          "target": "Step 9 (proceed)",
+          "trigger": "Partner is stable and meets growth activation signals — proceed to Step 9"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "Health metrics focus on commercial indicators — referral quality, pipeline accuracy, listing performance, support burden. No uptime, error rates, or latency to monitor.",
+        "DP1_has_integration": "Full health metrics active including uptime, error rates, volume, and latency.",
+        "DP2_financial_motion": "RevOps/Finance must confirm attribution and payout mechanics are ready before Step 9 activates. This is a hard gate.",
+        "DP2_no_financial_motion": "Step 9 activates without RevOps/Finance gate."
+      }
+    },
+    "step_9": {
+      "step_name": "Value Realization: Triggered Growth Motions (Co-sell / Co-marketing / Expansion)",
+      "purpose": "Convert a stable integration and healthy partner relationship into measurable business outcomes using repeatable growth plays, clear triggers, and auditable attribution/economics.",
+      "inputs": [
+        "Integration health + operational readiness signals (Step 8)",
+        "Partner tier/entitlements (Step 2) and any commercial terms (Step 4)",
+        "Current performance data: adoption, pipeline, revenue, support burden, segment coverage",
+        "Joint priorities (partner + internal)"
+      ],
+      "entry_triggers": {
+        "description": "Step 9 starts when at least one of the following is true (and Step 8 indicates acceptable stability)",
+        "gates": [
+          "Stability gate: integration has met baseline reliability/support thresholds over a defined period",
+          "Adoption gate: usage crosses a defined threshold or shows sustained growth",
+          "Revenue/pipeline gate: partner-sourced or partner-influenced pipeline exceeds a threshold",
+          "Strategic gate: partner unlocks a priority segment/geo/vertical or a platform distribution channel",
+          "Efficiency gate: support burden is within acceptable limits (or improving) such that scaling won't create operational debt"
+        ],
+        "governance_note": "Activation thresholds and periods are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0); reviewed at least quarterly and after material incidents or strategic changes."
+      },
+      "owns": [
+        {
+          "play": "Co-sell play",
+          "items": [
+            "Account mapping and lead-sharing rules",
+            "Joint pitch narrative, pricing positioning, objection handling",
+            "Opportunity stages, required artifacts, handoff rules between teams",
+            "Weekly pipeline review cadence and close-plan ownership"
+          ],
+          "configuration_dependent": true,
+          "active_when": "DP2 includes co_sell"
+        },
+        {
+          "play": "Co-marketing campaign sprint",
+          "items": [
+            "Campaign type selection (webinar, content, event, community, partner newsletter)",
+            "Asset creation + approvals workflow (brand/legal/compliance if needed)",
+            "Lead capture + routing rules and follow-up SLA",
+            "Post-campaign performance review and learnings"
+          ],
+          "configuration_dependent": true,
+          "active_when": "DP2 includes co_marketing"
+        },
+        {
+          "play": "Marketplace/listing amplification play",
+          "items": [
+            "Listing quality standards (positioning, screenshots, compatibility, known limits)",
+            "Release notes / feature announcements",
+            "Promotion schedule and performance tracking (views → installs → active usage)"
+          ],
+          "configuration_dependent": true,
+          "active_when": "DP2 includes any marketplace motion"
+        },
+        {
+          "play": "Expansion play",
+          "items": [
+            "New use case activation (additional workflows, vertical templates)",
+            "Deeper integration depth (additional endpoints/modules)",
+            "New segment rollout (new geography, new customer cohort)",
+            "Enablement refresh (partner team + internal sales/CS/support)"
+          ],
+          "configuration_dependent": true,
+          "configuration_note": "'Deeper integration depth' item is REMOVED when DP1 = no_integration. 'Enablement refresh' explicitly includes certification renewal/update when DP3 includes partner competency certification."
+        },
+        {
+          "play": "Attribution & economics mechanics",
+          "items": [
+            "Credit definitions: sourced vs influenced vs assisted (and what evidence qualifies)",
+            "Timestamp rules: when credit is assigned and how it expires",
+            "System fields: required CRM/PRM fields + validation (single source of truth)",
+            "Payout triggers: what event triggers payment (e.g., contract signed, invoice paid)",
+            "Payout schedule + reconciliation: cadence, reporting format, dispute process, and approvers",
+            "Exception handling: how disputes are escalated and resolved"
+          ],
+          "configuration_dependent": true,
+          "active_when": "Any financial motion selected (referral, reseller, marketplace, co-sell)"
+        }
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "RevOps/Finance",
+          "scope": "Final decision authority on attribution, payout eligibility, and reconciliation"
+        },
+        {
+          "authority": "Sales leadership",
+          "scope": "Final authority on account ownership rules for co-sell motions"
+        },
+        {
+          "authority": "Legal/Compliance",
+          "scope": "Final authority on claims/approvals for public-facing activities"
+        },
+        {
+          "authority": "Partnerships leadership/SteerCo",
+          "scope": "Escalation target if disputes persist (via Partnerships / Partner GTM / Strategic Partnerships)"
+        }
+      ],
+      "outputs": [
+        "A partner growth plan (plays selected, owners, timeline, targets)",
+        "Execution artifacts (enablement deck, campaign assets, listing updates, account map)",
+        "KPI tracking: pipeline created/influenced, conversion, adoption/activation, attach rate, support burden impact",
+        "Post-play review: what worked/what didn't + recommendations routed to Step 0 (program improvements)"
+      ],
+      "explicitly_does_not_do": [
+        "Run growth motions before the integration is operationally stable (that remains Step 8/7 gating)",
+        "Change core integration scope without re-entering Step 3 (expansion that materially changes scope triggers Step 3)",
+        "Redefine attribution rules ad hoc outside the approved program definitions (Step 0 governs definitions; Step 9 executes them)"
+      ],
+      "handoff": "Step 9 is complete when Partnerships (Partner GTM / Strategic Partnerships) records executed plays, outcomes, and any re-tier/remediation recommendations; Step 10 is accepted by Partnerships (Partner Management) for QBR/annual review; progression may be delayed if required performance, economics, or risk inputs from RevOps/Finance, Support/Operations, or Security/Compliance are not available.",
+      "failure_exception_paths": [
+        {
+          "condition": "Attribution/credit or payout eligibility is disputed",
+          "response": "Follow the defined dispute process, freeze credit/payouts for the contested items, and resolve via RevOps/Finance escalation with documented outcome."
+        },
+        {
+          "condition": "Co-sell motions create account ownership conflict or partner-led deals bypass agreed rules",
+          "response": "Pause the specific play, resolve ownership per sales governance, and restart only with clarified rules and logging requirements."
+        },
+        {
+          "condition": "Growth motions repeatedly fail to produce measurable outcomes or the partner under-delivers on commitments",
+          "response": "Downgrade/adjust the play mix, reset targets, and log a re-tier or remediation recommendation for Step 10."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 8 (and Step 0 for systemic fixes)",
+          "trigger": "Scaling increases incidents/support burden beyond threshold — return to Step 8 (stabilize)"
+        },
+        {
+          "target": "Step 3 (then Steps 4-7 as needed)",
+          "trigger": "Expansion requires material technical changes — return to Step 3 (re-triage/scoping)"
+        }
+      ],
+      "configuration_notes": {
+        "DP1_no_integration": "'Deeper integration depth' expansion item is removed. All other expansion plays remain.",
+        "DP2": "Each selected motion activates its corresponding play and items. Non-selected motions are entirely absent.",
+        "DP2_co_sell_direction": "Account ownership rules and credit definitions vary by co-sell direction. See structured_specification.json workflow_modification_rules.step9_co_sell_account_ownership.",
+        "DP2_referral_direction": "When both referral_inbound and referral_outbound are selected, attribution mechanics must distinguish between the two flows. See structured_specification.json workflow_modification_rules.step9_referral_attribution_direction.",
+        "DP3_partner_cert": "Enablement refresh (expansion play) explicitly includes certification renewal or update for partner team and internal sales/CS/support."
+      }
+    },
+    "step_10": {
+      "step_name": "Periodic Review: Renew / Re-tier / Exit (and Program Feedback)",
+      "purpose": "Make intentional lifecycle decisions for each partner and feed learnings back into the partner operating system.",
+      "inputs": [
+        "Performance and health data (Steps 8/9)",
+        "Contractual terms and obligations (Step 4)",
+        "Tier/entitlement criteria (Step 0)",
+        "Any open risks/incidents"
+      ],
+      "owns": [
+        "QBR/annual review outcomes: invest / maintain / remediate / sunset",
+        "Re-tiering decisions and entitlement adjustments (per Step 0 criteria)",
+        "Renewal, amendment, termination decisions (and who needs to approve)",
+        "Exit planning: deprecation timeline, migrations, comms, and data retention obligations",
+        "Identification of systemic issues and improvement opportunities (process, tooling, standards)"
+      ],
+      "tie_breaker_escalation": [
+        {
+          "authority": "Support/Operations",
+          "scope": "Final decision authority on unsustainable operational risk and required remediation before renewal"
+        },
+        {
+          "authority": "Security/Compliance",
+          "scope": "Unacceptable risk posture"
+        },
+        {
+          "authority": "Finance/RevOps",
+          "scope": "Economics viability"
+        },
+        {
+          "authority": "Legal",
+          "scope": "Contractual constraints"
+        },
+        {
+          "authority": "Partnerships leadership/SteerCo (Step 0 decision forum)",
+          "scope": "Escalation target if stakeholders disagree on renew/re-tier/exit outcomes — final decision within the decision SLA"
+        }
+      ],
+      "outputs": [
+        "Decision record per partner: renew / re-tier / remediate plan / exit (with rationale and owners)",
+        "Updated commercial/legal actions: renewal paperwork, amendments, termination notices (as applicable)",
+        "Exit or remediation plan with milestones and communications plan",
+        "Program improvement recommendations / change requests routed to Step 0 (e.g., tier criteria updates, template updates, SLA/escalation changes, intake/triage refinements, tooling/data definition changes)"
+      ],
+      "explicitly_does_not_do": [
+        "Implement operating system changes directly (those are owned and versioned in Step 0)",
+        "Re-scope major integration work ad hoc; material changes route back to Step 3"
+      ],
+      "handoff": null,
+      "handoff_note": "Step 10 is the lifecycle review step. Its outputs route to Step 0 (program improvements), Step 3 (re-scope if needed), or result in renewal/exit decisions. There is no single 'next step' — the outcome determines the routing.",
+      "failure_exception_paths": [
+        {
+          "condition": "Renewal or amendment negotiations stall beyond the agreed timebox",
+          "response": "Escalate per governance, proceed with a default decision path (renew/exit) as per policy, and begin contingency planning for exit."
+        },
+        {
+          "condition": "Exit decision creates material customer or operational risk",
+          "response": "Implement a timeboxed remediation or migration plan before termination; coordinate customer communications and obligations before executing exit."
+        },
+        {
+          "condition": "Partner contests review outcomes (re-tier, reduced entitlements, exit)",
+          "response": "Document the rationale, offer a remediation path with measurable criteria and deadlines, and re-evaluate only upon completion."
+        }
+      ],
+      "loop_back_triggers": [
+        {
+          "target": "Step 3 (then Steps 4-7 as needed)",
+          "trigger": "Remediation requires product/integration changes — return to Step 3 (re-triage/scoping)"
+        },
+        {
+          "target": "Step 0",
+          "trigger": "Recurring operational failures are identified — send improvement backlog to Step 0 for versioned updates"
+        }
+      ],
+      "configuration_notes": {
+        "DP2_financial_motion": "Finance/RevOps has final decision authority on economics viability at renewal/re-tier/exit review when financial motions are selected.",
+        "DP2_no_financial_motion": "Finance/RevOps authority at Step 10 is limited to general commercial constraints — no payout economics to adjudicate."
+      }
+    }
+  }
+}
