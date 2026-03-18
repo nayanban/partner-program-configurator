@@ -63,6 +63,14 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         </div>
 
         <div className="flex items-center gap-2">
+          <a
+            href="https://www.linkedin.com/in/banerjee-nayan/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-slate-600 hover:text-slate-400 transition-colors hidden sm:inline"
+          >
+            Built by Nayan Banerjee
+          </a>
           <button
             onClick={handleCopyLink}
             className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-all"
