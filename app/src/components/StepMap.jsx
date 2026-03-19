@@ -17,6 +17,15 @@ const STEP_NAMES = {
 const ROW1 = ['step_0', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5']
 const ROW2 = ['step_6', 'step_7', 'step_8', 'step_9', 'step_10']
 
+function cleanOwnerText(owner) {
+  if (!owner) return ''
+  let text = owner.split('/')[0].trim()
+  if (text.includes('(') && !text.includes(')')) {
+    text = text.substring(0, text.indexOf('(')).trim()
+  }
+  return text
+}
+
 export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
   function renderRow(steps) {
     return steps.map((stepKey, idx) => {
@@ -116,7 +125,7 @@ function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onS
       <div className={`text-xs mt-1 leading-snug ${
         !active ? 'text-slate-600' : 'text-slate-400'
       }`}>
-        {active ? (stepData.primary_owner?.split('/')[0]?.trim() || '') : ''}
+        {active ? cleanOwnerText(stepData.primary_owner) : ''}
       </div>
 
       {!active && (
