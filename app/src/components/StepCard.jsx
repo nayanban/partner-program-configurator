@@ -126,7 +126,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
 
       <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} />
 
-      <AccordionSection title="Additional Detail">
+      <AccordionSection title="Additional Detail: Handoff, Decision Rights, Exceptions, Loop-backs">
         <div className="space-y-4">
           {stepContent?.handoff && (
             <Section title="Handoff">
