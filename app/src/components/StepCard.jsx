@@ -95,9 +95,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
             </Section>
           )}
 
-          {/* Explicitly Does Not Do */}
+          {/* Out of Scope */}
           {stepContent?.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
-            <Section title="Explicitly Does Not Do">
+            <Section title="Out of Scope">
               <ul className="space-y-1 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
                 {stepContent.explicitly_does_not_do.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
