@@ -163,9 +163,17 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             <div className="px-6 pt-6 pb-8">
               <p className="text-sm text-slate-400 leading-relaxed mb-4">{flowAnnotation}</p>
 
-              <p className="text-sm text-slate-400 mb-5">
-                Select a step to view its details, configuration impact, and relevant tools.
-              </p>
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-sm text-slate-400">
+                  Select a step to view its details, configuration impact, and relevant tools.
+                </p>
+                <button
+                  onClick={() => setShowDataModel(true)}
+                  className="text-sm text-slate-400 hover:text-slate-200 transition-colors flex-shrink-0 ml-4"
+                >
+                  View data schema →
+                </button>
+              </div>
 
               <StepMap
                 config={config}
@@ -173,15 +181,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 onStepClick={handleStepClick}
                 activeStepKey={selectedStepKey}
               />
-
-              <div className="mt-8 pt-6 border-t border-slate-800">
-                <button
-                  onClick={() => setShowDataModel(true)}
-                  className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
-                >
-                  View the underlying data schema →
-                </button>
-              </div>
             </div>
           )}
         </div>
