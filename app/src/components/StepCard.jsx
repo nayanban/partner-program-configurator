@@ -72,7 +72,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
           <ul className="space-y-1">
             {(Array.isArray(stepContent.inputs) ? stepContent.inputs : [stepContent.inputs]).map((input, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                <span className="text-slate-600 mt-0.5">•</span>
+                <span className="text-slate-500 mt-0.5">•</span>
                 <span>{input}</span>
               </li>
             ))}
@@ -100,7 +100,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
           <ul className="space-y-1">
             {(Array.isArray(stepContent.outputs) ? stepContent.outputs : [stepContent.outputs]).map((output, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                <span className="text-cyan-600 mt-0.5">→</span>
+                <span className="text-cyan-400 mt-0.5">→</span>
                 <span>{output}</span>
               </li>
             ))}
@@ -116,8 +116,8 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
         <Section title="Out of Scope">
           <ul className="space-y-1 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
             {stepContent.explicitly_does_not_do.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
-                <span className="text-red-700 mt-0.5 flex-shrink-0">✕</span>
+              <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
+                <span className="text-red-400 mt-0.5 flex-shrink-0">✕</span>
                 <span>{item}</span>
               </li>
             ))}
@@ -270,14 +270,14 @@ function renderOwns(stepKey, owns, config) {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-semibold text-slate-300">{track.track}</span>
                 {track.always_active && (
-                  <span className="text-xs text-slate-600">Always active</span>
+                  <span className="text-xs text-slate-500">Always active</span>
                 )}
               </div>
               {track.items && (
                 <ul className="space-y-1">
                   {track.items.map((item, j) => (
                     <li key={j} className="text-xs text-slate-400 flex items-start gap-1.5">
-                      <span className="text-slate-600 mt-0.5">•</span>
+                      <span className="text-slate-500 mt-0.5">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -309,7 +309,7 @@ function renderOwns(stepKey, owns, config) {
                     return true
                   }).map((item, j) => (
                     <li key={j} className="text-xs text-slate-400 flex items-start gap-1.5">
-                      <span className="text-slate-600 mt-0.5">•</span>
+                      <span className="text-slate-500 mt-0.5">•</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -332,7 +332,7 @@ function renderOwns(stepKey, owns, config) {
       <ul className="space-y-1">
         {owns.map((item, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-            <span className="text-slate-600 mt-0.5">•</span>
+            <span className="text-slate-500 mt-0.5">•</span>
             <span>{typeof item === 'string' ? item : JSON.stringify(item)}</span>
           </li>
         ))}
@@ -367,7 +367,7 @@ function Step9EntryTriggers({ contentData }) {
         <ul className="space-y-1.5">
           {triggers.gates.map((gate, i) => (
             <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-              <span className="text-cyan-600 mt-0.5 text-xs">✓</span>
+              <span className="text-cyan-400 mt-0.5 text-xs">✓</span>
               <span>{gate}</span>
             </li>
           ))}
@@ -437,7 +437,7 @@ function FullDetailLayer({ stepContent, stepData, config }) {
                   <div className="text-xs text-slate-500 flex-1">
                     {item.scope || item.what}
                     {isInactive && item.when_inactive && (
-                      <span className="text-slate-700 ml-1">({item.when_inactive})</span>
+                      <span className="text-slate-500 ml-1">({item.when_inactive})</span>
                     )}
                   </div>
                 </div>
@@ -491,15 +491,15 @@ function InlinePanelTools({ stepKey, config }) {
 
   return (
     <div className="pt-4">
-      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
+      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
       <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
-        <p className="text-xs text-slate-500">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
+        <p className="text-xs text-slate-400">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {tools.map(t => (
           <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
+            <div className="text-xs text-slate-400 leading-relaxed">{t.tools}</div>
           </div>
         ))}
       </div>
@@ -510,7 +510,7 @@ function InlinePanelTools({ stepKey, config }) {
 function Section({ title, children }) {
   return (
     <div className="pt-4">
-      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{title}</h4>
+      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">{title}</h4>
       {children}
     </div>
   )

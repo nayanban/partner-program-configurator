@@ -20,7 +20,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
             <div className="w-6 h-6 bg-cyan-500 rounded-sm flex items-center justify-center text-slate-950 text-xs font-bold">P</div>
             <span className="text-sm font-medium text-slate-400">Partner Program Configurator</span>
           </div>
-          <span className="text-xs text-slate-600 font-mono">{APP_VERSION}</span>
+          <span className="text-xs text-slate-500 font-mono">{APP_VERSION}</span>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
 
       {/* Footer */}
       <div className="border-t border-slate-800/60 px-6 py-4">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-slate-600">
+        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-slate-500">
           <span>11 steps · 11 objects · 4 approval tracks</span>
           <div className="flex items-center gap-4">
             <span>Built by <a href="https://www.linkedin.com/in/banerjee-nayan/" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-cyan-400 transition-colors inline-flex items-center gap-1">

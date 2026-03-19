@@ -86,7 +86,7 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
           </svg>
         </button>
         <div className="mt-4 flex flex-col items-center gap-2">
-          <div className="text-xs text-slate-600 writing-mode-vertical">{activeSteps}/11</div>
+          <div className="text-xs text-slate-500 writing-mode-vertical">{activeSteps}/11</div>
         </div>
       </div>
     )
@@ -226,7 +226,7 @@ function ImpactStat({ label, value, total }) {
   return (
     <div className="text-center">
       <div className="text-lg font-bold text-cyan-400">{value}</div>
-      <div className="text-xs text-slate-600">of {total}</div>
+      <div className="text-xs text-slate-500">of {total}</div>
       <div className="text-xs text-slate-500 mt-0.5">{label}</div>
     </div>
   )
@@ -237,7 +237,7 @@ function ConfigField({ label, hint, children }) {
     <div>
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-xs font-medium text-slate-400">{label}</span>
-        <span className="text-xs text-slate-600 font-mono">{hint}</span>
+        <span className="text-xs text-slate-500 font-mono">{hint}</span>
       </div>
       {children}
     </div>
@@ -248,7 +248,7 @@ function TrackLine({ label, active }) {
   return (
     <div className="flex items-center gap-2 py-0.5">
       <div className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-cyan-400' : 'bg-slate-700'}`}></div>
-      <span className={`text-xs ${active ? 'text-slate-300' : 'text-slate-600'}`}>{label}</span>
+      <span className={`text-xs ${active ? 'text-slate-300' : 'text-slate-500'}`}>{label}</span>
     </div>
   )
 }

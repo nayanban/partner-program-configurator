@@ -62,7 +62,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             </svg>
             Home
           </button>
-          <span className="text-slate-700">/</span>
+          <span className="text-slate-500">/</span>
           <span className="text-sm font-medium text-slate-300">
             {activeArchetype ? activeArchetype.name : 'Custom Configuration'}
           </span>
@@ -73,7 +73,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             href="https://www.linkedin.com/in/banerjee-nayan/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-slate-600 hover:text-slate-400 transition-colors hidden sm:inline"
+            className="text-xs text-slate-400 hover:text-slate-200 transition-colors hidden sm:inline"
           >
             Built by Nayan Banerjee
           </a>
@@ -107,7 +107,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             <div className="px-6 pt-6 pb-8">
               <button
                 onClick={() => setShowDataModel(false)}
-                className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-5"
+                className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-5"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -156,7 +156,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               <div className="mt-8 pt-6 border-t border-slate-800">
                 <button
                   onClick={() => setShowDataModel(true)}
-                  className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                  className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
                 >
                   View the underlying data schema →
                 </button>

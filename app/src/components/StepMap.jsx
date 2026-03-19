@@ -54,7 +54,7 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
       {/* Row wrap connector */}
       <div className="ml-1 my-1">
         <svg
-          className="text-slate-800"
+          className="text-slate-700"
           width="18" height="18"
           viewBox="0 0 18 18"
           fill="none"
@@ -102,25 +102,25 @@ function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onS
       }`}
     >
       <div className={`text-xs font-bold mb-1 ${
-        !active ? 'text-slate-700' : isSelected ? 'text-cyan-400' : 'text-slate-500'
+        !active ? 'text-slate-500' : isSelected ? 'text-cyan-400' : 'text-slate-500'
       }`}>
         Step {stepNum}
       </div>
 
       <div className={`text-sm font-semibold leading-snug ${
-        !active ? 'text-slate-700' : isSelected ? 'text-cyan-200' : 'text-slate-200'
+        !active ? 'text-slate-500' : isSelected ? 'text-cyan-200' : 'text-slate-200'
       }`}>
         {STEP_NAMES[stepKey]}
       </div>
 
       <div className={`text-xs mt-1 leading-snug ${
-        !active ? 'text-slate-800' : 'text-slate-500'
+        !active ? 'text-slate-600' : 'text-slate-400'
       }`}>
         {active ? (stepData.primary_owner?.split('/')[0]?.trim() || '') : ''}
       </div>
 
       {!active && (
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-slate-600 text-[9px] px-1.5 py-0.5 rounded-full whitespace-nowrap">
+        <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-slate-500 text-[9px] px-1.5 py-0.5 rounded-full whitespace-nowrap">
           Skipped
         </div>
       )}
@@ -137,7 +137,7 @@ function HorizontalConnector({ fromActive, toActive }) {
   return (
     <div className={`flex items-center flex-shrink-0 ${!active ? 'opacity-20' : ''}`}>
       <div className={`h-px w-3 ${active ? 'bg-slate-600' : 'bg-slate-800'}`} />
-      <svg className={`w-2 h-2 flex-shrink-0 ${active ? 'text-slate-500' : 'text-slate-800'}`} viewBox="0 0 6 6" fill="currentColor">
+      <svg className={`w-2 h-2 flex-shrink-0 ${active ? 'text-slate-500' : 'text-slate-600'}`} viewBox="0 0 6 6" fill="currentColor">
         <path d="M0 0l6 3-6 3z" />
       </svg>
     </div>

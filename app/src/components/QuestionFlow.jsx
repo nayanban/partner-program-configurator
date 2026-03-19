@@ -367,7 +367,7 @@ export default function QuestionFlow({ initialConfig, onComplete, onBack }) {
             className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
               canProceed()
                 ? 'bg-cyan-500 text-slate-950 hover:bg-cyan-400'
-                : 'bg-slate-800 text-slate-600 cursor-not-allowed'
+                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
             }`}
           >
             {step === 3 ? 'Generate your workflow' : 'Continue'}
