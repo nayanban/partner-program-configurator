@@ -14,6 +14,12 @@ const STEP_NAMES = {
   step_10: 'Review & Renewal',
 }
 
+const STEP_NUMBERS = {
+  step_0: 0, step_1: 1, step_2: 2, step_3: 3, step_4: 4, step_5: 5,
+  step_6: 6, step_7: 7, step_8: 8, step_9: 9, step_10: 10,
+}
+
+const ALL_STEPS = ['step_0','step_1','step_2','step_3','step_4','step_5','step_6','step_7','step_8','step_9','step_10']
 const ROW1 = ['step_0', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5']
 const ROW2 = ['step_6', 'step_7', 'step_8', 'step_9', 'step_10']
 
@@ -26,7 +32,43 @@ function cleanOwnerText(owner) {
   return text
 }
 
-export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
+export default function StepMap({ config, spec, onStepClick, activeStepKey, variant = 'horizontal' }) {
+  if (variant === 'vertical') {
+    return (
+      <div className="flex flex-col gap-1">
+        {ALL_STEPS.map(stepKey => {
+          const active = isStepActive(stepKey, config)
+          const isSelected = activeStepKey === stepKey
+          const mods = getActiveWorkflowModifications(stepKey, spec.workflow_steps[stepKey], spec, config)
+          const hasModifications = mods.length > 0
+          return (
+            <button
+              key={stepKey}
+              onClick={() => active && onStepClick(stepKey)}
+              disabled={!active}
+              className={`text-left px-3 py-2 rounded-lg transition-all ${
+                !active
+                  ? 'opacity-30 cursor-default text-slate-500'
+                  : isSelected
+                  ? 'bg-cyan-500/10 border border-cyan-500/50 text-cyan-200'
+                  : 'hover:bg-slate-800 text-slate-300 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500 w-4 flex-shrink-0">{STEP_NUMBERS[stepKey]}</span>
+                <span className="text-sm font-medium leading-snug flex-1 min-w-0">{STEP_NAMES[stepKey]}</span>
+                {active && hasModifications && (
+                  <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0" />
+                )}
+              </div>
+            </button>
+          )
+        })}
+      </div>
+    )
+  }
+
+  // Horizontal variant (default)
   function renderRow(steps) {
     return steps.map((stepKey, idx) => {
       const active = isStepActive(stepKey, config)
