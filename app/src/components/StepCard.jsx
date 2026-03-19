@@ -95,9 +95,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
             </Section>
           )}
 
-          {/* Explicitly Does Not Do */}
+          {/* Out of Scope */}
           {stepContent?.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
-            <Section title="Explicitly Does Not Do">
+            <Section title="Out of Scope">
               <ul className="space-y-1 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
                 {stepContent.explicitly_does_not_do.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-500">
@@ -110,7 +110,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           )}
 
           {/* Completion Criteria */}
-          <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} config={config} />
+          <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} />
 
           {/* Handoff */}
           {stepContent?.handoff && (
@@ -319,7 +319,7 @@ function Step9EntryTriggers({ contentData }) {
   )
 }
 
-function CompletionCriteriaSection({ stepKey, stepData, config }) {
+function CompletionCriteriaSection({ stepKey, stepData }) {
   const cc = stepData.completion_criteria
   if (!cc) return null
 
@@ -339,18 +339,6 @@ function CompletionCriteriaSection({ stepKey, stepData, config }) {
               <p className="text-xs text-slate-300">{cc.done_label_for_step6_start}</p>
             </div>
           )}
-          {cc.done_condition_minimum_to_unblock && (
-            <div>
-              <div className="text-xs font-medium text-slate-500 mb-1.5">Minimum to unblock</div>
-              <CriteriaChecklist criteria={cc.done_condition_minimum_to_unblock} config={config} stepKey={stepKey} />
-            </div>
-          )}
-          {cc.done_condition_go_live && (
-            <div>
-              <div className="text-xs font-medium text-slate-500 mb-1.5">Go-live criteria</div>
-              <CriteriaChecklist criteria={cc.done_condition_go_live} config={config} stepKey={stepKey} />
-            </div>
-          )}
         </div>
       </Section>
     )
@@ -361,73 +349,7 @@ function CompletionCriteriaSection({ stepKey, stepData, config }) {
     return (
       <Section title="Completion Criteria">
         <p className="text-sm text-slate-300 font-medium">{doneLabel}</p>
-        {cc.done_condition && (
-          <div className="mt-2">
-            <CriteriaChecklist criteria={cc.done_condition} config={config} stepKey={stepKey} />
-          </div>
-        )}
       </Section>
-    )
-  }
-
-  return null
-}
-
-function CriteriaChecklist({ criteria, config, stepKey }) {
-  if (!criteria) return null
-
-  // Handle conditional variations (e.g. step 4 when DP4 is yes/no)
-  if (typeof criteria === 'object' && !Array.isArray(criteria) && (criteria.when_DP4_is_yes || criteria.when_DP4_is_no)) {
-    const variant = config.dp4 === 'yes' ? criteria.when_DP4_is_yes : criteria.when_DP4_is_no
-    return <CriteriaChecklist criteria={variant} config={config} stepKey={stepKey} />
-  }
-
-  if (typeof criteria === 'string') {
-    return <p className="text-xs text-slate-400">{criteria}</p>
-  }
-
-  if (Array.isArray(criteria)) {
-    return (
-      <ul className="space-y-1">
-        {criteria.map((item, i) => {
-          const text = typeof item === 'string' ? item : (item.check || JSON.stringify(item))
-          const conditional = item.conditional
-          const applicable = !conditional ||
-            (item.active_when_DP4 === 'yes' && config.dp4 === 'yes') ||
-            (item.active_when_DP4 === 'no' && config.dp4 === 'no') ||
-            !item.active_when_DP4
-
-          if (!applicable) {
-            return (
-              <li key={i} className="flex items-start gap-2 text-xs text-slate-700">
-                <span className="text-slate-800 mt-0.5">☐</span>
-                <span className="line-through">{text}</span>
-                {item.when_inactive && <span className="text-slate-700 not-italic">({item.when_inactive})</span>}
-              </li>
-            )
-          }
-
-          return (
-            <li key={i} className="flex items-start gap-2 text-xs text-slate-400">
-              <span className="text-cyan-700 mt-0.5">☐</span>
-              <span>{text}</span>
-            </li>
-          )
-        })}
-      </ul>
-    )
-  }
-
-  if (typeof criteria === 'object') {
-    return (
-      <ul className="space-y-1">
-        {Object.entries(criteria).map(([k, v]) => (
-          <li key={k} className="text-xs text-slate-400">
-            <span className="text-slate-600 mr-1">•</span>
-            {typeof v === 'string' ? v : `${k}: ${JSON.stringify(v)}`}
-          </li>
-        ))}
-      </ul>
     )
   }
 
@@ -490,8 +412,8 @@ function FullDetailLayer({ stepContent, stepData, config }) {
           <div className="space-y-2">
             {stepContent.loop_back_triggers.map((trigger, i) => (
               <div key={i} className="flex gap-3">
-                <div className="text-xs text-amber-500/70 w-20 flex-shrink-0">
-                  → Step {trigger.target || trigger.target_step || '?'}
+                <div className="text-xs text-amber-500/70 w-24 flex-shrink-0">
+                  → {trigger.target || trigger.source || trigger.target_step || 'Unknown'}
                 </div>
                 <p className="text-xs text-slate-500">{trigger.trigger || trigger.condition}</p>
               </div>
