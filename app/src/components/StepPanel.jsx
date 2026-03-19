@@ -1,6 +1,4 @@
-import { useState } from 'react'
 import StepCard from './StepCard'
-import { TOOL_RECOMMENDATIONS } from '../engine'
 
 const STEP_NAMES = {
   step_0: 'Operating System',
@@ -16,35 +14,16 @@ const STEP_NAMES = {
   step_10: 'Review & Renewal',
 }
 
-const STEP_TOOL_MAP = {
-  step_0: ['CRM / Partner Management'],
-  step_1: ['CRM / Partner Management'],
-  step_2: ['CRM / Partner Management', 'Certification / LMS'],
-  step_3: ['Integration Management'],
-  step_4: ['Security & Compliance Review', 'Contract & Legal', 'Attribution & Revenue Ops'],
-  step_5: ['Integration Management', 'Security & Compliance Review'],
-  step_6: ['Co-marketing & Campaigns'],
-  step_7: ['Security & Compliance Review'],
-  step_8: ['CRM / Partner Management', 'Security & Compliance Review'],
-  step_9: ['Attribution & Revenue Ops', 'Marketplace Management', 'Co-marketing & Campaigns', 'Deal Registration & Co-sell', 'Certification / LMS'],
-  step_10: ['CRM / Partner Management', 'Contract & Legal'],
-}
 
-export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
+export default function StepPanel({ onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
   if (!stepKey || !stepData) return null
 
   const stepNum = parseInt(stepKey.replace('step_', ''))
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-screen z-50 flex flex-col
-                  bg-slate-950 border-l border-slate-700
-                  transition-transform duration-300 ease-in-out
-                  w-[58%] max-w-3xl
-                  ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
-    >
-      {/* Panel header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-slate-800">
+    <div className="mt-4 border border-slate-700 rounded-2xl bg-slate-900/60 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
         {/* Prev navigation */}
         <div className="w-[36%] min-w-0">
           {prevStepKey ? (
@@ -95,8 +74,8 @@ export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentD
         </div>
       </div>
 
-      {/* Scrollable body */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-5 py-5">
+      {/* Content */}
+      <div className="px-5 py-5">
         <StepCard
           key={stepKey}
           stepKey={stepKey}
@@ -107,8 +86,7 @@ export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentD
           alwaysExpanded
           inPanel
         />
-        <PanelStepTools stepKey={stepKey} config={config} />
-        <div className="mt-8 pt-6 border-t border-slate-800 pb-6">
+        <div className="mt-8 pt-6 border-t border-slate-800 pb-2">
           <button
             onClick={onShowDataModel}
             className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
@@ -121,25 +99,3 @@ export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentD
   )
 }
 
-function PanelStepTools({ stepKey, config }) {
-  const mapped = STEP_TOOL_MAP[stepKey] || []
-  const tools = TOOL_RECOMMENDATIONS.filter(t => mapped.includes(t.category) && t.activeWhen(config))
-  if (tools.length === 0) return null
-
-  return (
-    <div className="mt-5 pt-5 border-t border-slate-800">
-      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
-      <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
-        <p className="text-xs text-slate-500">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {tools.map(t => (
-          <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}

@@ -102,7 +102,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         />
 
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin relative">
+        <div className="flex-1 overflow-y-auto scrollbar-thin">
           {showDataModel ? (
             <div className="px-6 pt-6 pb-8">
               <button
@@ -119,9 +119,16 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           ) : (
             <div className="px-6 pt-6 pb-8">
               {/* Flow annotation */}
-              <p className="text-sm text-slate-400 leading-relaxed mb-6">{flowAnnotation}</p>
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">{flowAnnotation}</p>
 
-              {/* Step map — large vertical layout */}
+              {/* Instruction — between annotation and map, shown when no step is selected */}
+              {!selectedStepKey && (
+                <p className="text-sm text-slate-500 mb-5">
+                  Select a step to view its details, configuration impact, and relevant tools.
+                </p>
+              )}
+
+              {/* Step map — compact horizontal rows */}
               <StepMap
                 config={config}
                 spec={spec}
@@ -129,14 +136,20 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 activeStepKey={selectedStepKey}
               />
 
-              {/* Prompt when no step selected */}
-              {!selectedStepKey && (
-                <div className="flex flex-col items-center justify-center py-12 text-center mt-4">
-                  <svg className="w-8 h-8 text-slate-700 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5" />
-                  </svg>
-                  <p className="text-slate-500 text-sm">Select a step to view its details, configuration impact, and relevant tools.</p>
-                </div>
+              {/* Detail panel — appears inline below map when step is selected */}
+              {selectedStepKey && (
+                <StepPanel
+                  onClose={() => setSelectedStepKey(null)}
+                  stepKey={selectedStepKey}
+                  stepData={spec.workflow_steps[selectedStepKey]}
+                  contentData={content}
+                  config={config}
+                  spec={spec}
+                  prevStepKey={prevStepKey}
+                  nextStepKey={nextStepKey}
+                  onNavigate={navigateStep}
+                  onShowDataModel={() => { setShowDataModel(true); setSelectedStepKey(null) }}
+                />
               )}
 
               {/* Data schema link */}
@@ -150,21 +163,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               </div>
             </div>
           )}
-
-          {/* Slide-out panel */}
-          <StepPanel
-            isOpen={!!selectedStepKey && !showDataModel}
-            onClose={() => setSelectedStepKey(null)}
-            stepKey={selectedStepKey}
-            stepData={selectedStepKey ? spec.workflow_steps[selectedStepKey] : null}
-            contentData={content}
-            config={config}
-            spec={spec}
-            prevStepKey={prevStepKey}
-            nextStepKey={nextStepKey}
-            onNavigate={navigateStep}
-            onShowDataModel={() => { setShowDataModel(true); setSelectedStepKey(null) }}
-          />
         </div>
       </div>
     </div>

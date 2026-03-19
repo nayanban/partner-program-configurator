@@ -1,9 +1,55 @@
 import { useState } from 'react'
-import { getActiveWorkflowModifications, computeHasFinancialMotion } from '../engine'
+import { getActiveWorkflowModifications, computeHasFinancialMotion, TOOL_RECOMMENDATIONS } from '../engine'
+
+const CONFIG_NOTE_LABELS = {
+  'DP1_no_integration': 'No technical integration',
+  'DP1_has_integration': 'Technical integration active',
+  'DP1_direction': 'Integration direction',
+  'DP2': 'Commercial motions',
+  'DP2_motions': 'Commercial motions',
+  'DP2_financial_motion': 'Financial motion active',
+  'DP2_no_financial_motion': 'No financial motion',
+  'DP2_co_sell_direction': 'Co-sell direction',
+  'DP2_co_marketing': 'Co-marketing',
+  'DP2_marketplace': 'Marketplace motion',
+  'DP2_referral_direction': 'Referral direction',
+  'DP3_neither': 'No certification',
+  'DP3_partner_cert': 'Partner certification',
+  'DP3_integration_cert': 'Certification requirement',
+  'DP4_yes': 'Regulated industries',
+  'DP4_no': 'No regulatory requirement',
+}
+
+function getConfigNoteLabel(key) {
+  return CONFIG_NOTE_LABELS[key] || key.replace(/_/g, ' ')
+}
+
+function isDevReference(text) {
+  if (typeof text !== 'string') return false
+  return (
+    text.includes('structured_specification') ||
+    text.includes('structured_spec') ||
+    text.includes('workflow_modification_rules')
+  )
+}
+
+const STEP_TOOL_MAP = {
+  step_0: ['CRM / Partner Management'],
+  step_1: ['CRM / Partner Management'],
+  step_2: ['CRM / Partner Management', 'Certification / LMS'],
+  step_3: ['Integration Management'],
+  step_4: ['Security & Compliance Review', 'Contract & Legal', 'Attribution & Revenue Ops'],
+  step_5: ['Integration Management', 'Security & Compliance Review'],
+  step_6: ['Co-marketing & Campaigns'],
+  step_7: ['Security & Compliance Review'],
+  step_8: ['CRM / Partner Management', 'Security & Compliance Review'],
+  step_9: ['Attribution & Revenue Ops', 'Marketplace Management', 'Co-marketing & Campaigns', 'Deal Registration & Co-sell', 'Certification / LMS'],
+  step_10: ['CRM / Partner Management', 'Contract & Legal'],
+}
 
 export default function StepCard({ stepKey, stepData, contentData, config, spec, alwaysExpanded, inPanel }) {
   const [expanded, setExpanded] = useState(false)
-  const [showFullDetail, setShowFullDetail] = useState(false)
+  const [showAdditional, setShowAdditional] = useState(false)
 
   const isExpanded = alwaysExpanded || expanded
   const stepNum = parseInt(stepKey.replace('step_', ''))
@@ -62,6 +108,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
         </Section>
       )}
 
+      {/* Relevant Tools — shown in panel after Outputs */}
+      {inPanel && <InlinePanelTools stepKey={stepKey} config={config} />}
+
       {/* Out of Scope */}
       {stepContent?.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
         <Section title="Out of Scope">
@@ -79,77 +128,84 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
       {/* Completion Criteria */}
       <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} />
 
-      {/* Handoff */}
-      {stepContent?.handoff && (
-        <Section title="Handoff">
-          <p className="text-sm text-slate-400">{stepContent.handoff}</p>
-        </Section>
-      )}
+      {/* Additional Detail — expandable section for secondary content */}
+      <div className="border-t border-slate-800 pt-1">
+        <button
+          onClick={() => setShowAdditional(a => !a)}
+          className="w-full flex items-center justify-between py-3 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
+        >
+          <span>Additional Detail</span>
+          <svg
+            className={`w-4 h-4 transition-transform ${showAdditional ? 'rotate-180' : ''}`}
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-      {/* Layer 2 — Configuration Impact */}
-      {(mods.length > 0 || stepContent?.configuration_notes) && (
-        <Section title="How your configuration affects this step">
-          <div className="space-y-2">
-            {mods.map((mod, i) => (
-              <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
-                <p className="text-xs text-slate-300">{mod.text}</p>
-              </div>
-            ))}
-            {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
-              <div className="space-y-2">
-                {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
-                  if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
-                  if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
-                  if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
-                  if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
-                  if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
-                  if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
-                  if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
-                  if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
-                  if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
-                  if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
-                  if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
-                  if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
-                  if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
-                  if (key.includes('DP4_no') && config.dp4 !== 'no') return null
-                  return (
-                    <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                      <div className="text-xs font-medium text-slate-400 mb-1">{key.replace(/_/g, ' ')}</div>
-                      <p className="text-xs text-slate-400">{text}</p>
-                    </div>
-                  )
-                })}
-              </div>
+        {showAdditional && (
+          <div className="space-y-5 pb-2">
+            {/* Handoff */}
+            {stepContent?.handoff && (
+              <Section title="Handoff">
+                <p className="text-sm text-slate-400">{stepContent.handoff}</p>
+              </Section>
             )}
-            {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
-              <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
-                <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
-              </div>
+
+            {/* Configuration Impact */}
+            {(mods.length > 0 || stepContent?.configuration_notes) && (
+              <Section title="How your configuration affects this step">
+                <div className="space-y-2">
+                  {mods.map((mod, i) => (
+                    <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                      <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
+                      <p className="text-xs text-slate-300">{mod.text}</p>
+                    </div>
+                  ))}
+                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
+                    <div className="space-y-2">
+                      {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
+                        if (isDevReference(text)) return null
+                        if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
+                        if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
+                        if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
+                        if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
+                        if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
+                        if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
+                        if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
+                        if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
+                        if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
+                        if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
+                        if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
+                        if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
+                        if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
+                        if (key.includes('DP4_no') && config.dp4 !== 'no') return null
+                        return (
+                          <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                            <div className="text-xs font-medium text-slate-400 mb-1">{getConfigNoteLabel(key)}</div>
+                            <p className="text-xs text-slate-400">{text}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
+                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                      <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
+                      <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
+                    </div>
+                  )}
+                </div>
+              </Section>
+            )}
+
+            {/* Decision Rights, Exception Handling, Loop-back Triggers */}
+            {stepContent && (
+              <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
             )}
           </div>
-        </Section>
-      )}
-
-      {/* Layer 3 toggle */}
-      <button
-        onClick={() => setShowFullDetail(d => !d)}
-        className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
-      >
-        <svg
-          className={`w-3.5 h-3.5 transition-transform ${showFullDetail ? 'rotate-90' : ''}`}
-          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-        {showFullDetail ? 'Hide full detail' : 'Show full detail'}
-      </button>
-
-      {/* Layer 3 — Full detail */}
-      {showFullDetail && stepContent && (
-        <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
-      )}
+        )}
+      </div>
     </div>
   )
 
@@ -424,6 +480,29 @@ function FullDetailLayer({ stepContent, stepData, config }) {
           </div>
         </Section>
       )}
+    </div>
+  )
+}
+
+function InlinePanelTools({ stepKey, config }) {
+  const mapped = STEP_TOOL_MAP[stepKey] || []
+  const tools = TOOL_RECOMMENDATIONS.filter(t => mapped.includes(t.category) && t.activeWhen(config))
+  if (tools.length === 0) return null
+
+  return (
+    <div className="pt-4">
+      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
+      <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
+        <p className="text-xs text-slate-500">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {tools.map(t => (
+          <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
+            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
