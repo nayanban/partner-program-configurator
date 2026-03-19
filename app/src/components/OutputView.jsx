@@ -121,9 +121,9 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               {/* Flow annotation */}
               <p className="text-sm text-slate-400 leading-relaxed mb-4">{flowAnnotation}</p>
 
-              {/* Prompt when no step selected — between annotation and map */}
+              {/* Instruction — between annotation and map, shown when no step is selected */}
               {!selectedStepKey && (
-                <p className="text-xs text-slate-600 mb-4">
+                <p className="text-sm text-slate-500 mb-5">
                   Select a step to view its details, configuration impact, and relevant tools.
                 </p>
               )}
