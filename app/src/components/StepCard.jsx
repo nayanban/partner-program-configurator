@@ -1,6 +1,38 @@
 import { useState } from 'react'
 import { getActiveWorkflowModifications, computeHasFinancialMotion, TOOL_RECOMMENDATIONS } from '../engine'
 
+const CONFIG_NOTE_LABELS = {
+  'DP1_no_integration': 'No technical integration',
+  'DP1_has_integration': 'Technical integration active',
+  'DP1_direction': 'Integration direction',
+  'DP2': 'Commercial motions',
+  'DP2_motions': 'Commercial motions',
+  'DP2_financial_motion': 'Financial motion active',
+  'DP2_no_financial_motion': 'No financial motion',
+  'DP2_co_sell_direction': 'Co-sell direction',
+  'DP2_co_marketing': 'Co-marketing',
+  'DP2_marketplace': 'Marketplace motion',
+  'DP2_referral_direction': 'Referral direction',
+  'DP3_neither': 'No certification',
+  'DP3_partner_cert': 'Partner certification',
+  'DP3_integration_cert': 'Certification requirement',
+  'DP4_yes': 'Regulated industries',
+  'DP4_no': 'No regulatory requirement',
+}
+
+function getConfigNoteLabel(key) {
+  return CONFIG_NOTE_LABELS[key] || key.replace(/_/g, ' ')
+}
+
+function isDevReference(text) {
+  if (typeof text !== 'string') return false
+  return (
+    text.includes('structured_specification') ||
+    text.includes('structured_spec') ||
+    text.includes('workflow_modification_rules')
+  )
+}
+
 const STEP_TOOL_MAP = {
   step_0: ['CRM / Partner Management'],
   step_1: ['CRM / Partner Management'],
@@ -133,6 +165,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
                   {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
                     <div className="space-y-2">
                       {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
+                        if (isDevReference(text)) return null
                         if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
                         if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
                         if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
@@ -149,7 +182,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
                         if (key.includes('DP4_no') && config.dp4 !== 'no') return null
                         return (
                           <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                            <div className="text-xs font-medium text-slate-400 mb-1">{key.replace(/_/g, ' ')}</div>
+                            <div className="text-xs font-medium text-slate-400 mb-1">{getConfigNoteLabel(key)}</div>
                             <p className="text-xs text-slate-400">{text}</p>
                           </div>
                         )
