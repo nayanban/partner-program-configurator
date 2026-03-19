@@ -1,5 +1,19 @@
 import { useState } from 'react'
-import { getActiveWorkflowModifications, computeHasFinancialMotion } from '../engine'
+import { getActiveWorkflowModifications, computeHasFinancialMotion, TOOL_RECOMMENDATIONS } from '../engine'
+
+const STEP_TOOL_MAP = {
+  step_0: ['CRM / Partner Management'],
+  step_1: ['CRM / Partner Management'],
+  step_2: ['CRM / Partner Management', 'Certification / LMS'],
+  step_3: ['Integration Management'],
+  step_4: ['Security & Compliance Review', 'Contract & Legal', 'Attribution & Revenue Ops'],
+  step_5: ['Integration Management', 'Security & Compliance Review'],
+  step_6: ['Co-marketing & Campaigns'],
+  step_7: ['Security & Compliance Review'],
+  step_8: ['CRM / Partner Management', 'Security & Compliance Review'],
+  step_9: ['Attribution & Revenue Ops', 'Marketplace Management', 'Co-marketing & Campaigns', 'Deal Registration & Co-sell', 'Certification / LMS'],
+  step_10: ['CRM / Partner Management', 'Contract & Legal'],
+}
 
 export default function StepCard({ stepKey, stepData, contentData, config, spec, alwaysExpanded, inPanel }) {
   const [expanded, setExpanded] = useState(false)
@@ -61,6 +75,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
           </ul>
         </Section>
       )}
+
+      {/* Relevant Tools — shown in panel after Outputs */}
+      {inPanel && <InlinePanelTools stepKey={stepKey} config={config} />}
 
       {/* Out of Scope */}
       {stepContent?.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
@@ -424,6 +441,29 @@ function FullDetailLayer({ stepContent, stepData, config }) {
           </div>
         </Section>
       )}
+    </div>
+  )
+}
+
+function InlinePanelTools({ stepKey, config }) {
+  const mapped = STEP_TOOL_MAP[stepKey] || []
+  const tools = TOOL_RECOMMENDATIONS.filter(t => mapped.includes(t.category) && t.activeWhen(config))
+  if (tools.length === 0) return null
+
+  return (
+    <div className="pt-4">
+      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
+      <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
+        <p className="text-xs text-slate-500">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {tools.map(t => (
+          <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
+            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

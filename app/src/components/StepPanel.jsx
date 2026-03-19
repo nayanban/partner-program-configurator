@@ -1,5 +1,4 @@
 import StepCard from './StepCard'
-import { TOOL_RECOMMENDATIONS } from '../engine'
 
 const STEP_NAMES = {
   step_0: 'Operating System',
@@ -15,19 +14,6 @@ const STEP_NAMES = {
   step_10: 'Review & Renewal',
 }
 
-const STEP_TOOL_MAP = {
-  step_0: ['CRM / Partner Management'],
-  step_1: ['CRM / Partner Management'],
-  step_2: ['CRM / Partner Management', 'Certification / LMS'],
-  step_3: ['Integration Management'],
-  step_4: ['Security & Compliance Review', 'Contract & Legal', 'Attribution & Revenue Ops'],
-  step_5: ['Integration Management', 'Security & Compliance Review'],
-  step_6: ['Co-marketing & Campaigns'],
-  step_7: ['Security & Compliance Review'],
-  step_8: ['CRM / Partner Management', 'Security & Compliance Review'],
-  step_9: ['Attribution & Revenue Ops', 'Marketplace Management', 'Co-marketing & Campaigns', 'Deal Registration & Co-sell', 'Certification / LMS'],
-  step_10: ['CRM / Partner Management', 'Contract & Legal'],
-}
 
 export default function StepPanel({ onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
   if (!stepKey || !stepData) return null
@@ -100,7 +86,6 @@ export default function StepPanel({ onClose, stepKey, stepData, contentData, con
           alwaysExpanded
           inPanel
         />
-        <PanelStepTools stepKey={stepKey} config={config} />
         <div className="mt-8 pt-6 border-t border-slate-800 pb-2">
           <button
             onClick={onShowDataModel}
@@ -114,25 +99,3 @@ export default function StepPanel({ onClose, stepKey, stepData, contentData, con
   )
 }
 
-function PanelStepTools({ stepKey, config }) {
-  const mapped = STEP_TOOL_MAP[stepKey] || []
-  const tools = TOOL_RECOMMENDATIONS.filter(t => mapped.includes(t.category) && t.activeWhen(config))
-  if (tools.length === 0) return null
-
-  return (
-    <div className="mt-5 pt-5 border-t border-slate-800">
-      <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
-      <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
-        <p className="text-xs text-slate-500">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {tools.map(t => (
-          <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-            <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
