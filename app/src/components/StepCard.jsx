@@ -17,7 +17,7 @@ const STEP_TOOL_MAP = {
 
 export default function StepCard({ stepKey, stepData, contentData, config, spec, alwaysExpanded, inPanel }) {
   const [expanded, setExpanded] = useState(false)
-  const [showFullDetail, setShowFullDetail] = useState(false)
+  const [showAdditional, setShowAdditional] = useState(false)
 
   const isExpanded = alwaysExpanded || expanded
   const stepNum = parseInt(stepKey.replace('step_', ''))
@@ -96,77 +96,83 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
       {/* Completion Criteria */}
       <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} />
 
-      {/* Handoff */}
-      {stepContent?.handoff && (
-        <Section title="Handoff">
-          <p className="text-sm text-slate-400">{stepContent.handoff}</p>
-        </Section>
-      )}
+      {/* Additional Detail — expandable section for secondary content */}
+      <div className="border-t border-slate-800 pt-1">
+        <button
+          onClick={() => setShowAdditional(a => !a)}
+          className="w-full flex items-center justify-between py-3 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
+        >
+          <span>Additional Detail</span>
+          <svg
+            className={`w-4 h-4 transition-transform ${showAdditional ? 'rotate-180' : ''}`}
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-      {/* Layer 2 — Configuration Impact */}
-      {(mods.length > 0 || stepContent?.configuration_notes) && (
-        <Section title="How your configuration affects this step">
-          <div className="space-y-2">
-            {mods.map((mod, i) => (
-              <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
-                <p className="text-xs text-slate-300">{mod.text}</p>
-              </div>
-            ))}
-            {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
-              <div className="space-y-2">
-                {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
-                  if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
-                  if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
-                  if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
-                  if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
-                  if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
-                  if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
-                  if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
-                  if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
-                  if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
-                  if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
-                  if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
-                  if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
-                  if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
-                  if (key.includes('DP4_no') && config.dp4 !== 'no') return null
-                  return (
-                    <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                      <div className="text-xs font-medium text-slate-400 mb-1">{key.replace(/_/g, ' ')}</div>
-                      <p className="text-xs text-slate-400">{text}</p>
-                    </div>
-                  )
-                })}
-              </div>
+        {showAdditional && (
+          <div className="space-y-5 pb-2">
+            {/* Handoff */}
+            {stepContent?.handoff && (
+              <Section title="Handoff">
+                <p className="text-sm text-slate-400">{stepContent.handoff}</p>
+              </Section>
             )}
-            {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
-              <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
-                <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
-              </div>
+
+            {/* Configuration Impact */}
+            {(mods.length > 0 || stepContent?.configuration_notes) && (
+              <Section title="How your configuration affects this step">
+                <div className="space-y-2">
+                  {mods.map((mod, i) => (
+                    <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                      <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
+                      <p className="text-xs text-slate-300">{mod.text}</p>
+                    </div>
+                  ))}
+                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
+                    <div className="space-y-2">
+                      {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
+                        if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
+                        if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
+                        if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
+                        if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
+                        if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
+                        if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
+                        if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
+                        if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
+                        if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
+                        if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
+                        if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
+                        if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
+                        if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
+                        if (key.includes('DP4_no') && config.dp4 !== 'no') return null
+                        return (
+                          <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                            <div className="text-xs font-medium text-slate-400 mb-1">{key.replace(/_/g, ' ')}</div>
+                            <p className="text-xs text-slate-400">{text}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
+                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                      <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
+                      <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
+                    </div>
+                  )}
+                </div>
+              </Section>
+            )}
+
+            {/* Decision Rights, Exception Handling, Loop-back Triggers */}
+            {stepContent && (
+              <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
             )}
           </div>
-        </Section>
-      )}
-
-      {/* Layer 3 toggle */}
-      <button
-        onClick={() => setShowFullDetail(d => !d)}
-        className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors"
-      >
-        <svg
-          className={`w-3.5 h-3.5 transition-transform ${showFullDetail ? 'rotate-90' : ''}`}
-          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-        </svg>
-        {showFullDetail ? 'Hide full detail' : 'Show full detail'}
-      </button>
-
-      {/* Layer 3 — Full detail */}
-      {showFullDetail && stepContent && (
-        <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
-      )}
+        )}
+      </div>
     </div>
   )
 
