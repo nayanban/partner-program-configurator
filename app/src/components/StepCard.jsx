@@ -49,26 +49,26 @@ const STEP_TOOL_MAP = {
 
 export default function StepCard({ stepKey, stepData, contentData, config, spec, alwaysExpanded, inPanel }) {
   const [expanded, setExpanded] = useState(false)
-  const [showAdditional, setShowAdditional] = useState(false)
 
   const isExpanded = alwaysExpanded || expanded
   const stepNum = parseInt(stepKey.replace('step_', ''))
   const stepContent = contentData?.steps?.[stepKey]
   const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
+  const relevantTools = inPanel
+    ? TOOL_RECOMMENDATIONS.filter(t => (STEP_TOOL_MAP[stepKey] || []).includes(t.category) && t.activeWhen(config))
+    : []
 
   // Shared inner content (used in both inPanel and normal expanded modes)
   const innerContent = (
-    <div className={`space-y-5 ${inPanel ? '' : 'px-5 pb-5 border-t border-slate-800'}`}>
-      {/* Purpose */}
+    <div className={inPanel ? '' : 'px-5 pb-5 border-t border-slate-800'}>
       {stepContent?.purpose && (
-        <Section title="Purpose">
+        <AccordionSection title="Purpose" defaultOpen={true}>
           <p className="text-sm text-slate-300 leading-relaxed">{stepContent.purpose}</p>
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Inputs */}
       {stepContent?.inputs && stepContent.inputs.length > 0 && (
-        <Section title="Inputs">
+        <AccordionSection title="Inputs">
           <ul className="space-y-1">
             {(Array.isArray(stepContent.inputs) ? stepContent.inputs : [stepContent.inputs]).map((input, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
@@ -77,26 +77,23 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
               </li>
             ))}
           </ul>
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Owns / Scope of Work */}
       {stepContent?.owns && (
-        <Section title="Scope of Work">
+        <AccordionSection title="Scope of Work">
           {renderOwns(stepKey, stepContent.owns, config)}
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Step 9 entry triggers */}
       {stepKey === 'step_9' && stepData.progression_gate && (
-        <Section title="Entry Triggers">
+        <AccordionSection title="Entry Triggers">
           <Step9EntryTriggers contentData={contentData} />
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Outputs */}
       {stepContent?.outputs && stepContent.outputs.length > 0 && (
-        <Section title="Outputs">
+        <AccordionSection title="Outputs">
           <ul className="space-y-1">
             {(Array.isArray(stepContent.outputs) ? stepContent.outputs : [stepContent.outputs]).map((output, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
@@ -105,15 +102,17 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
               </li>
             ))}
           </ul>
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Relevant Tools — shown in panel after Outputs */}
-      {inPanel && <InlinePanelTools stepKey={stepKey} config={config} />}
+      {inPanel && relevantTools.length > 0 && (
+        <AccordionSection title="Relevant Tools">
+          <InlinePanelToolsContent tools={relevantTools} />
+        </AccordionSection>
+      )}
 
-      {/* Out of Scope */}
       {stepContent?.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
-        <Section title="Out of Scope">
+        <AccordionSection title="Out of Scope">
           <ul className="space-y-1 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
             {stepContent.explicitly_does_not_do.map((item, i) => (
               <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
@@ -122,90 +121,70 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec,
               </li>
             ))}
           </ul>
-        </Section>
+        </AccordionSection>
       )}
 
-      {/* Completion Criteria */}
       <CompletionCriteriaSection stepKey={stepKey} stepData={stepData} />
 
-      {/* Additional Detail — expandable section for secondary content */}
-      <div className="border-t border-slate-800 pt-1">
-        <button
-          onClick={() => setShowAdditional(a => !a)}
-          className="w-full flex items-center justify-between py-3 text-sm font-medium text-slate-400 hover:text-slate-200 transition-colors"
-        >
-          <span>Additional Detail</span>
-          <svg
-            className={`w-4 h-4 transition-transform ${showAdditional ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+      <AccordionSection title="Additional Detail">
+        <div className="space-y-4">
+          {stepContent?.handoff && (
+            <Section title="Handoff">
+              <p className="text-sm text-slate-400">{stepContent.handoff}</p>
+            </Section>
+          )}
 
-        {showAdditional && (
-          <div className="space-y-5 pb-2">
-            {/* Handoff */}
-            {stepContent?.handoff && (
-              <Section title="Handoff">
-                <p className="text-sm text-slate-400">{stepContent.handoff}</p>
-              </Section>
-            )}
+          {(mods.length > 0 || stepContent?.configuration_notes) && (
+            <Section title="How your configuration affects this step">
+              <div className="space-y-2">
+                {mods.map((mod, i) => (
+                  <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                    <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
+                    <p className="text-xs text-slate-300">{mod.text}</p>
+                  </div>
+                ))}
+                {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
+                  <div className="space-y-2">
+                    {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
+                      if (isDevReference(text)) return null
+                      if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
+                      if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
+                      if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
+                      if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
+                      if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
+                      if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
+                      if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
+                      if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
+                      if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
+                      if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
+                      if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
+                      if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
+                      if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
+                      if (key.includes('DP4_no') && config.dp4 !== 'no') return null
+                      return (
+                        <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                          <div className="text-xs font-medium text-slate-400 mb-1">{getConfigNoteLabel(key)}</div>
+                          <p className="text-xs text-slate-400">{text}</p>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+                {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
+                  <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                    <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
+                    <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
+                  </div>
+                )}
+              </div>
+            </Section>
+          )}
 
-            {/* Configuration Impact */}
-            {(mods.length > 0 || stepContent?.configuration_notes) && (
-              <Section title="How your configuration affects this step">
-                <div className="space-y-2">
-                  {mods.map((mod, i) => (
-                    <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                      <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
-                      <p className="text-xs text-slate-300">{mod.text}</p>
-                    </div>
-                  ))}
-                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'object' && (
-                    <div className="space-y-2">
-                      {Object.entries(stepContent.configuration_notes).map(([key, text]) => {
-                        if (isDevReference(text)) return null
-                        if (key.includes('DP1_no_integration') && config.dp1 !== 'no_integration') return null
-                        if (key.includes('DP1_has_integration') && config.dp1 === 'no_integration') return null
-                        if (key.includes('DP1_direction') && config.dp1 === 'no_integration') return null
-                        if (key.includes('DP2_financial_motion') && !computeHasFinancialMotion(config)) return null
-                        if (key.includes('DP2_no_financial_motion') && computeHasFinancialMotion(config)) return null
-                        if (key.includes('DP2_co_sell_direction') && !config.dp2.motions.includes('co_sell')) return null
-                        if (key.includes('DP2_co_marketing') && !config.dp2.motions.includes('co_marketing')) return null
-                        if (key.includes('DP2_marketplace') && !config.dp2.motions.some(m => m.startsWith('marketplace_'))) return null
-                        if (key.includes('DP2_referral_direction') && !(config.dp2.motions.includes('referral_inbound') && config.dp2.motions.includes('referral_outbound'))) return null
-                        if (key.includes('DP3_partner_cert') && !['partner_cert_only', 'both'].includes(config.dp3)) return null
-                        if (key.includes('DP3_integration_cert') && !['integration_cert_only', 'both'].includes(config.dp3)) return null
-                        if (key.includes('DP3_neither') && config.dp3 !== 'neither') return null
-                        if (key.includes('DP4_yes') && config.dp4 !== 'yes') return null
-                        if (key.includes('DP4_no') && config.dp4 !== 'no') return null
-                        return (
-                          <div key={key} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                            <div className="text-xs font-medium text-slate-400 mb-1">{getConfigNoteLabel(key)}</div>
-                            <p className="text-xs text-slate-400">{text}</p>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                  {stepContent?.configuration_notes && typeof stepContent.configuration_notes === 'string' && (
-                    <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                      <div className="text-xs font-medium text-slate-400 mb-1">Configuration note</div>
-                      <p className="text-xs text-slate-400">{stepContent.configuration_notes}</p>
-                    </div>
-                  )}
-                </div>
-              </Section>
-            )}
-
-            {/* Decision Rights, Exception Handling, Loop-back Triggers */}
-            {stepContent && (
-              <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
-            )}
-          </div>
-        )}
-      </div>
+          {stepContent && (
+            <FullDetailLayer stepContent={stepContent} stepData={stepData} config={config} />
+          )}
+        </div>
+      </AccordionSection>
     </div>
   )
 
@@ -386,7 +365,7 @@ function CompletionCriteriaSection({ stepKey, stepData }) {
 
   if (stepKey === 'step_4') {
     return (
-      <Section title="Completion Criteria">
+      <AccordionSection title="Completion Criteria">
         <div className="space-y-3">
           {cc.done_label_for_step5_start && (
             <div className="bg-slate-800/50 rounded-lg p-3">
@@ -401,16 +380,16 @@ function CompletionCriteriaSection({ stepKey, stepData }) {
             </div>
           )}
         </div>
-      </Section>
+      </AccordionSection>
     )
   }
 
   const doneLabel = cc.done_label
   if (doneLabel) {
     return (
-      <Section title="Completion Criteria">
+      <AccordionSection title="Completion Criteria">
         <p className="text-sm text-slate-300 font-medium">{doneLabel}</p>
-      </Section>
+      </AccordionSection>
     )
   }
 
@@ -484,14 +463,9 @@ function FullDetailLayer({ stepContent, stepData, config }) {
   )
 }
 
-function InlinePanelTools({ stepKey, config }) {
-  const mapped = STEP_TOOL_MAP[stepKey] || []
-  const tools = TOOL_RECOMMENDATIONS.filter(t => mapped.includes(t.category) && t.activeWhen(config))
-  if (tools.length === 0) return null
-
+function InlinePanelToolsContent({ tools }) {
   return (
-    <div className="pt-4">
-      <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Relevant Tools for This Step</h4>
+    <div>
       <div className="bg-slate-800/40 border border-slate-700/50 rounded-lg px-4 py-2 mb-3">
         <p className="text-xs text-slate-400">Representative tools, not recommendations. Your choice depends on existing stack, budget, and scale.</p>
       </div>
@@ -503,6 +477,33 @@ function InlinePanelTools({ stepKey, config }) {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+function AccordionSection({ title, defaultOpen = false, children }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
+  return (
+    <div className="border-t border-slate-800/50">
+      <button
+        onClick={() => setIsOpen(o => !o)}
+        className="w-full flex items-center gap-2 py-3 text-left group"
+      >
+        <svg
+          className={`w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-transform flex-shrink-0 ${isOpen ? 'rotate-90' : ''}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider group-hover:text-slate-200 transition-colors">
+          {title}
+        </span>
+      </button>
+      {isOpen && (
+        <div className="pb-4 pl-5">
+          {children}
+        </div>
+      )}
     </div>
   )
 }
