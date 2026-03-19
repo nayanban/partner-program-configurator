@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { getActiveWorkflowModifications, computeHasFinancialMotion } from '../engine'
 
-export default function StepCard({ stepKey, stepData, contentData, config, spec }) {
+export default function StepCard({ stepKey, stepData, contentData, config, spec, alwaysExpanded }) {
   const [expanded, setExpanded] = useState(false)
   const [showFullDetail, setShowFullDetail] = useState(false)
 
+  const isExpanded = alwaysExpanded || expanded
   const stepNum = parseInt(stepKey.replace('step_', ''))
   const stepContent = contentData?.steps?.[stepKey]
   const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
@@ -12,12 +13,12 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
 
   return (
     <div className={`border rounded-xl transition-all duration-200 ${
-      expanded ? 'border-slate-700 bg-slate-900/80' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
+      isExpanded ? 'border-slate-700 bg-slate-900/80' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
     }`}>
-      {/* Collapsed header */}
-      <button
-        onClick={() => setExpanded(e => !e)}
-        className="w-full flex items-center justify-between px-5 py-4 cursor-pointer text-left"
+      {/* Header — clickable only when not alwaysExpanded */}
+      <div
+        onClick={alwaysExpanded ? undefined : () => setExpanded(e => !e)}
+        className={`w-full flex items-center justify-between px-5 py-4 text-left ${alwaysExpanded ? '' : 'cursor-pointer'}`}
       >
         <div className="flex items-center gap-4">
           <div className="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-400 flex-shrink-0">
@@ -34,17 +35,19 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               {mods.length} {mods.length === 1 ? 'modification' : 'modifications'}
             </span>
           )}
-          <svg
-            className={`w-4 h-4 text-slate-500 transition-transform ${expanded ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
+          {!alwaysExpanded && (
+            <svg
+              className={`w-4 h-4 text-slate-500 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          )}
         </div>
-      </button>
+      </div>
 
       {/* Expanded content */}
-      {expanded && (
+      {isExpanded && (
         <div className="px-5 pb-5 space-y-5 border-t border-slate-800">
           {/* Purpose */}
           {stepContent?.purpose && (

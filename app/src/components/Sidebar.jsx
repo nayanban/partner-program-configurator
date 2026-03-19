@@ -2,7 +2,6 @@ import { useState } from 'react'
 import {
   computeHasFinancialMotion,
   countActiveSteps,
-  countActiveObjects,
   countActiveApprovalTracks,
 } from '../engine'
 
@@ -47,7 +46,6 @@ const CO_MARKETING_OPTIONS = [
 export default function Sidebar({ config, onConfigChange, activeArchetype, spec, collapsed, onToggleCollapse }) {
   const hasFinancial = computeHasFinancialMotion(config)
   const activeSteps = countActiveSteps(spec, config)
-  const activeObjs = countActiveObjects(spec, config)
   const activeTracks = countActiveApprovalTracks(config)
 
   function updateDP1(val) {
@@ -117,9 +115,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
 
       {/* Impact counter */}
       <div className="px-4 py-3 border-b border-slate-800 bg-slate-950/30">
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <ImpactStat label="Steps" value={activeSteps} total={11} />
-          <ImpactStat label="Objects" value={activeObjs} total={11} />
           <ImpactStat label="Tracks" value={activeTracks} total={4} />
         </div>
       </div>

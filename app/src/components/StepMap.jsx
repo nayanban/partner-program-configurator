@@ -74,9 +74,7 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
                   </div>
                 )}
                 {active && hasModifications && (
-                  <div className="absolute -top-1.5 right-1 w-3 h-3 bg-amber-500 rounded-full border border-slate-900 flex items-center justify-center">
-                    <span className="text-[7px] text-slate-900 font-bold">{mods.length}</span>
-                  </div>
+                  <div className="absolute -top-1.5 right-1 w-2.5 h-2.5 bg-amber-500 rounded-full border border-slate-900" />
                 )}
               </button>
 
@@ -99,8 +97,8 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey }) {
         <LegendItem color="border-slate-700 bg-slate-800/60" label="Active step" />
         <LegendItem color="border-slate-800 bg-slate-900/30 opacity-50" label="Skipped step" />
         <div className="flex items-center gap-1.5">
-          <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
-          <span className="text-xs text-slate-500">Has modifications</span>
+          <div className="w-2.5 h-2.5 bg-amber-500 rounded-full"></div>
+          <span className="text-xs text-slate-500">Affected by your configuration</span>
         </div>
       </div>
     </div>
