@@ -8,9 +8,10 @@ import { isStepActive, generateFlowAnnotation, encodeConfig } from '../engine'
 
 export default function OutputView({ config, onConfigChange, onBack, activeArchetype, spec, content }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [activeTab, setActiveTab] = useState('workflow') // 'workflow' | 'datamodel'
+  const [activeTab, setActiveTab] = useState('workflow') // 'workflow' | 'tools'
   const [activeStepKey, setActiveStepKey] = useState(null)
   const [copyStatus, setCopyStatus] = useState(null)
+  const [showDataModel, setShowDataModel] = useState(false)
 
   const flowAnnotation = generateFlowAnnotation(config, spec)
   const stepKeys = Object.keys(spec.workflow_steps)
@@ -28,7 +29,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   function handleStepClick(stepKey) {
     setActiveStepKey(prev => prev === stepKey ? null : stepKey)
     setActiveTab('workflow')
-    // Scroll to step card
     setTimeout(() => {
       const el = document.getElementById(`step-card-${stepKey}`)
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -117,16 +117,13 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             </div>
           </div>
 
-          {/* Tab selector */}
+          {/* Tab selector — Step Details and Tools only */}
           <div className="px-6 pt-5 pb-0">
             <div className="flex gap-1 bg-slate-900 border border-slate-800 rounded-xl p-1 w-fit">
-              <TabButton active={activeTab === 'workflow'} onClick={() => setActiveTab('workflow')}>
+              <TabButton active={activeTab === 'workflow'} onClick={() => { setActiveTab('workflow'); setShowDataModel(false) }}>
                 Step Details
               </TabButton>
-              <TabButton active={activeTab === 'datamodel'} onClick={() => setActiveTab('datamodel')}>
-                Data Model
-              </TabButton>
-              <TabButton active={activeTab === 'tools'} onClick={() => setActiveTab('tools')}>
+              <TabButton active={activeTab === 'tools'} onClick={() => { setActiveTab('tools'); setShowDataModel(false) }}>
                 Tools
               </TabButton>
             </div>
@@ -134,28 +131,59 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
 
           {/* Tab content */}
           <div className="px-6 pt-4 pb-8">
-            {activeTab === 'workflow' && (
-              <div className="space-y-3">
-                {activeSteps.map(stepKey => (
-                  <div key={stepKey} id={`step-card-${stepKey}`}>
-                    <StepCard
-                      stepKey={stepKey}
-                      stepData={spec.workflow_steps[stepKey]}
-                      contentData={content}
-                      config={config}
-                      spec={spec}
-                    />
-                  </div>
-                ))}
+            {showDataModel ? (
+              <div>
+                <button
+                  onClick={() => setShowDataModel(false)}
+                  className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-5"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Back to workflow
+                </button>
+                <DataModelView config={config} spec={spec} />
               </div>
-            )}
+            ) : (
+              <>
+                {activeTab === 'workflow' && (
+                  <div className="space-y-3">
+                    {activeSteps.map(stepKey => (
+                      <div key={stepKey} id={`step-card-${stepKey}`}>
+                        <StepCard
+                          stepKey={stepKey}
+                          stepData={spec.workflow_steps[stepKey]}
+                          contentData={content}
+                          config={config}
+                          spec={spec}
+                        />
+                      </div>
+                    ))}
+                    <div className="mt-8 pt-6 border-t border-slate-800">
+                      <button
+                        onClick={() => setShowDataModel(true)}
+                        className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        View the underlying data schema →
+                      </button>
+                    </div>
+                  </div>
+                )}
 
-            {activeTab === 'datamodel' && (
-              <DataModelView config={config} spec={spec} />
-            )}
-
-            {activeTab === 'tools' && (
-              <ToolRecommendations config={config} />
+                {activeTab === 'tools' && (
+                  <div>
+                    <ToolRecommendations config={config} />
+                    <div className="mt-8 pt-6 border-t border-slate-800">
+                      <button
+                        onClick={() => setShowDataModel(true)}
+                        className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                      >
+                        View the underlying data schema →
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
