@@ -412,8 +412,8 @@ function FullDetailLayer({ stepContent, stepData, config }) {
           <div className="space-y-2">
             {stepContent.loop_back_triggers.map((trigger, i) => (
               <div key={i} className="flex gap-3">
-                <div className="text-xs text-amber-500/70 w-20 flex-shrink-0">
-                  → Step {trigger.target || trigger.target_step || '?'}
+                <div className="text-xs text-amber-500/70 w-24 flex-shrink-0">
+                  → {trigger.target || trigger.source || trigger.target_step || 'Unknown'}
                 </div>
                 <p className="text-xs text-slate-500">{trigger.trigger || trigger.condition}</p>
               </div>
