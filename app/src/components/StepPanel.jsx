@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import StepCard from './StepCard'
 import { TOOL_RECOMMENDATIONS } from '../engine'
 
@@ -30,21 +29,15 @@ const STEP_TOOL_MAP = {
   step_10: ['CRM / Partner Management', 'Contract & Legal'],
 }
 
-export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
+export default function StepPanel({ onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
   if (!stepKey || !stepData) return null
 
   const stepNum = parseInt(stepKey.replace('step_', ''))
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-screen z-50 flex flex-col
-                  bg-slate-950 border-l border-slate-700
-                  transition-transform duration-300 ease-in-out
-                  w-[58%] max-w-3xl
-                  ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
-    >
-      {/* Panel header */}
-      <div className="flex-shrink-0 flex items-center justify-between px-5 py-4 border-b border-slate-800">
+    <div className="mt-4 border border-slate-700 rounded-2xl bg-slate-900/60 overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
         {/* Prev navigation */}
         <div className="w-[36%] min-w-0">
           {prevStepKey ? (
@@ -95,8 +88,8 @@ export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentD
         </div>
       </div>
 
-      {/* Scrollable body */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-5 py-5">
+      {/* Content */}
+      <div className="px-5 py-5">
         <StepCard
           key={stepKey}
           stepKey={stepKey}
@@ -108,7 +101,7 @@ export default function StepPanel({ isOpen, onClose, stepKey, stepData, contentD
           inPanel
         />
         <PanelStepTools stepKey={stepKey} config={config} />
-        <div className="mt-8 pt-6 border-t border-slate-800 pb-6">
+        <div className="mt-8 pt-6 border-t border-slate-800 pb-2">
           <button
             onClick={onShowDataModel}
             className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
