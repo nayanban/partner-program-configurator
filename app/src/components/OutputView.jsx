@@ -15,7 +15,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const stepKeys = Object.keys(spec.workflow_steps)
   const activeSteps = stepKeys.filter(k => isStepActive(k, config))
 
-  // Close panel if selected step becomes inactive due to config change
   useEffect(() => {
     if (selectedStepKey && !isStepActive(selectedStepKey, config)) {
       setSelectedStepKey(null)
@@ -48,6 +47,8 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const prevStepKey = selectedIndex > 0 ? activeSteps[selectedIndex - 1] : null
   const nextStepKey = selectedIndex < activeSteps.length - 1 ? activeSteps[selectedIndex + 1] : null
 
+  const panelOpen = !!selectedStepKey && !showDataModel
+
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {/* Top bar */}
@@ -62,7 +63,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             </svg>
             Home
           </button>
-          <span className="text-slate-700">/</span>
+          <span className="text-slate-500">/</span>
           <span className="text-sm font-medium text-slate-300">
             {activeArchetype ? activeArchetype.name : 'Custom Configuration'}
           </span>
@@ -73,7 +74,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             href="https://www.linkedin.com/in/banerjee-nayan/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-slate-600 hover:text-slate-400 transition-colors hidden sm:inline"
+            className="text-xs text-slate-400 hover:text-slate-200 transition-colors hidden sm:inline"
           >
             Built by Nayan Banerjee
           </a>
@@ -101,13 +102,14 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           onToggleCollapse={() => setSidebarCollapsed(c => !c)}
         />
 
-        {/* Main content */}
-        <div className="flex-1 overflow-y-auto scrollbar-thin">
+        {/* Main content — two modes */}
+        <div className={`flex-1 min-w-0 ${panelOpen ? 'flex flex-col overflow-hidden' : 'overflow-y-auto scrollbar-thin'}`}>
+
           {showDataModel ? (
             <div className="px-6 pt-6 pb-8">
               <button
                 onClick={() => setShowDataModel(false)}
-                className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-300 transition-colors mb-5"
+                className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-5"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -116,51 +118,69 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               </button>
               <DataModelView config={config} spec={spec} />
             </div>
+
+          ) : panelOpen ? (
+            /* === STEP SELECTED: vertical nav + side panel === */
+            <>
+              {/* Flow annotation — fixed at top */}
+              <div className="px-6 pt-5 pb-3 flex-shrink-0">
+                <p className="text-sm text-slate-400 leading-relaxed">{flowAnnotation}</p>
+              </div>
+
+              {/* Vertical nav + detail panel */}
+              <div className="flex flex-1 min-h-0 overflow-hidden">
+                {/* Vertical step nav */}
+                <div className="w-52 flex-shrink-0 overflow-y-auto scrollbar-thin px-3 pb-6 border-r border-slate-800">
+                  <StepMap
+                    config={config}
+                    spec={spec}
+                    onStepClick={handleStepClick}
+                    activeStepKey={selectedStepKey}
+                    variant="vertical"
+                  />
+                </div>
+
+                {/* Detail panel */}
+                <div className="flex-1 min-w-0 overflow-y-auto scrollbar-thin">
+                  <StepPanel
+                    onClose={() => setSelectedStepKey(null)}
+                    stepKey={selectedStepKey}
+                    stepData={spec.workflow_steps[selectedStepKey]}
+                    contentData={content}
+                    config={config}
+                    spec={spec}
+                    prevStepKey={prevStepKey}
+                    nextStepKey={nextStepKey}
+                    onNavigate={navigateStep}
+                    onShowDataModel={() => { setShowDataModel(true); setSelectedStepKey(null) }}
+                  />
+                </div>
+              </div>
+            </>
+
           ) : (
+            /* === DEFAULT: full horizontal map === */
             <div className="px-6 pt-6 pb-8">
-              {/* Flow annotation */}
               <p className="text-sm text-slate-400 leading-relaxed mb-4">{flowAnnotation}</p>
 
-              {/* Instruction — between annotation and map, shown when no step is selected */}
-              {!selectedStepKey && (
-                <p className="text-sm text-slate-500 mb-5">
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-sm text-slate-400">
                   Select a step to view its details, configuration impact, and relevant tools.
                 </p>
-              )}
+                <button
+                  onClick={() => setShowDataModel(true)}
+                  className="text-sm text-slate-400 hover:text-slate-200 transition-colors flex-shrink-0 ml-4"
+                >
+                  View data schema →
+                </button>
+              </div>
 
-              {/* Step map — compact horizontal rows */}
               <StepMap
                 config={config}
                 spec={spec}
                 onStepClick={handleStepClick}
                 activeStepKey={selectedStepKey}
               />
-
-              {/* Detail panel — appears inline below map when step is selected */}
-              {selectedStepKey && (
-                <StepPanel
-                  onClose={() => setSelectedStepKey(null)}
-                  stepKey={selectedStepKey}
-                  stepData={spec.workflow_steps[selectedStepKey]}
-                  contentData={content}
-                  config={config}
-                  spec={spec}
-                  prevStepKey={prevStepKey}
-                  nextStepKey={nextStepKey}
-                  onNavigate={navigateStep}
-                  onShowDataModel={() => { setShowDataModel(true); setSelectedStepKey(null) }}
-                />
-              )}
-
-              {/* Data schema link */}
-              <div className="mt-8 pt-6 border-t border-slate-800">
-                <button
-                  onClick={() => setShowDataModel(true)}
-                  className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
-                >
-                  View the underlying data schema →
-                </button>
-              </div>
             </div>
           )}
         </div>

@@ -17,17 +17,17 @@ export default function ToolRecommendations({ config }) {
         {active.map((t) => (
           <div key={t.category} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
             <div className="text-xs font-semibold text-slate-300 mb-2">{t.category}</div>
-            <div className="text-xs text-slate-500 leading-relaxed">{t.tools}</div>
+            <div className="text-xs text-slate-400 leading-relaxed">{t.tools}</div>
           </div>
         ))}
       </div>
 
       {TOOL_RECOMMENDATIONS.filter(t => !t.activeWhen(config)).length > 0 && (
         <div className="mt-4">
-          <div className="text-xs text-slate-600 mb-2">Not active in this configuration</div>
+          <div className="text-xs text-slate-400 mb-2">Not active in this configuration</div>
           <div className="flex flex-wrap gap-2">
             {TOOL_RECOMMENDATIONS.filter(t => !t.activeWhen(config)).map(t => (
-              <span key={t.category} className="text-xs text-slate-700 bg-slate-900/40 border border-slate-800/40 rounded-lg px-3 py-1.5 line-through">
+              <span key={t.category} className="text-xs text-slate-500 bg-slate-900/40 border border-slate-800/40 rounded-lg px-3 py-1.5 line-through">
                 {t.category}
               </span>
             ))}

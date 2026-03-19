@@ -33,7 +33,7 @@ export default function DataModelView({ config, spec }) {
       {/* Inactive objects */}
       {inactiveObjects.length > 0 && (
         <div className="mt-6">
-          <div className="text-xs font-medium text-slate-600 mb-3 uppercase tracking-wider">
+          <div className="text-xs font-medium text-slate-500 mb-3 uppercase tracking-wider">
             Not active in this configuration
           </div>
           {inactiveObjects.map(([key, obj]) => (
@@ -75,7 +75,7 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
             <div className="text-xs text-slate-500 mt-0.5">
               Created at {obj.created_at_step}
               {!active && obj.activation_condition && (
-                <span className="ml-2 text-slate-600">— inactive: requires {formatCondition(obj.activation_condition)}</span>
+                <span className="ml-2 text-slate-500">— inactive: requires {formatCondition(obj.activation_condition)}</span>
               )}
             </div>
           </div>
@@ -85,7 +85,7 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
             {activeFields.length}/{totalFields} fields
           </span>
           <svg
-            className={`w-3.5 h-3.5 text-slate-600 transition-transform ${expanded ? 'rotate-180' : ''}`}
+            className={`w-3.5 h-3.5 text-slate-500 transition-transform ${expanded ? 'rotate-180' : ''}`}
             fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -101,11 +101,11 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
           <table className="w-full">
             <thead>
               <tr className="text-left">
-                <th className="text-xs text-slate-600 font-medium pb-2 w-2/5">Field</th>
-                <th className="text-xs text-slate-600 font-medium pb-2 w-1/5">Type</th>
-                <th className="text-xs text-slate-600 font-medium pb-2 w-1/12 text-center">Active</th>
-                <th className="text-xs text-slate-600 font-medium pb-2 w-1/12 text-center">Cond.</th>
-                <th className="text-xs text-slate-600 font-medium pb-2">Notes</th>
+                <th className="text-xs text-slate-400 font-medium pb-2 w-2/5">Field</th>
+                <th className="text-xs text-slate-400 font-medium pb-2 w-1/5">Type</th>
+                <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Active</th>
+                <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Cond.</th>
+                <th className="text-xs text-slate-400 font-medium pb-2">Notes</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
@@ -114,16 +114,16 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
                 return (
                   <tr key={i} className={!fieldActive ? 'opacity-35' : ''}>
                     <td className="py-1.5 pr-2 text-xs font-mono text-slate-400">{field.name}</td>
-                    <td className="py-1.5 pr-2 text-xs text-slate-600">{field.type}</td>
+                    <td className="py-1.5 pr-2 text-xs text-slate-400">{field.type}</td>
                     <td className="py-1.5 text-center">
-                      <span className={`text-xs ${fieldActive ? 'text-cyan-500' : 'text-slate-700'}`}>
+                      <span className={`text-xs ${fieldActive ? 'text-cyan-500' : 'text-slate-500'}`}>
                         {fieldActive ? '✓' : '—'}
                       </span>
                     </td>
                     <td className="py-1.5 text-center">
-                      <span className="text-xs text-slate-600">{field.conditional ? 'Y' : 'N'}</span>
+                      <span className="text-xs text-slate-400">{field.conditional ? 'Y' : 'N'}</span>
                     </td>
-                    <td className="py-1.5 text-xs text-slate-600 leading-relaxed">
+                    <td className="py-1.5 text-xs text-slate-400 leading-relaxed">
                       {field.notes?.substring(0, 80)}{field.notes?.length > 80 ? '…' : ''}
                     </td>
                   </tr>
