@@ -1,4 +1,4 @@
-import { isStepActive, getActiveWorkflowModifications } from '../engine'
+import { isStepActive } from '../engine'
 
 const STEP_NAMES = {
   step_0: 'Operating System',
@@ -39,8 +39,6 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
         {ALL_STEPS.map(stepKey => {
           const active = isStepActive(stepKey, config)
           const isSelected = activeStepKey === stepKey
-          const mods = getActiveWorkflowModifications(stepKey, spec.workflow_steps[stepKey], spec, config)
-          const hasModifications = mods.length > 0
           return (
             <button
               key={stepKey}
@@ -57,9 +55,6 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500 w-4 flex-shrink-0">{STEP_NUMBERS[stepKey]}</span>
                 <span className="text-sm font-medium leading-snug flex-1 min-w-0">{STEP_NAMES[stepKey]}</span>
-                {active && hasModifications && (
-                  <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0" />
-                )}
               </div>
             </button>
           )
@@ -73,14 +68,12 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
     return steps.map((stepKey, idx) => {
       const active = isStepActive(stepKey, config)
       const stepData = spec.workflow_steps[stepKey]
-      const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
       return (
         <div key={stepKey} className="flex items-center">
           <StepNode
             stepKey={stepKey}
             active={active}
             isSelected={activeStepKey === stepKey}
-            hasModifications={mods.length > 0}
             stepData={stepData}
             onStepClick={onStepClick}
           />
@@ -128,16 +121,12 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
       <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-800/50">
         <LegendItem color="border-slate-700 bg-slate-800/60" label="Active step" />
         <LegendItem color="border-slate-800 bg-slate-900/30 opacity-50" label="Skipped step" />
-        <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 bg-amber-500 rounded-full" />
-          <span className="text-xs text-slate-500">Affected by your configuration</span>
-        </div>
       </div>
     </div>
   )
 }
 
-function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onStepClick }) {
+function StepNode({ stepKey, active, isSelected, stepData, onStepClick }) {
   const stepNum = parseInt(stepKey.replace('step_', ''))
 
   return (
@@ -176,9 +165,6 @@ function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onS
         </div>
       )}
 
-      {active && hasModifications && (
-        <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-amber-500 rounded-full border-2 border-slate-900" />
-      )}
     </button>
   )
 }
