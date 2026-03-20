@@ -1,4 +1,4 @@
-import { isStepActive, getActiveWorkflowModifications } from '../engine'
+import { isStepActive } from '../engine'
 
 const STEP_NAMES = {
   step_0: 'Operating System',
@@ -20,8 +20,23 @@ const STEP_NUMBERS = {
 }
 
 const ALL_STEPS = ['step_0','step_1','step_2','step_3','step_4','step_5','step_6','step_7','step_8','step_9','step_10']
-const ROW1 = ['step_0', 'step_1', 'step_2', 'step_3', 'step_4', 'step_5']
-const ROW2 = ['step_6', 'step_7', 'step_8', 'step_9', 'step_10']
+
+const RADIUS_X = 320
+const RADIUS_Y = 210
+const CENTER_X = 380
+const CENTER_Y = 250
+const NODE_W = 104
+const NODE_H = 72
+const CONTAINER_W = 760
+const CONTAINER_H = 510
+
+function getStepPos(idx) {
+  const angle = -Math.PI / 2 + (idx * 2 * Math.PI) / ALL_STEPS.length
+  return {
+    cx: CENTER_X + RADIUS_X * Math.cos(angle),
+    cy: CENTER_Y + RADIUS_Y * Math.sin(angle),
+  }
+}
 
 function cleanOwnerText(owner) {
   if (!owner) return ''
@@ -39,8 +54,6 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
         {ALL_STEPS.map(stepKey => {
           const active = isStepActive(stepKey, config)
           const isSelected = activeStepKey === stepKey
-          const mods = getActiveWorkflowModifications(stepKey, spec.workflow_steps[stepKey], spec, config)
-          const hasModifications = mods.length > 0
           return (
             <button
               key={stepKey}
@@ -57,9 +70,6 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500 w-4 flex-shrink-0">{STEP_NUMBERS[stepKey]}</span>
                 <span className="text-sm font-medium leading-snug flex-1 min-w-0">{STEP_NAMES[stepKey]}</span>
-                {active && hasModifications && (
-                  <div className="w-2 h-2 bg-amber-500 rounded-full flex-shrink-0" />
-                )}
               </div>
             </button>
           )
@@ -68,83 +78,88 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
     )
   }
 
-  // Horizontal variant (default)
-  function renderRow(steps) {
-    return steps.map((stepKey, idx) => {
-      const active = isStepActive(stepKey, config)
-      const stepData = spec.workflow_steps[stepKey]
-      const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
-      return (
-        <div key={stepKey} className="flex items-center">
-          <StepNode
-            stepKey={stepKey}
-            active={active}
-            isSelected={activeStepKey === stepKey}
-            hasModifications={mods.length > 0}
-            stepData={stepData}
-            onStepClick={onStepClick}
-          />
-          {idx < steps.length - 1 && (
-            <HorizontalConnector
-              fromActive={active}
-              toActive={isStepActive(steps[idx + 1], config)}
-            />
-          )}
-        </div>
-      )
-    })
-  }
+  // Circular layout
+  const positions = ALL_STEPS.map((_, idx) => getStepPos(idx))
 
   return (
     <div>
-      {/* Row 1: Steps 0–5 */}
-      <div className="flex items-stretch flex-wrap gap-y-2">
-        {renderRow(ROW1)}
-      </div>
-
-      {/* Row wrap connector */}
-      <div className="ml-1 my-1">
+      <div className="relative overflow-hidden" style={{ width: CONTAINER_W, height: CONTAINER_H }}>
+        {/* SVG connector lines */}
         <svg
-          className="text-slate-700"
-          width="18" height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          className="absolute inset-0 pointer-events-none"
+          width={CONTAINER_W}
+          height={CONTAINER_H}
         >
-          <path d="M14 2 L14 12 L4 12" />
-          <path d="M7 9 L4 12 L7 15" />
+          {ALL_STEPS.map((stepKey, idx) => {
+            const nextIdx = (idx + 1) % ALL_STEPS.length
+            const from = positions[idx]
+            const to = positions[nextIdx]
+            const fromActive = isStepActive(stepKey, config)
+            const toActive = isStepActive(ALL_STEPS[nextIdx], config)
+            const lineActive = fromActive && toActive
+            const isLoop = idx === ALL_STEPS.length - 1
+            return (
+              <line
+                key={stepKey}
+                x1={Math.round(from.cx)}
+                y1={Math.round(from.cy)}
+                x2={Math.round(to.cx)}
+                y2={Math.round(to.cy)}
+                stroke={lineActive ? '#475569' : '#1e293b'}
+                strokeWidth={1.5}
+                strokeDasharray={isLoop ? '5 4' : undefined}
+                strokeOpacity={lineActive ? 1 : 0.5}
+              />
+            )
+          })}
         </svg>
-      </div>
 
-      {/* Row 2: Steps 6–10 */}
-      <div className="flex items-stretch flex-wrap gap-y-2">
-        {renderRow(ROW2)}
+        {/* Step nodes */}
+        {ALL_STEPS.map((stepKey, idx) => {
+          const active = isStepActive(stepKey, config)
+          const isSelected = activeStepKey === stepKey
+          const { cx, cy } = positions[idx]
+          const stepData = spec.workflow_steps[stepKey]
+          return (
+            <div
+              key={stepKey}
+              className="absolute"
+              style={{
+                left: Math.round(cx - NODE_W / 2),
+                top: Math.round(cy - NODE_H / 2),
+                width: NODE_W,
+                height: NODE_H,
+              }}
+            >
+              <StepNode
+                stepKey={stepKey}
+                active={active}
+                isSelected={isSelected}
+                stepData={stepData}
+                onStepClick={onStepClick}
+              />
+            </div>
+          )
+        })}
       </div>
 
       {/* Legend */}
-      <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-800/50">
+      <div className="flex items-center gap-4 mt-2 pt-3 border-t border-slate-800/50">
         <LegendItem color="border-slate-700 bg-slate-800/60" label="Active step" />
         <LegendItem color="border-slate-800 bg-slate-900/30 opacity-50" label="Skipped step" />
-        <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 bg-amber-500 rounded-full" />
-          <span className="text-xs text-slate-500">Affected by your configuration</span>
-        </div>
       </div>
     </div>
   )
 }
 
-function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onStepClick }) {
+function StepNode({ stepKey, active, isSelected, stepData, onStepClick }) {
   const stepNum = parseInt(stepKey.replace('step_', ''))
 
   return (
     <button
       onClick={() => active && onStepClick(stepKey)}
       disabled={!active}
-      className={`relative group flex flex-col items-start p-3 rounded-xl border transition-all duration-200 w-32 text-left ${
+      className={`relative flex flex-col items-start p-2 rounded-xl border transition-all duration-200 w-full h-full text-left ${
         !active
           ? 'border-slate-800 bg-slate-900/20 opacity-40 cursor-default'
           : isSelected
@@ -152,22 +167,22 @@ function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onS
           : 'border-slate-700 bg-slate-800/60 hover:border-slate-500 hover:bg-slate-800 cursor-pointer'
       }`}
     >
-      <div className={`text-xs font-bold mb-1 ${
+      <div className={`text-[10px] font-bold mb-0.5 ${
         !active ? 'text-slate-500' : isSelected ? 'text-cyan-400' : 'text-slate-500'
       }`}>
         Step {stepNum}
       </div>
 
-      <div className={`text-sm font-semibold leading-snug ${
+      <div className={`text-xs font-semibold leading-snug ${
         !active ? 'text-slate-500' : isSelected ? 'text-cyan-200' : 'text-slate-200'
       }`}>
         {STEP_NAMES[stepKey]}
       </div>
 
-      <div className={`text-xs mt-1 leading-snug ${
+      <div className={`text-[10px] mt-0.5 leading-snug truncate w-full ${
         !active ? 'text-slate-600' : 'text-slate-400'
       }`}>
-        {active ? cleanOwnerText(stepData.primary_owner) : ''}
+        {active ? cleanOwnerText(stepData?.primary_owner) : ''}
       </div>
 
       {!active && (
@@ -175,23 +190,7 @@ function StepNode({ stepKey, active, isSelected, hasModifications, stepData, onS
           Skipped
         </div>
       )}
-
-      {active && hasModifications && (
-        <div className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-amber-500 rounded-full border-2 border-slate-900" />
-      )}
     </button>
-  )
-}
-
-function HorizontalConnector({ fromActive, toActive }) {
-  const active = fromActive && toActive
-  return (
-    <div className={`flex items-center flex-shrink-0 ${!active ? 'opacity-20' : ''}`}>
-      <div className={`h-px w-3 ${active ? 'bg-slate-600' : 'bg-slate-800'}`} />
-      <svg className={`w-2 h-2 flex-shrink-0 ${active ? 'text-slate-500' : 'text-slate-600'}`} viewBox="0 0 6 6" fill="currentColor">
-        <path d="M0 0l6 3-6 3z" />
-      </svg>
-    </div>
   )
 }
 
