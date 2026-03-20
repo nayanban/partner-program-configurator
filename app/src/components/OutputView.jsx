@@ -152,7 +152,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                     prevStepKey={prevStepKey}
                     nextStepKey={nextStepKey}
                     onNavigate={navigateStep}
-                    onShowDataModel={() => { setShowDataModel(true); setSelectedStepKey(null) }}
                   />
                 </div>
               </div>

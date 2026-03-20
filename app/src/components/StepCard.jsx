@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getActiveWorkflowModifications, computeHasFinancialMotion, TOOL_RECOMMENDATIONS } from '../engine'
+import { getActiveWorkflowModifications, computeHasFinancialMotion, TOOL_RECOMMENDATIONS, isObjectActive } from '../engine'
 
 const CONFIG_NOTE_LABELS = {
   'DP1_no_integration': 'No technical integration',
@@ -317,9 +317,13 @@ function getSectionContent(sectionKey, { stepKey, stepData, stepContent, content
       )
     }
 
-    case '_step_schema':
-      // Implemented in Fix #36
-      return null
+    case '_step_schema': {
+      const objKeys = stepData.objects_produced_or_updated
+      if (!objKeys || objKeys.length === 0) return null
+      const objects = objKeys.map(k => ({ key: k, obj: spec?.objects?.[k] })).filter(({ obj }) => !!obj)
+      if (objects.length === 0) return null
+      return <StepSchemaContent objects={objects} config={config} />
+    }
 
     case '_additional_detail': {
       if (!stepContent) return null
@@ -549,6 +553,101 @@ function InlinePanelToolsContent({ tools }) {
           </div>
         ))}
       </div>
+    </div>
+  )
+}
+
+function isFieldActive(field, config) {
+  if (!field.conditional) return true
+  const rule = field.activation_rule
+  if (!rule) return true
+  const condition = rule.condition || ''
+  if (condition.includes("DP1 != 'no_integration'")) return config.dp1 !== 'no_integration'
+  if (condition.includes("DP3 != 'neither'")) return config.dp3 !== 'neither'
+  if (condition.includes("DP4 == 'yes'")) return config.dp4 === 'yes'
+  if (condition.includes("DP2_motions.includes('co_marketing')")) return config.dp2.motions.includes('co_marketing')
+  if (condition.includes("DP2_motions.includes('co_sell')")) return config.dp2.motions.includes('co_sell')
+  if (condition.includes('financial') || condition.includes('referral_inbound') || condition.includes('reseller')) {
+    return config.dp2.motions.some(m =>
+      ['referral_inbound', 'referral_outbound', 'reseller_partner', 'reseller_entity',
+       'marketplace_entity', 'marketplace_partner', 'marketplace_third_party', 'co_sell'].includes(m)
+    )
+  }
+  return true
+}
+
+function StepSchemaContent({ objects, config }) {
+  const [expandedKey, setExpandedKey] = useState(null)
+  return (
+    <div className="space-y-2">
+      {objects.map(({ key, obj }) => {
+        const active = isObjectActive(obj, config)
+        const fields = obj.fields || []
+        const activeFields = fields.filter(f => isFieldActive(f, config))
+        const expanded = expandedKey === key
+        return (
+          <div
+            key={key}
+            className={`border rounded-xl transition-all ${
+              active
+                ? expanded ? 'border-slate-700 bg-slate-900/80' : 'border-slate-800 bg-slate-900/40 hover:border-slate-700'
+                : 'border-slate-800/40 bg-slate-900/20 opacity-50'
+            }`}
+          >
+            <button
+              onClick={() => setExpandedKey(expanded ? null : key)}
+              className="w-full flex items-center justify-between px-3 py-2.5 text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${active ? 'bg-cyan-400' : 'bg-slate-700'}`} />
+                <span className="text-xs font-medium text-slate-200">{obj.object_name}</span>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <span className="text-xs text-slate-500 font-mono">{activeFields.length}/{fields.length} fields</span>
+                <svg
+                  className={`w-3 h-3 text-slate-500 transition-transform ${expanded ? 'rotate-180' : ''}`}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </button>
+            {expanded && (
+              <div className="px-3 pb-3 border-t border-slate-800">
+                <table className="w-full mt-2">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="text-xs text-slate-400 font-medium pb-1.5 w-2/5">Field</th>
+                      <th className="text-xs text-slate-400 font-medium pb-1.5 w-1/5">Type</th>
+                      <th className="text-xs text-slate-400 font-medium pb-1.5 w-1/12 text-center">Active</th>
+                      <th className="text-xs text-slate-400 font-medium pb-1.5">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/50">
+                    {fields.map((field, i) => {
+                      const fieldActive = isFieldActive(field, config)
+                      return (
+                        <tr key={i} className={!fieldActive ? 'opacity-35' : ''}>
+                          <td className="py-1 pr-2 text-xs font-mono text-slate-400">{field.name}</td>
+                          <td className="py-1 pr-2 text-xs text-slate-400">{field.type}</td>
+                          <td className="py-1 text-center">
+                            <span className={`text-xs ${fieldActive ? 'text-cyan-500' : 'text-slate-500'}`}>
+                              {fieldActive ? '✓' : '—'}
+                            </span>
+                          </td>
+                          <td className="py-1 text-xs text-slate-400 leading-relaxed">
+                            {field.notes?.substring(0, 60)}{field.notes?.length > 60 ? '…' : ''}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )
+      })}
     </div>
   )
 }

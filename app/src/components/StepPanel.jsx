@@ -14,7 +14,7 @@ const STEP_NAMES = {
   step_10: 'Review & Renewal',
 }
 
-export default function StepPanel({ onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate, onShowDataModel }) {
+export default function StepPanel({ onClose, stepKey, stepData, contentData, config, spec, prevStepKey, nextStepKey, onNavigate }) {
   if (!stepKey || !stepData) return null
 
   const stepNum = parseInt(stepKey.replace('step_', ''))
@@ -82,14 +82,6 @@ export default function StepPanel({ onClose, stepKey, stepData, contentData, con
           alwaysExpanded
           inPanel
         />
-        <div className="mt-8 pt-4 border-t border-slate-800">
-          <button
-            onClick={onShowDataModel}
-            className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
-          >
-            View the underlying data schema →
-          </button>
-        </div>
       </div>
     </div>
   )
