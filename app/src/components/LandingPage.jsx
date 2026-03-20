@@ -1,6 +1,6 @@
 import { ARCHETYPES } from '../engine'
 
-const APP_VERSION = 'v1.1.0'
+const APP_VERSION = 'v1.6.0'
 
 const ARCHETYPE_ICONS = {
   api_tech: '⬡',
