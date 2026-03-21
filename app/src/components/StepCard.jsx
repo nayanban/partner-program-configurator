@@ -191,6 +191,36 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
+      {/* Section 2.5: Roles & Responsibilities */}
+      {stepContent.roles_and_responsibilities && (
+        <AccordionSection title="Roles & Responsibilities">
+          <div className="mb-4">
+            <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-lg p-3">
+              <div className="text-xs font-medium text-cyan-400 mb-1">Primary Owner</div>
+              <div className="text-sm font-semibold text-slate-200">
+                {stepContent.roles_and_responsibilities.primary_owner.role}
+              </div>
+              <div className="text-sm text-slate-400 mt-1">
+                {stepContent.roles_and_responsibilities.primary_owner.responsibility}
+              </div>
+            </div>
+          </div>
+          {stepContent.roles_and_responsibilities.contributors && (
+            <div>
+              <div className="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wider">Key Contributors & Approvers</div>
+              <div className="space-y-1.5">
+                {stepContent.roles_and_responsibilities.contributors.map((c, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="text-sm font-medium text-slate-300 w-40 flex-shrink-0">{c.role}</div>
+                    <div className="text-sm text-slate-400">{c.responsibility}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </AccordionSection>
+      )}
+
       {/* Section 3: Scope of Work */}
       {stepContent.owns && (
         <AccordionSection title="Scope of Work">
@@ -405,7 +435,20 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
       {/* Section 11: Handoff */}
       {(stepContent.handoff || stepContent.handoff_note) && (
         <AccordionSection title="Handoff">
-          {stepContent.handoff && <p className="text-sm text-slate-300 leading-relaxed">{stepContent.handoff}</p>}
+          {stepContent.handoff && (
+            <ul className="space-y-1.5">
+              {stepContent.handoff.split(';').map((clause, i) => {
+                const trimmed = clause.trim()
+                if (!trimmed) return null
+                return (
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                    <span className="text-cyan-400 mt-0.5">→</span>
+                    <span>{trimmed}</span>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
           {stepContent.handoff_note && <p className="text-sm text-slate-400 italic mt-2">{stepContent.handoff_note}</p>}
         </AccordionSection>
       )}
@@ -469,6 +512,13 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               <div key={i} className="bg-slate-950/50 border border-slate-800 rounded-lg p-3">
                 <div className="text-sm font-medium text-red-400/80 mb-1">{path.condition}</div>
                 <p className="text-sm text-slate-400">{path.response}</p>
+                {path.likely_owner && (
+                  <div className="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
+                    <span className="text-slate-500">↳</span>
+                    <span className="font-medium">Likely owner:</span>
+                    <span>{path.likely_owner}</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
