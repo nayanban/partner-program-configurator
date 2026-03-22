@@ -841,7 +841,7 @@
         {
           "name": "go_live_criteria_met",
           "type": "boolean",
-          "notes": "Derived: true when security_privacy.final_approval_granted = true AND legal.executed_agreement = true AND (if DP4: compliance_risk.final_approval_granted = true) AND (if DP2 financial motion: commercial_finance.economics_confirmed = true)",
+          "notes": "Derived: true when security_privacy.final_approval_granted = true AND legal.executed_agreement = true AND (if DP4: compliance_risk.final_approval_granted = true) AND (if DP2 commercial motion: commercial_finance.economics_confirmed = true)",
           "conditional": false
         }
       ],
@@ -1219,12 +1219,12 @@
         {
           "name": "payout_mechanics_ready",
           "type": "boolean",
-          "notes": "[DP2 \u2014 financial motion] RevOps/Finance confirmation that attribution/payout mechanics are ready. Hard gate for Step 9 activation. Absent if no financial motion selected.",
+          "notes": "[DP2 \u2014 commercial motion] RevOps/Finance confirmation that attribution/payout mechanics are ready. Hard gate for Step 9 activation. Absent if no commercial motion selected.",
           "conditional": true,
           "activation_rule": {
             "condition": "DP2_motions.some(motion => ['referral_inbound', 'referral_outbound', 'reseller_partner', 'reseller_entity', 'marketplace_entity', 'marketplace_partner', 'marketplace_third_party', 'co_sell'].includes(motion))",
             "when_active": "Field required. Hard gate: step9_readiness cannot reach 'ready' until this = true",
-            "when_inactive": "Field absent \u2014 no financial motion selected; RevOps gate to Step 9 does not apply"
+            "when_inactive": "Field absent \u2014 no commercial motion selected; RevOps gate to Step 9 does not apply"
           }
         },
         {
@@ -2446,8 +2446,6 @@
       },
       "completion_criteria": {
         "step_name": "Approvals & Agreements Gate",
-        "done_label_for_step5_start": "All preliminary approvals obtained \u2014 implementation may begin (Step 5)",
-        "done_label_for_step6_start": "All final approvals obtained \u2014 launch may proceed (Step 6/7)",
         "done_condition_minimum_to_unblock": {
           "description": "Conditions required before Step 5 (implementation) may begin",
           "when_DP4_is_yes": {
@@ -2672,7 +2670,8 @@
           "when_DP2_includes_reseller_partner_or_entity": "legal.agreement_type = reseller_agreement",
           "when_DP2_includes_marketplace_third_party": "Additional marketplace platform agreement required in addition to partner agreement. legal track must confirm both are executed."
         },
-        "done_label_when_no_integration": "All required approvals obtained and conditions met for launch"
+        "done_label_when_no_integration": "All required approvals obtained and conditions met for launch",
+        "done_label": "All required approvals obtained and conditions documented with owners and deadlines"
       },
       "workflow_modifications": {
         "step4_legal_agreement_type": {
@@ -3867,7 +3866,7 @@
         "payout_mechanics_ready": {
           "condition": "DP2_motions.some(motion => ['referral_inbound', 'referral_outbound', 'reseller_partner', 'reseller_entity', 'marketplace_entity', 'marketplace_partner', 'marketplace_third_party', 'co_sell'].includes(motion))",
           "when_active": "Field required. Hard gate: step9_readiness cannot reach 'ready' until this = true",
-          "when_inactive": "Field absent \u2014 no financial motion selected; RevOps gate to Step 9 does not apply"
+          "when_inactive": "Field absent \u2014 no commercial motion selected; RevOps gate to Step 9 does not apply"
         },
         "step9_readiness_formula": {
           "when_financial_motion_selected": "stability_status == 'stable' AND support_burden_level == 'acceptable' AND activation_signals_met == true AND payout_mechanics_ready == true",
