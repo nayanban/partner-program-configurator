@@ -227,9 +227,9 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           </div>
 
         ) : (
-          /* VIEW 3: Step Detail — Fix 1: md breakpoint for portrait phones */
-          <div className="flex flex-1 min-h-0 overflow-hidden">
-            {/* Mobile step selector — visible below md (Fix 2: custom arrow) */}
+          /* VIEW 3: Step Detail */
+          <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
+            {/* Mobile step selector — visible below md, stacks above content */}
             <div className="md:hidden border-b border-slate-800 px-4 py-2 bg-slate-950 flex-shrink-0">
               <select
                 value={selectedStepKey}
@@ -253,6 +253,9 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 ))}
               </select>
             </div>
+
+            {/* Inner row: nav + detail panel side by side */}
+            <div className="flex flex-1 min-h-0 overflow-hidden">
 
             {/* Desktop vertical nav — hidden below md */}
             <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto max-h-[calc(100vh-120px)] px-2 py-3">
@@ -312,6 +315,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 spec={spec}
               />
             </div>
+            </div>{/* end inner row: nav + detail */}
           </div>
         )}
       </div>
