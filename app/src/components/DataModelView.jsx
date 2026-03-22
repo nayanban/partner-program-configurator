@@ -98,39 +98,42 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
           <p className="text-xs text-slate-500 mt-3 mb-2">
             Fields your system of record needs for this object. Conditional fields (Cond. = Y) are active only when specific decision points are set.
           </p>
-          <table className="w-full">
-            <thead>
-              <tr className="text-left">
-                <th className="text-xs text-slate-400 font-medium pb-2 w-2/5">Field</th>
-                <th className="text-xs text-slate-400 font-medium pb-2 w-1/5">Type</th>
-                <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Active</th>
-                <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Cond.</th>
-                <th className="text-xs text-slate-400 font-medium pb-2">Notes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/50">
-              {fields.map((field, i) => {
-                const fieldActive = isFieldActive(field, config)
-                return (
-                  <tr key={i} className={!fieldActive ? 'opacity-35' : ''}>
-                    <td className="py-1.5 pr-2 text-xs font-mono text-slate-400">{field.name}</td>
-                    <td className="py-1.5 pr-2 text-xs text-slate-400">{field.type}</td>
-                    <td className="py-1.5 text-center">
-                      <span className={`text-xs ${fieldActive ? 'text-cyan-500' : 'text-slate-500'}`}>
-                        {fieldActive ? '✓' : '—'}
-                      </span>
-                    </td>
-                    <td className="py-1.5 text-center">
-                      <span className="text-xs text-slate-400">{field.conditional ? 'Y' : 'N'}</span>
-                    </td>
-                    <td className="py-1.5 text-xs text-slate-400 leading-relaxed">
-                      {field.notes?.substring(0, 80)}{field.notes?.length > 80 ? '…' : ''}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <div className="relative overflow-x-auto">
+            <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none z-10" />
+            <table className="w-full min-w-[400px]">
+              <thead>
+                <tr className="text-left">
+                  <th className="text-xs text-slate-400 font-medium pb-2 w-2/5">Field</th>
+                  <th className="text-xs text-slate-400 font-medium pb-2 w-1/5">Type</th>
+                  <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Active</th>
+                  <th className="text-xs text-slate-400 font-medium pb-2 w-1/12 text-center">Cond.</th>
+                  <th className="text-xs text-slate-400 font-medium pb-2">Notes</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/50">
+                {fields.map((field, i) => {
+                  const fieldActive = isFieldActive(field, config)
+                  return (
+                    <tr key={i} className={!fieldActive ? 'opacity-35' : ''}>
+                      <td className="py-1.5 pr-2 text-xs font-mono text-slate-400">{field.name}</td>
+                      <td className="py-1.5 pr-2 text-xs text-slate-400">{field.type}</td>
+                      <td className="py-1.5 text-center">
+                        <span className={`text-xs ${fieldActive ? 'text-cyan-500' : 'text-slate-500'}`}>
+                          {fieldActive ? '✓' : '—'}
+                        </span>
+                      </td>
+                      <td className="py-1.5 text-center">
+                        <span className="text-xs text-slate-400">{field.conditional ? 'Y' : 'N'}</span>
+                      </td>
+                      <td className="py-1.5 text-xs text-slate-400 leading-relaxed">
+                        {field.notes?.substring(0, 80)}{field.notes?.length > 80 ? '…' : ''}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

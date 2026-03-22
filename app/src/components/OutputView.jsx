@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Sidebar from './Sidebar'
 import StepMap from './StepMap'
 import StepCard from './StepCard'
@@ -41,11 +41,21 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const [showFullDataModel, setShowFullDataModel] = useState(false)
   const [copyStatus, setCopyStatus] = useState(null)
 
+  // Fix 3: ref for scroll-to-top when data model opens
+  const mainContentRef = useRef(null)
+
   useEffect(() => {
     if (selectedStepKey && !isStepActive(selectedStepKey, config)) {
       setSelectedStepKey(null)
     }
   }, [config, selectedStepKey])
+
+  // Fix 3: scroll to top when data model is opened
+  useEffect(() => {
+    if (showFullDataModel && mainContentRef.current) {
+      mainContentRef.current.scrollTop = 0
+    }
+  }, [showFullDataModel])
 
   function getAdjacentSteps(stepKey) {
     const activeSteps = Object.keys(spec.workflow_steps).filter(k => isStepActive(k, config))
@@ -180,7 +190,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         {/* Below top bar: three possible views */}
         {showFullDataModel ? (
           /* VIEW 1: Full Data Model */
-          <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-6 pb-8">
+          <div ref={mainContentRef} className="flex-1 overflow-y-auto px-4 sm:px-6 pt-6 pb-8">
             <button
               onClick={() => setShowFullDataModel(false)}
               className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-200 transition-colors mb-5"
@@ -217,16 +227,24 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           </div>
 
         ) : (
-          /* VIEW 3: Step Detail */
+          /* VIEW 3: Step Detail — Fix 1: md breakpoint for portrait phones */
           <div className="flex flex-1 min-h-0 overflow-hidden">
-            {/* Mobile step selector — dropdown */}
-            <div className="sm:hidden border-b border-slate-800 px-4 py-2 bg-slate-950 flex-shrink-0">
+            {/* Mobile step selector — visible below md (Fix 2: custom arrow) */}
+            <div className="md:hidden border-b border-slate-800 px-4 py-2 bg-slate-950 flex-shrink-0">
               <select
                 value={selectedStepKey}
                 onChange={e => {
                   if (isStepActive(e.target.value, config)) setSelectedStepKey(e.target.value)
                 }}
-                className="w-full bg-slate-800 text-slate-200 text-sm rounded-lg px-3 py-2 border border-slate-700 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-800 text-slate-200 text-sm rounded-lg pl-3 pr-8 py-2.5 border border-slate-700 focus:border-cyan-500 focus:outline-none"
+                style={{
+                  appearance: 'none',
+                  WebkitAppearance: 'none',
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1rem',
+                }}
               >
                 {Object.keys(spec.workflow_steps).map(key => (
                   <option key={key} value={key} disabled={!isStepActive(key, config)}>
@@ -236,8 +254,8 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               </select>
             </div>
 
-            {/* Desktop: vertical nav (hidden on mobile) */}
-            <div className="hidden sm:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto max-h-[calc(100vh-120px)] px-2 py-3">
+            {/* Desktop vertical nav — hidden below md */}
+            <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto max-h-[calc(100vh-120px)] px-2 py-3">
               <StepMap
                 variant="vertical"
                 config={config}
@@ -247,19 +265,19 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               />
             </div>
 
-            {/* Detail panel — full width on mobile */}
+            {/* Detail panel — full width below md */}
             <div className="flex-1 overflow-y-auto max-h-[calc(100vh-120px)]">
-              {/* Sticky header */}
+              {/* Sticky header — Fix 1: md breakpoint */}
               {(() => {
                 const stepData = spec.workflow_steps[selectedStepKey]
                 const adj = getAdjacentSteps(selectedStepKey)
                 return (
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
-                    <div className="text-center sm:text-left flex-1">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
+                    <div className="text-center md:text-left flex-1">
                       <div className="text-sm font-semibold text-slate-200">{stepData.step_name}</div>
                       <div className="text-xs text-slate-400">{cleanOwnerText(stepData.primary_owner)}</div>
                     </div>
-                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
                       <button
                         onClick={() => setSelectedStepKey(adj.prev)}
                         disabled={!adj.prev}
