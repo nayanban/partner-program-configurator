@@ -67,7 +67,6 @@ function cleanFieldPaths(text) {
 
 const cleanText = (text) => cleanFieldPaths(cleanDPReferences(text))
 
-// Change 3: capitalize first character of a clause
 function capitalizeFirst(str) {
   if (!str) return str
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -99,6 +98,22 @@ function getApplicableConfigNotes(notes, config) {
   }))
 }
 
+// Change 4: deduplicate config impact cards by first 50 chars of text
+function deduplicateCards(mods, configNotes, trackNotes) {
+  const allCards = [
+    ...mods.map(m => ({ ...m, source: 'mod' })),
+    ...configNotes.map(n => ({ ...n, source: 'note' })),
+    ...trackNotes.map(t => ({ ...t, source: 'track' })),
+  ]
+  const seen = new Set()
+  return allCards.filter(card => {
+    const key = (card.text || '').toLowerCase().substring(0, 50).trim()
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 function isPlayActive(play, config) {
   const aw = (play.active_when || '').toLowerCase()
   if (!aw || aw === 'always') return true
@@ -127,12 +142,12 @@ function isFieldActive(field, config) {
   return true
 }
 
-// Change 1: two-line block layout for Scope of Work items with colons
+// Change 1: two-line block with bullet marker + capitalize detail
 function BulletItem({ item }) {
   if (typeof item !== 'string') {
     return (
-      <li className="flex items-start gap-2 text-sm text-slate-300 mb-2">
-        <span className="text-slate-500 mt-0.5">•</span>
+      <li className="flex items-start gap-2 text-sm text-slate-300 mb-3">
+        <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
         <span>{JSON.stringify(item)}</span>
       </li>
     )
@@ -142,15 +157,22 @@ function BulletItem({ item }) {
     const label = item.slice(0, colonIdx).trim()
     const detail = item.slice(colonIdx + 1).trim()
     return (
-      <li className="mb-3">
-        <div className="text-sm font-semibold text-slate-200">{label}</div>
-        {detail && <div className="text-sm text-slate-400 mt-0.5 pl-0.5">{detail}</div>}
+      <li className="flex items-start gap-2 mb-3">
+        <span className="text-slate-500 mt-1 flex-shrink-0">•</span>
+        <div>
+          <div className="text-sm font-semibold text-slate-200">{label}</div>
+          {detail && (
+            <div className="text-sm text-slate-400 mt-0.5">
+              {detail.replace(/^./, c => c.toUpperCase())}
+            </div>
+          )}
+        </div>
       </li>
     )
   }
   return (
-    <li className="flex items-start gap-2 text-sm text-slate-300 mb-2">
-      <span className="text-slate-500 mt-0.5">•</span>
+    <li className="flex items-start gap-2 text-sm text-slate-300 mb-3">
+      <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
       <span>{item}</span>
     </li>
   )
@@ -332,52 +354,60 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
       {stepContent.owns && (
         <AccordionSection title="Scope of Work">
           {stepKey === 'step_4' && Array.isArray(stepContent.owns) ? (
-            <div className="space-y-3">
-              {stepContent.owns.map((track, i) => {
-                if ((track.track || '').includes('Compliance') && config.dp4 !== 'yes') return null
-                if ((track.track || '').includes('Commercial') && !computeHasFinancialMotion(config) && !config.dp2.motions.includes('co_marketing')) return null
-                return track.track ? (
-                  <div key={i} className="border border-slate-800 rounded-lg p-3">
-                    <div className="text-sm font-semibold text-slate-300 mb-2">{track.track}</div>
-                    {track.items && (
+            <>
+              <div className="space-y-3">
+                {stepContent.owns.map((track, i) => {
+                  if ((track.track || '').includes('Compliance') && config.dp4 !== 'yes') return null
+                  if ((track.track || '').includes('Commercial') && !computeHasFinancialMotion(config) && !config.dp2.motions.includes('co_marketing')) return null
+                  return track.track ? (
+                    <div key={i} className="border border-slate-800 rounded-lg p-3">
+                      <div className="text-sm font-semibold text-slate-300 mb-2">{track.track}</div>
+                      {track.items && (
+                        <ul className="space-y-0">
+                          {track.items.map((item, j) => (
+                            <BulletItem key={j} item={item} />
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  ) : null
+                })}
+              </div>
+              {/* Change 3b: reference line if any track has configuration_note */}
+              {stepContent.owns.some(t => typeof t === 'object' && t.configuration_note) && (
+                <p className="text-xs text-slate-500 mt-4 italic">
+                  Some elements of this scope may vary based on your configuration. See "How your configuration affects this step" below.
+                </p>
+              )}
+            </>
+          ) : stepKey === 'step_9' && Array.isArray(stepContent.owns) ? (
+            <>
+              <div className="space-y-3">
+                {stepContent.owns.map((play, i) => {
+                  if (!isPlayActive(play, config)) return null
+                  const filteredItems = (play.items || []).filter(item => {
+                    if (config.dp1 === 'no_integration' && typeof item === 'string' && item.toLowerCase().includes('deeper integration')) return false
+                    return true
+                  })
+                  return (
+                    <div key={i} className="border border-slate-800 rounded-lg p-3">
+                      <div className="text-sm font-semibold text-slate-300 mb-2">{play.play}</div>
                       <ul className="space-y-0">
-                        {track.items.map((item, j) => (
+                        {filteredItems.map((item, j) => (
                           <BulletItem key={j} item={item} />
                         ))}
                       </ul>
-                    )}
-                    {/* Change 4: cleanText + Change 7: text-sm text-slate-400 */}
-                    {track.configuration_note && (
-                      <p className="text-sm text-slate-400 mt-2 italic">{cleanText(track.configuration_note)}</p>
-                    )}
-                  </div>
-                ) : null
-              })}
-            </div>
-          ) : stepKey === 'step_9' && Array.isArray(stepContent.owns) ? (
-            <div className="space-y-3">
-              {stepContent.owns.map((play, i) => {
-                if (!isPlayActive(play, config)) return null
-                const filteredItems = (play.items || []).filter(item => {
-                  if (config.dp1 === 'no_integration' && typeof item === 'string' && item.toLowerCase().includes('deeper integration')) return false
-                  return true
-                })
-                return (
-                  <div key={i} className="border border-slate-800 rounded-lg p-3">
-                    <div className="text-sm font-semibold text-slate-300 mb-2">{play.play}</div>
-                    <ul className="space-y-0">
-                      {filteredItems.map((item, j) => (
-                        <BulletItem key={j} item={item} />
-                      ))}
-                    </ul>
-                    {/* Change 4: cleanText + Change 7: text-sm text-slate-400 */}
-                    {play.configuration_note && (
-                      <p className="text-sm text-slate-400 mt-2 italic">{cleanText(play.configuration_note)}</p>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {/* Change 3b: reference line if any play has configuration_note */}
+              {stepContent.owns.some(p => typeof p === 'object' && p.configuration_note) && (
+                <p className="text-xs text-slate-500 mt-4 italic">
+                  Some elements of this scope may vary based on your configuration. See "How your configuration affects this step" below.
+                </p>
+              )}
+            </>
           ) : (
             <ul className="space-y-0">
               {(Array.isArray(stepContent.owns) ? stepContent.owns : [stepContent.owns]).map((item, i) => (
@@ -400,7 +430,6 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                   <div className="text-sm font-medium text-slate-300 w-36 flex-shrink-0">
                     {item.authority}
                   </div>
-                  {/* Change 4: cleanText on scope and when_inactive; Change 7: text-slate-400 */}
                   <div className="text-sm text-slate-400 flex-1">
                     {cleanText(item.scope)}
                     {isInactive && item.when_inactive && (
@@ -414,21 +443,32 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 8: Outputs */}
+      {/* Section 8: Outputs — Change 5: bold text before colons */}
       {stepContent.outputs && stepContent.outputs.length > 0 && (
         <AccordionSection title="Outputs">
           <ul className="space-y-1.5">
-            {stepContent.outputs.map((output, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="text-cyan-400 mt-0.5">→</span>
-                <span>{typeof output === 'string' ? output : JSON.stringify(output)}</span>
-              </li>
-            ))}
+            {stepContent.outputs.map((output, i) => {
+              const text = typeof output === 'string' ? output : JSON.stringify(output)
+              return text.includes(':') ? (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300 mb-1.5">
+                  <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>
+                  <span>
+                    <span className="font-semibold text-slate-200">{text.split(':')[0]}:</span>
+                    {text.split(':').slice(1).join(':')}
+                  </span>
+                </li>
+              ) : (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300 mb-1.5">
+                  <span className="text-cyan-400 mt-0.5 flex-shrink-0">→</span>
+                  <span>{text}</span>
+                </li>
+              )
+            })}
           </ul>
         </AccordionSection>
       )}
 
-      {/* Section 9: Relevant Tools — Change 2: text-sm text-slate-300 for tool names */}
+      {/* Section 9: Relevant Tools */}
       {(() => {
         const tools = getToolsForStep(stepKey, config)
         if (tools.length === 0) return null
@@ -463,7 +503,31 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 11: Completion Criteria */}
+      {/* Section 11: Go-live Criteria — Step 4 only (Change 2: moved before Completion Criteria) */}
+      {stepKey === 'step_4' && stepContent.go_live_criteria && (
+        <AccordionSection title="Go-live Criteria">
+          {stepContent.go_live_criteria.description && (
+            <p className="text-sm text-slate-300 mb-3">{stepContent.go_live_criteria.description}</p>
+          )}
+          {stepContent.go_live_criteria.conditions && (
+            <ul className="space-y-1.5">
+              {stepContent.go_live_criteria.conditions.map((c, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {config.dp4 === 'yes' && stepContent.go_live_criteria.when_DP4_yes && (
+            <p className="text-sm text-amber-400/80 mt-3">{stepContent.go_live_criteria.when_DP4_yes}</p>
+          )}
+          {config.dp4 === 'no' && stepContent.go_live_criteria.when_DP4_no && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.go_live_criteria.when_DP4_no}</p>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* Section 12: Completion Criteria */}
       {(() => {
         const cc = stepData.completion_criteria
         if (!cc) return null
@@ -496,31 +560,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         )
       })()}
 
-      {/* Section 12: Go-live Criteria — Step 4 only (moved here from position 5) */}
-      {stepKey === 'step_4' && stepContent.go_live_criteria && (
-        <AccordionSection title="Go-live Criteria">
-          {stepContent.go_live_criteria.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.go_live_criteria.description}</p>
-          )}
-          {stepContent.go_live_criteria.conditions && (
-            <ul className="space-y-1.5">
-              {stepContent.go_live_criteria.conditions.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {config.dp4 === 'yes' && stepContent.go_live_criteria.when_DP4_yes && (
-            <p className="text-sm text-amber-400/80 mt-3">{stepContent.go_live_criteria.when_DP4_yes}</p>
-          )}
-          {config.dp4 === 'no' && stepContent.go_live_criteria.when_DP4_no && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.go_live_criteria.when_DP4_no}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 13: Handoff — Change 3: capitalize first char of each clause */}
+      {/* Section 13: Handoff */}
       {(stepContent.handoff || stepContent.handoff_note) && (
         <AccordionSection title="Handoff">
           {stepContent.handoff && (() => {
@@ -593,25 +633,37 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 16: How Your Configuration Affects This Step — Change 6: amber for config notes */}
+      {/* Section 16: How Your Configuration Affects This Step
+          Changes 3b + 4: include track/play notes, then deduplicate all cards */}
       {(() => {
         const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
         const configNotes = getApplicableConfigNotes(stepContent.configuration_notes, config)
-        if (mods.length === 0 && configNotes.length === 0) return null
+
+        // Collect track/play configuration_notes (Change 3b)
+        const trackNotes = []
+        if (Array.isArray(stepContent.owns)) {
+          stepContent.owns.forEach(item => {
+            if (typeof item === 'object' && item.configuration_note) {
+              const trackName = item.track || item.play || 'Scope'
+              trackNotes.push({
+                label: trackName,
+                text: cleanText(item.configuration_note),
+              })
+            }
+          })
+        }
+
+        // Deduplicate (Change 4)
+        const allCards = deduplicateCards(mods, configNotes, trackNotes)
+        if (allCards.length === 0) return null
 
         return (
           <AccordionSection title="How Your Configuration Affects This Step">
             <div className="space-y-2">
-              {mods.map((mod, i) => (
-                <div key={`mod-${i}`} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                  <div className="text-xs font-medium text-amber-400 mb-1">{cleanText(mod.label)}</div>
-                  <p className="text-sm text-slate-300">{cleanText(mod.text)}</p>
-                </div>
-              ))}
-              {configNotes.map((note, i) => (
-                <div key={`note-${i}`} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                  <div className="text-xs font-medium text-amber-400 mb-1">{note.label}</div>
-                  <p className="text-sm text-slate-300">{note.text}</p>
+              {allCards.map((card, i) => (
+                <div key={i} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                  <div className="text-xs font-medium text-amber-400 mb-1">{cleanText(card.label)}</div>
+                  <p className="text-sm text-slate-300">{cleanText(card.text)}</p>
                 </div>
               ))}
             </div>
