@@ -334,7 +334,7 @@
       ],
       "configuration_notes": {
         "DP2": "Entitlements assigned in this step vary by selected commercial motions. See structured_specification.json workflow_modification_rules.step2_entitlements_by_motion for motion-specific entitlements.",
-        "DP3_partner_cert": "When DP3 includes partner competency certification, certification status becomes a gating condition or entitlement in this step."
+        "DP3_partner_cert": "When certification requirement includes partner competency certification, certification status becomes a gating condition or entitlement in this step."
       },
       "roles_and_responsibilities": {
         "primary_owner": {
@@ -450,10 +450,10 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "This entire step is REMOVED when DP1 = no_integration. Handoff routes directly from Step 2 to Step 4.",
+        "DP1_no_integration": "This entire step is REMOVED when integration direction = no_integration. Handoff routes directly from Step 2 to Step 4.",
         "DP1_direction": "Scoping ownership and focus varies by integration direction. See structured_specification.json workflow_modification_rules.step3_scoping_ownership.",
-        "DP3_neither": "When DP3 = neither, 'certified' integration path is not available. Selection is between 'supported' and 'partner-built' only.",
-        "DP3_integration_cert": "When DP3 includes integration certification, 'certified' path is available and if selected, certification is a required deliverable.",
+        "DP3_neither": "When certification requirement = neither, 'certified' integration path is not available. Selection is between 'supported' and 'partner-built' only.",
+        "DP3_integration_cert": "When certification requirement includes integration certification, 'certified' path is available and if selected, certification is a required deliverable.",
         "DP4_yes": "Compliance/Risk becomes an active tie-breaker authority and can block handoff to Step 4."
       },
       "roles_and_responsibilities": {
@@ -723,7 +723,7 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "This entire step is REMOVED when DP1 = no_integration. Handoff routes directly from Step 4 to Step 6.",
+        "DP1_no_integration": "This entire step is REMOVED when integration direction = no_integration. Handoff routes directly from Step 4 to Step 6.",
         "DP1_direction": "Implementation ownership varies by integration direction. See structured_specification.json workflow_modification_rules.step5_implementation_ownership.",
         "DP3_integration_cert": "Certification becomes a required deliverable before handoff to Step 6. 'Joint testing, certification' is a mandatory sub-item, not conditional. Evidence collection must include certification artifacts."
       },

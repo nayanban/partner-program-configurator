@@ -41,6 +41,33 @@ const CONFIG_NOTE_LABELS = {
   'DP4_no': 'No regulatory requirement',
 }
 
+// Phase 3 Change 6: clean DP codes and field paths from user-facing text
+function cleanDPReferences(text) {
+  if (typeof text !== 'string') return text
+  return text
+    .replace(/\bDP1\b/gi, 'integration direction')
+    .replace(/\bDP2\b/gi, 'commercial motions')
+    .replace(/\bDP3\b/gi, 'certification requirement')
+    .replace(/\bDP4\b/gi, 'regulated industries')
+}
+
+function cleanFieldPaths(text) {
+  if (typeof text !== 'string') return text
+  return text
+    .replace(/\bpartner_profile\.\w+/g, 'the partner profile')
+    .replace(/\bpartner_record\.\w+/g, 'the partner record')
+    .replace(/\bintegration_plan_spec\.\w+/g, 'the integration plan')
+    .replace(/\bapproval_record\.\w+/g, 'the approval record')
+    .replace(/\bcertification_record\.\w+/g, 'the certification record')
+    .replace(/\blaunch_readiness_package\.\w+/g, 'the launch readiness package')
+    .replace(/\boperational_handoff_package\.\w+/g, 'the operational handoff package')
+    .replace(/\boperations_record\.\w+/g, 'the operations record')
+    .replace(/\bgrowth_plan\.\w+/g, 'the growth plan')
+    .replace(/\blifecycle_decision_record\.\w+/g, 'the lifecycle decision record')
+}
+
+const cleanText = (text) => cleanFieldPaths(cleanDPReferences(text))
+
 function getApplicableConfigNotes(notes, config) {
   if (!notes || typeof notes !== 'object') return []
   return Object.entries(notes).filter(([key, text]) => {
@@ -63,7 +90,7 @@ function getApplicableConfigNotes(notes, config) {
     return true
   }).map(([key, text]) => ({
     label: CONFIG_NOTE_LABELS[key] || key.replace(/_/g, ' '),
-    text,
+    text: cleanText(text),
   }))
 }
 
@@ -93,6 +120,38 @@ function isFieldActive(field, config) {
     return computeHasFinancialMotion(config)
   }
   return true
+}
+
+// Phase 3 Change 2: bold text before colon helper
+function BulletItem({ item, idx }) {
+  if (typeof item !== 'string') {
+    return (
+      <li key={idx} className="flex items-start gap-2 text-sm text-slate-300">
+        <span className="text-slate-500 mt-0.5">•</span>
+        <span>{JSON.stringify(item)}</span>
+      </li>
+    )
+  }
+  if (item.includes(':')) {
+    const colonIdx = item.indexOf(':')
+    const before = item.slice(0, colonIdx)
+    const after = item.slice(colonIdx + 1)
+    return (
+      <li className="flex items-start gap-2 text-sm text-slate-300">
+        <span className="text-slate-500 mt-0.5">•</span>
+        <span>
+          <span className="font-semibold text-slate-200">{before}:</span>
+          <span>{after}</span>
+        </span>
+      </li>
+    )
+  }
+  return (
+    <li className="flex items-start gap-2 text-sm text-slate-300">
+      <span className="text-slate-500 mt-0.5">•</span>
+      <span>{item}</span>
+    </li>
+  )
 }
 
 function AccordionSection({ title, defaultOpen = false, children }) {
@@ -172,6 +231,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
 
   return (
     <div className="px-6 pb-8">
+
       {/* Section 1: Purpose — always present, open by default */}
       <AccordionSection title="Purpose" defaultOpen={true}>
         <p className="text-sm text-slate-200 leading-relaxed">{stepContent.purpose}</p>
@@ -191,7 +251,76 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 2.5: Roles & Responsibilities */}
+      {/* Section 3: Entry Triggers — Step 9 only */}
+      {stepKey === 'step_9' && stepContent.entry_triggers && (
+        <AccordionSection title="Entry Triggers">
+          {stepContent.entry_triggers.description && (
+            <p className="text-sm text-slate-300 mb-3">{stepContent.entry_triggers.description}</p>
+          )}
+          {stepContent.entry_triggers.gates && (
+            <ul className="space-y-1.5">
+              {stepContent.entry_triggers.gates.map((gate, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-cyan-400 mt-0.5">✓</span><span>{gate}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {stepContent.entry_triggers.governance_note && (
+            <p className="text-xs text-slate-400 mt-3">{stepContent.entry_triggers.governance_note}</p>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* Section 4: Minimum to Unblock — Step 4 only */}
+      {stepKey === 'step_4' && stepContent.minimum_to_unblock_criteria && (
+        <AccordionSection title="Minimum to Unblock">
+          {stepContent.minimum_to_unblock_criteria.description && (
+            <p className="text-sm text-slate-300 mb-3">{stepContent.minimum_to_unblock_criteria.description}</p>
+          )}
+          {stepContent.minimum_to_unblock_criteria.conditions && (
+            <ul className="space-y-1.5">
+              {stepContent.minimum_to_unblock_criteria.conditions.map((c, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {config.dp4 === 'yes' && stepContent.minimum_to_unblock_criteria.when_DP4_yes && (
+            <p className="text-sm text-amber-400/80 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP4_yes}</p>
+          )}
+          {config.dp1 === 'no_integration' && stepContent.minimum_to_unblock_criteria.when_DP1_no_integration && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP1_no_integration}</p>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* Section 5: Go-live Criteria — Step 4 only */}
+      {stepKey === 'step_4' && stepContent.go_live_criteria && (
+        <AccordionSection title="Go-live Criteria">
+          {stepContent.go_live_criteria.description && (
+            <p className="text-sm text-slate-300 mb-3">{stepContent.go_live_criteria.description}</p>
+          )}
+          {stepContent.go_live_criteria.conditions && (
+            <ul className="space-y-1.5">
+              {stepContent.go_live_criteria.conditions.map((c, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {config.dp4 === 'yes' && stepContent.go_live_criteria.when_DP4_yes && (
+            <p className="text-sm text-amber-400/80 mt-3">{stepContent.go_live_criteria.when_DP4_yes}</p>
+          )}
+          {config.dp4 === 'no' && stepContent.go_live_criteria.when_DP4_no && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.go_live_criteria.when_DP4_no}</p>
+          )}
+        </AccordionSection>
+      )}
+
+      {/* Section 6: Roles & Responsibilities */}
       {stepContent.roles_and_responsibilities && (
         <AccordionSection title="Roles & Responsibilities">
           <div className="mb-4">
@@ -221,7 +350,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 3: Scope of Work */}
+      {/* Section 7: Scope of Work */}
       {stepContent.owns && (
         <AccordionSection title="Scope of Work">
           {stepKey === 'step_4' && Array.isArray(stepContent.owns) ? (
@@ -235,9 +364,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                     {track.items && (
                       <ul className="space-y-1">
                         {track.items.map((item, j) => (
-                          <li key={j} className="flex items-start gap-2 text-sm text-slate-400">
-                            <span className="text-slate-500 mt-0.5">•</span><span>{item}</span>
-                          </li>
+                          <BulletItem key={j} item={item} idx={j} />
                         ))}
                       </ul>
                     )}
@@ -261,10 +388,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                     <div className="text-sm font-semibold text-slate-300 mb-2">{play.play}</div>
                     <ul className="space-y-1">
                       {filteredItems.map((item, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-slate-400">
-                          <span className="text-slate-500 mt-0.5">•</span>
-                          <span>{typeof item === 'string' ? item : JSON.stringify(item)}</span>
-                        </li>
+                        <BulletItem key={j} item={item} idx={j} />
                       ))}
                     </ul>
                   </div>
@@ -274,17 +398,39 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           ) : (
             <ul className="space-y-1.5">
               {(Array.isArray(stepContent.owns) ? stepContent.owns : [stepContent.owns]).map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-slate-500 mt-0.5">•</span>
-                  <span>{typeof item === 'string' ? item : JSON.stringify(item)}</span>
-                </li>
+                <BulletItem key={i} item={item} idx={i} />
               ))}
             </ul>
           )}
         </AccordionSection>
       )}
 
-      {/* Section 4: Outputs */}
+      {/* Section 8: Decision Rights & Escalation */}
+      {stepContent.tie_breaker_escalation && Array.isArray(stepContent.tie_breaker_escalation) && stepContent.tie_breaker_escalation.length > 0 && (
+        <AccordionSection title="Decision Rights & Escalation">
+          <div className="space-y-3">
+            {stepContent.tie_breaker_escalation.map((item, i) => {
+              const isInactive = item.configuration_dependent &&
+                item.active_when && item.active_when.includes("'yes'") && config.dp4 !== 'yes'
+              return (
+                <div key={i} className={`flex gap-3 ${isInactive ? 'opacity-40' : ''}`}>
+                  <div className="text-sm font-medium text-slate-300 w-36 flex-shrink-0">
+                    {item.authority}
+                  </div>
+                  <div className="text-sm text-slate-400 flex-1">
+                    {item.scope}
+                    {isInactive && item.when_inactive && (
+                      <span className="text-slate-500 italic ml-1">({item.when_inactive})</span>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </AccordionSection>
+      )}
+
+      {/* Section 9: Outputs */}
       {stepContent.outputs && stepContent.outputs.length > 0 && (
         <AccordionSection title="Outputs">
           <ul className="space-y-1.5">
@@ -298,7 +444,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 5: Relevant Tools */}
+      {/* Section 10: Relevant Tools */}
       {(() => {
         const tools = getToolsForStep(stepKey, config)
         if (tools.length === 0) return null
@@ -309,7 +455,10 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               {tools.map((t, i) => (
                 <div key={i} className="border border-slate-800 rounded-lg p-3">
                   <div className="text-sm font-semibold text-slate-300">{t.category}</div>
-                  <div className="text-xs text-slate-400 mt-1">{t.tools}</div>
+                  {t.description && (
+                    <div className="text-xs text-slate-400 mt-1">{t.description}</div>
+                  )}
+                  <div className="text-xs text-slate-500 mt-2">{t.tools}</div>
                 </div>
               ))}
             </div>
@@ -317,7 +466,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         )
       })()}
 
-      {/* Section 6: Out of Scope */}
+      {/* Section 11: Out of Scope */}
       {stepContent.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
         <AccordionSection title="Out of Scope">
           <ul className="space-y-1.5 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
@@ -330,7 +479,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 7: Completion Criteria */}
+      {/* Section 12: Completion Criteria */}
       {(() => {
         const cc = stepData.completion_criteria
         if (!cc) return null
@@ -363,144 +512,39 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         )
       })()}
 
-      {/* Section 8: Entry Triggers — Step 9 only */}
-      {stepKey === 'step_9' && stepContent.entry_triggers && (
-        <AccordionSection title="Entry Triggers">
-          {stepContent.entry_triggers.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.entry_triggers.description}</p>
-          )}
-          {stepContent.entry_triggers.gates && (
-            <ul className="space-y-1.5">
-              {stepContent.entry_triggers.gates.map((gate, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">✓</span><span>{gate}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {stepContent.entry_triggers.governance_note && (
-            <p className="text-xs text-slate-400 mt-3">{stepContent.entry_triggers.governance_note}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 9: Minimum to Unblock — Step 4 only */}
-      {stepKey === 'step_4' && stepContent.minimum_to_unblock_criteria && (
-        <AccordionSection title="Minimum to Unblock">
-          {stepContent.minimum_to_unblock_criteria.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.minimum_to_unblock_criteria.description}</p>
-          )}
-          {stepContent.minimum_to_unblock_criteria.conditions && (
-            <ul className="space-y-1.5">
-              {stepContent.minimum_to_unblock_criteria.conditions.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {config.dp4 === 'yes' && stepContent.minimum_to_unblock_criteria.when_DP4_yes && (
-            <p className="text-sm text-amber-400/80 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP4_yes}</p>
-          )}
-          {config.dp1 === 'no_integration' && stepContent.minimum_to_unblock_criteria.when_DP1_no_integration && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP1_no_integration}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 10: Go-live Criteria — Step 4 only */}
-      {stepKey === 'step_4' && stepContent.go_live_criteria && (
-        <AccordionSection title="Go-live Criteria">
-          {stepContent.go_live_criteria.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.go_live_criteria.description}</p>
-          )}
-          {stepContent.go_live_criteria.conditions && (
-            <ul className="space-y-1.5">
-              {stepContent.go_live_criteria.conditions.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {config.dp4 === 'yes' && stepContent.go_live_criteria.when_DP4_yes && (
-            <p className="text-sm text-amber-400/80 mt-3">{stepContent.go_live_criteria.when_DP4_yes}</p>
-          )}
-          {config.dp4 === 'no' && stepContent.go_live_criteria.when_DP4_no && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.go_live_criteria.when_DP4_no}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 11: Handoff */}
+      {/* Section 13: Handoff — blocking conditions separated into amber box */}
       {(stepContent.handoff || stepContent.handoff_note) && (
         <AccordionSection title="Handoff">
-          {stepContent.handoff && (
-            <ul className="space-y-1.5">
-              {stepContent.handoff.split(';').map((clause, i) => {
-                const trimmed = clause.trim()
-                if (!trimmed) return null
-                return (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                    <span className="text-cyan-400 mt-0.5">→</span>
-                    <span>{trimmed}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
+          {stepContent.handoff && (() => {
+            const clauses = stepContent.handoff.split(';').map(c => c.trim()).filter(Boolean)
+            const blockingKeywords = ['blocked by', 'paused if', 'progression can be blocked', 'cannot proceed', 'progression is paused', 'blocking']
+            const transitions = clauses.filter(c => !blockingKeywords.some(kw => c.toLowerCase().includes(kw)))
+            const blockers = clauses.filter(c => blockingKeywords.some(kw => c.toLowerCase().includes(kw)))
+
+            return (
+              <>
+                {transitions.length > 0 && (
+                  <ul className="space-y-1.5">
+                    {transitions.map((clause, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                        <span className="text-cyan-400 mt-0.5">→</span>
+                        <span>{clause}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {blockers.length > 0 && (
+                  <div className="mt-3 bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                    <div className="text-xs font-medium text-amber-400 mb-1">Blocking conditions</div>
+                    {blockers.map((clause, i) => (
+                      <p key={i} className="text-sm text-slate-400">{clause}</p>
+                    ))}
+                  </div>
+                )}
+              </>
+            )
+          })()}
           {stepContent.handoff_note && <p className="text-sm text-slate-400 italic mt-2">{stepContent.handoff_note}</p>}
-        </AccordionSection>
-      )}
-
-      {/* Section 12: How Your Configuration Affects This Step */}
-      {(() => {
-        const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
-        const configNotes = getApplicableConfigNotes(stepContent.configuration_notes, config)
-        if (mods.length === 0 && configNotes.length === 0) return null
-
-        return (
-          <AccordionSection title="How Your Configuration Affects This Step">
-            <div className="space-y-2">
-              {mods.map((mod, i) => (
-                <div key={`mod-${i}`} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
-                  <div className="text-xs font-medium text-amber-400 mb-1">{mod.label}</div>
-                  <p className="text-sm text-slate-300">{mod.text}</p>
-                </div>
-              ))}
-              {configNotes.map((note, i) => (
-                <div key={`note-${i}`} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
-                  <div className="text-xs font-medium text-slate-400 mb-1">{note.label}</div>
-                  <p className="text-sm text-slate-400">{note.text}</p>
-                </div>
-              ))}
-            </div>
-          </AccordionSection>
-        )
-      })()}
-
-      {/* Section 13: Decision Rights & Escalation */}
-      {stepContent.tie_breaker_escalation && Array.isArray(stepContent.tie_breaker_escalation) && stepContent.tie_breaker_escalation.length > 0 && (
-        <AccordionSection title="Decision Rights & Escalation">
-          <div className="space-y-3">
-            {stepContent.tie_breaker_escalation.map((item, i) => {
-              const isInactive = item.configuration_dependent &&
-                item.active_when && item.active_when.includes("'yes'") && config.dp4 !== 'yes'
-              return (
-                <div key={i} className={`flex gap-3 ${isInactive ? 'opacity-40' : ''}`}>
-                  <div className="text-sm font-medium text-slate-300 w-36 flex-shrink-0">
-                    {item.authority}
-                  </div>
-                  <div className="text-sm text-slate-400 flex-1">
-                    {item.scope}
-                    {isInactive && item.when_inactive && (
-                      <span className="text-slate-500 italic ml-1">({item.when_inactive})</span>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
         </AccordionSection>
       )}
 
@@ -513,9 +557,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                 <div className="text-sm font-medium text-red-400/80 mb-1">{path.condition}</div>
                 <p className="text-sm text-slate-400">{path.response}</p>
                 {path.likely_owner && (
-                  <div className="text-xs text-slate-500 mt-2 flex items-center gap-1.5">
-                    <span className="text-slate-500">↳</span>
-                    <span className="font-medium">Likely owner:</span>
+                  <div className="text-xs text-slate-400 mt-2 flex items-center gap-1.5">
+                    <span className="text-slate-400">↳</span>
+                    <span className="font-medium text-slate-300">Likely owner:</span>
                     <span>{path.likely_owner}</span>
                   </div>
                 )}
@@ -541,7 +585,33 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 16: Data Schema for This Step */}
+      {/* Section 16: How Your Configuration Affects This Step — second from last, only if modifications exist */}
+      {(() => {
+        const mods = getActiveWorkflowModifications(stepKey, stepData, spec, config)
+        const configNotes = getApplicableConfigNotes(stepContent.configuration_notes, config)
+        if (mods.length === 0 && configNotes.length === 0) return null
+
+        return (
+          <AccordionSection title="How Your Configuration Affects This Step">
+            <div className="space-y-2">
+              {mods.map((mod, i) => (
+                <div key={`mod-${i}`} className="bg-amber-500/5 border border-amber-500/15 rounded-lg p-3">
+                  <div className="text-xs font-medium text-amber-400 mb-1">{cleanText(mod.label)}</div>
+                  <p className="text-sm text-slate-300">{cleanText(mod.text)}</p>
+                </div>
+              ))}
+              {configNotes.map((note, i) => (
+                <div key={`note-${i}`} className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-3">
+                  <div className="text-xs font-medium text-slate-400 mb-1">{note.label}</div>
+                  <p className="text-sm text-slate-400">{note.text}</p>
+                </div>
+              ))}
+            </div>
+          </AccordionSection>
+        )
+      })()}
+
+      {/* Section 17: Data Schema for This Step */}
       {(() => {
         const objKeys = stepData.objects_produced_or_updated || []
         if (objKeys.length === 0) return null
