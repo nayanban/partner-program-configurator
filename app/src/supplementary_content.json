@@ -604,12 +604,11 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "Security & Privacy track scope significantly reduced \u2014 limited to data handling obligations in legal agreement only. No data-flow review, auth/encryption controls, or security testing. Step 5 is skipped \u2014 handoff goes to Step 6.",
         "DP2_motions": "Commercial/Finance track depth varies by selected motions. Legal agreement type varies (reseller agreement, marketplace platform agreement, standard partnership). See structured_specification.json for details.",
         "DP3_integration_cert": "Security testing requirements become mandatory. Specific certification standard and evidence requirements must be defined as explicit gate conditions.",
         "DP4_yes": "Compliance/Risk track fully activated. Preliminary approval required before Step 5. Final sign-off required before go-live.",
         "DP4_no": "Compliance/Risk track entirely removed.",
-        "DP1_no_integration_handoff": "When no technical integration is selected, Step 5 (Implementation) is skipped. Step 4 hands off directly to Step 6 (Launch Readiness). All approval conditions must be met before proceeding to launch."
+        "DP1_no_integration_handoff": "When no technical integration is selected, the Security & Privacy track is reduced to data handling obligations in the legal agreement only (no data-flow review, auth/encryption controls, or security testing). Step 5 (Implementation) is skipped \u2014 Step 4 hands off directly to Step 6 (Launch Readiness)."
       },
       "roles_and_responsibilities": {
         "primary_owner": {
