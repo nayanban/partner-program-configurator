@@ -1228,7 +1228,7 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "The expansion play's integration-deepening activities are removed when no technical integration is selected. The enablement refresh activities include certification renewal when partner competency certification is required.",
+        "DP1_no_integration": "When no technical integration is selected, the option to deepen the integration (additional endpoints or modules) is not available. All other growth activities remain active.",
         "DP2": "Each selected motion activates its corresponding play and items. Non-selected motions are entirely absent.",
         "DP2_co_sell_direction": "Account ownership rules and credit definitions vary by co-sell direction. See structured_specification.json workflow_modification_rules.step9_co_sell_account_ownership.",
         "DP2_referral_direction": "When both referral_inbound and referral_outbound are selected, attribution mechanics must distinguish between the two flows. See structured_specification.json workflow_modification_rules.step9_referral_attribution_direction.",

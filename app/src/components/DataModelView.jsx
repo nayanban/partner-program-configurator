@@ -99,7 +99,6 @@ function ObjectCard({ objKey, obj, config, active, expanded, onToggle }) {
             Fields your system of record needs for this object. Conditional fields (Cond. = Y) are active only when specific decision points are set.
           </p>
           <div className="relative overflow-x-auto">
-            <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none z-10" />
             <table className="w-full min-w-[400px]">
               <thead>
                 <tr className="text-left">

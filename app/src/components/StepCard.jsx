@@ -232,7 +232,6 @@ function ObjectDetail({ obj, fields, activeCount, totalCount, config }) {
       {expanded && (
         <div className="px-3 pb-3 border-t border-slate-800">
           <div className="relative overflow-x-auto -mx-1">
-            <div className="md:hidden absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none z-10" />
             <table className="w-full text-xs mt-2 min-w-[380px]">
               <thead>
                 <tr className="text-slate-500">
