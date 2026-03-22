@@ -24,6 +24,7 @@ function getToolsForStep(stepKey, config) {
 
 const CONFIG_NOTE_LABELS = {
   'DP1_no_integration': 'No technical integration',
+  'DP1_no_integration_handoff': 'No technical integration',
   'DP1_has_integration': 'Technical integration active',
   'DP1_direction': 'Integration direction',
   'DP2': 'Commercial motions',
@@ -67,6 +68,13 @@ function cleanFieldPaths(text) {
 
 const cleanText = (text) => cleanFieldPaths(cleanDPReferences(text))
 
+function getContent(stepContent, field, config) {
+  if (config.dp1 === 'no_integration' && stepContent[field + '_when_no_integration']) {
+    return stepContent[field + '_when_no_integration']
+  }
+  return stepContent[field]
+}
+
 function capitalizeFirst(str) {
   if (!str) return str
   return str.charAt(0).toUpperCase() + str.slice(1)
@@ -93,7 +101,7 @@ function getApplicableConfigNotes(notes, config) {
     if (key.includes('DP4_no') && config.dp4 !== 'no') return false
     return true
   }).map(([key, text]) => ({
-    label: CONFIG_NOTE_LABELS[key] || key.replace(/_/g, ' '),
+    label: CONFIG_NOTE_LABELS[key] || capitalizeFirst(key.replace(/_/g, ' ')),
     text: cleanText(text),
   }))
 }
@@ -261,22 +269,26 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
 
       {/* Section 1: Purpose — always present, open by default */}
       <AccordionSection title="Purpose" defaultOpen={true}>
-        <p className="text-sm text-slate-200 leading-relaxed">{stepContent.purpose}</p>
+        <p className="text-sm text-slate-200 leading-relaxed">{getContent(stepContent, 'purpose', config)}</p>
       </AccordionSection>
 
       {/* Section 2: Inputs */}
-      {stepContent.inputs && stepContent.inputs.length > 0 && (
-        <AccordionSection title="Inputs">
-          <ul className="space-y-1.5">
-            {(Array.isArray(stepContent.inputs) ? stepContent.inputs : [stepContent.inputs]).map((input, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="text-slate-500 mt-0.5">•</span>
-                <span>{typeof input === 'string' ? input : JSON.stringify(input)}</span>
-              </li>
-            ))}
-          </ul>
-        </AccordionSection>
-      )}
+      {(() => {
+        const inputs = getContent(stepContent, 'inputs', config)
+        if (!inputs || !inputs.length) return null
+        return (
+          <AccordionSection title="Inputs">
+            <ul className="space-y-1.5">
+              {(Array.isArray(inputs) ? inputs : [inputs]).map((input, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                  <span className="text-slate-500 mt-0.5">•</span>
+                  <span>{typeof input === 'string' ? input : JSON.stringify(input)}</span>
+                </li>
+              ))}
+            </ul>
+          </AccordionSection>
+        )
+      })()}
 
       {/* Section 3: Entry Triggers — any step with entry_triggers data (Steps 5, 6, 9) */}
       {stepContent.entry_triggers && (
@@ -479,23 +491,37 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
       })()}
 
       {/* Section 10: Out of Scope */}
-      {stepContent.explicitly_does_not_do && stepContent.explicitly_does_not_do.length > 0 && (
-        <AccordionSection title="Out of Scope">
-          <ul className="space-y-1.5 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
-            {stepContent.explicitly_does_not_do.map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                <span className="text-red-400 mt-0.5 flex-shrink-0">✕</span><span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </AccordionSection>
-      )}
+      {(() => {
+        const outOfScope = getContent(stepContent, 'explicitly_does_not_do', config)
+        if (!outOfScope || !outOfScope.length) return null
+        return (
+          <AccordionSection title="Out of Scope">
+            <ul className="space-y-1.5 bg-slate-950/50 border border-slate-800 rounded-lg p-3">
+              {outOfScope.map((item, i) => (
+                <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
+                  <span className="text-red-400 mt-0.5 flex-shrink-0">✕</span><span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </AccordionSection>
+        )
+      })()}
 
       {/* Section 11: Completion Criteria */}
       {(() => {
         const cc = stepData.completion_criteria
         if (!cc) return null
 
+        // No-integration variant for Step 4
+        if (stepKey === 'step_4' && config.dp1 === 'no_integration' && cc.done_label_when_no_integration) {
+          return (
+            <AccordionSection title="Completion Criteria">
+              <p className="text-sm text-slate-200 font-medium">{cc.done_label_when_no_integration}</p>
+            </AccordionSection>
+          )
+        }
+
+        // Step 4: dual labels (only when integration exists)
         if (cc.done_label_for_step5_start) {
           return (
             <AccordionSection title="Completion Criteria">
@@ -525,9 +551,10 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
       })()}
 
       {/* Section 12: Handoff */}
-      {(stepContent.handoff || stepContent.handoff_note) && (
+      {(getContent(stepContent, 'handoff', config) || stepContent.handoff_note) && (
         <AccordionSection title="Handoff">
-          {stepContent.handoff && (() => {
+          {getContent(stepContent, 'handoff', config) && (() => {
+            const handoffText = getContent(stepContent, 'handoff', config)
             // Change 3: rewrite step refs when target step is skipped
             function rewriteSkippedStepRefs(clause) {
               if (config.dp1 === 'no_integration') {
@@ -542,7 +569,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               'cannot proceed', 'progression is paused', 'blocking',
               'may be delayed', 'delayed if',
             ]
-            const clauses = stepContent.handoff
+            const clauses = handoffText
               .split(';')
               .map(c => capitalizeFirst(c.trim()))
               .filter(Boolean)
