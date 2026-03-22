@@ -216,31 +216,34 @@ function ObjectDetail({ obj, fields, activeCount, totalCount, config }) {
       </button>
       {expanded && (
         <div className="px-3 pb-3 border-t border-slate-800">
-          <table className="w-full text-xs mt-2">
-            <thead>
-              <tr className="text-slate-500">
-                <th className="text-left py-1 font-medium">Field</th>
-                <th className="text-left py-1 font-medium">Type</th>
-                <th className="text-center py-1 font-medium">Active</th>
-                <th className="text-left py-1 font-medium">Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {fields.map((f, i) => {
-                const active = !f.conditional || isFieldActive(f, config)
-                return (
-                  <tr key={i} className={active ? '' : 'opacity-40'}>
-                    <td className="py-1 text-slate-300 font-mono">{f.name}</td>
-                    <td className="py-1 text-slate-400">{f.type}</td>
-                    <td className="py-1 text-center">
-                      {active ? <span className="text-cyan-400">✓</span> : <span className="text-slate-500">✗</span>}
-                    </td>
-                    <td className="py-1 text-slate-500">{f.notes || ''}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+          <div className="relative overflow-x-auto -mx-1">
+            <div className="md:hidden absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-slate-900 to-transparent pointer-events-none z-10" />
+            <table className="w-full text-xs mt-2 min-w-[380px]">
+              <thead>
+                <tr className="text-slate-500">
+                  <th className="text-left py-1 font-medium">Field</th>
+                  <th className="text-left py-1 font-medium">Type</th>
+                  <th className="text-center py-1 font-medium">Active</th>
+                  <th className="text-left py-1 font-medium">Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fields.map((f, i) => {
+                  const active = !f.conditional || isFieldActive(f, config)
+                  return (
+                    <tr key={i} className={active ? '' : 'opacity-40'}>
+                      <td className="py-1 text-slate-300 font-mono">{f.name}</td>
+                      <td className="py-1 text-slate-400">{f.type}</td>
+                      <td className="py-1 text-center">
+                        {active ? <span className="text-cyan-400">✓</span> : <span className="text-slate-500">✗</span>}
+                      </td>
+                      <td className="py-1 text-slate-500">{f.notes || ''}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
@@ -275,8 +278,8 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 3: Entry Triggers — Step 9 only */}
-      {stepKey === 'step_9' && stepContent.entry_triggers && (
+      {/* Section 3: Entry Triggers — any step with entry_triggers data (Steps 5, 6, 9) */}
+      {stepContent.entry_triggers && (
         <AccordionSection title="Entry Triggers">
           {stepContent.entry_triggers.description && (
             <p className="text-sm text-slate-300 mb-3">{stepContent.entry_triggers.description}</p>
@@ -290,32 +293,17 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               ))}
             </ul>
           )}
+          {config.dp4 === 'yes' && stepContent.entry_triggers.when_DP4_yes && (
+            <p className="text-sm text-amber-400/80 mt-3">{stepContent.entry_triggers.when_DP4_yes}</p>
+          )}
+          {config.dp4 === 'no' && stepContent.entry_triggers.when_DP4_no && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_DP4_no}</p>
+          )}
+          {config.dp1 === 'no_integration' && stepContent.entry_triggers.when_DP1_no_integration && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_DP1_no_integration}</p>
+          )}
           {stepContent.entry_triggers.governance_note && (
             <p className="text-xs text-slate-400 mt-3">{stepContent.entry_triggers.governance_note}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 4: Minimum to Unblock — Step 4 only */}
-      {stepKey === 'step_4' && stepContent.minimum_to_unblock_criteria && (
-        <AccordionSection title="Minimum to Unblock">
-          {stepContent.minimum_to_unblock_criteria.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.minimum_to_unblock_criteria.description}</p>
-          )}
-          {stepContent.minimum_to_unblock_criteria.conditions && (
-            <ul className="space-y-1.5">
-              {stepContent.minimum_to_unblock_criteria.conditions.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {config.dp4 === 'yes' && stepContent.minimum_to_unblock_criteria.when_DP4_yes && (
-            <p className="text-sm text-amber-400/80 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP4_yes}</p>
-          )}
-          {config.dp1 === 'no_integration' && stepContent.minimum_to_unblock_criteria.when_DP1_no_integration && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.minimum_to_unblock_criteria.when_DP1_no_integration}</p>
           )}
         </AccordionSection>
       )}
@@ -503,31 +491,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 11: Go-live Criteria — Step 4 only (Change 2: moved before Completion Criteria) */}
-      {stepKey === 'step_4' && stepContent.go_live_criteria && (
-        <AccordionSection title="Go-live Criteria">
-          {stepContent.go_live_criteria.description && (
-            <p className="text-sm text-slate-300 mb-3">{stepContent.go_live_criteria.description}</p>
-          )}
-          {stepContent.go_live_criteria.conditions && (
-            <ul className="space-y-1.5">
-              {stepContent.go_live_criteria.conditions.map((c, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">☐</span><span>{c}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          {config.dp4 === 'yes' && stepContent.go_live_criteria.when_DP4_yes && (
-            <p className="text-sm text-amber-400/80 mt-3">{stepContent.go_live_criteria.when_DP4_yes}</p>
-          )}
-          {config.dp4 === 'no' && stepContent.go_live_criteria.when_DP4_no && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.go_live_criteria.when_DP4_no}</p>
-          )}
-        </AccordionSection>
-      )}
-
-      {/* Section 12: Completion Criteria */}
+      {/* Section 11: Completion Criteria */}
       {(() => {
         const cc = stepData.completion_criteria
         if (!cc) return null
@@ -560,12 +524,29 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         )
       })()}
 
-      {/* Section 13: Handoff */}
+      {/* Section 12: Handoff */}
       {(stepContent.handoff || stepContent.handoff_note) && (
         <AccordionSection title="Handoff">
           {stepContent.handoff && (() => {
-            const clauses = stepContent.handoff.split(';').map(c => capitalizeFirst(c.trim())).filter(Boolean)
-            const blockingKeywords = ['blocked by', 'paused if', 'progression can be blocked', 'cannot proceed', 'progression is paused', 'blocking']
+            // Change 3: rewrite step refs when target step is skipped
+            function rewriteSkippedStepRefs(clause) {
+              if (config.dp1 === 'no_integration') {
+                clause = clause.replace(/\bStep 3\b/g, 'Step 4 (Approvals Gate)')
+                clause = clause.replace(/\bStep 5\b/g, 'Step 6 (Launch Readiness)')
+              }
+              return clause
+            }
+            // Change 4: expanded blocking keywords including "delayed"
+            const blockingKeywords = [
+              'blocked by', 'paused if', 'progression can be blocked',
+              'cannot proceed', 'progression is paused', 'blocking',
+              'may be delayed', 'delayed if',
+            ]
+            const clauses = stepContent.handoff
+              .split(';')
+              .map(c => capitalizeFirst(c.trim()))
+              .filter(Boolean)
+              .map(rewriteSkippedStepRefs)
             const transitions = clauses.filter(c => !blockingKeywords.some(kw => c.toLowerCase().includes(kw)))
             const blockers = clauses.filter(c => blockingKeywords.some(kw => c.toLowerCase().includes(kw)))
 
@@ -596,7 +577,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 14: Exception Handling */}
+      {/* Section 13: Exception Handling */}
       {stepContent.failure_exception_paths && stepContent.failure_exception_paths.length > 0 && (
         <AccordionSection title="Exception Handling">
           <div className="space-y-2">
@@ -617,7 +598,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
         </AccordionSection>
       )}
 
-      {/* Section 15: Loop-back Triggers */}
+      {/* Section 14: Loop-back Triggers */}
       {stepContent.loop_back_triggers && stepContent.loop_back_triggers.length > 0 && (
         <AccordionSection title="Loop-back Triggers">
           <div className="space-y-2">

@@ -2253,7 +2253,7 @@
           "when_DP2_includes_reseller_entity": "partner_profile.entitlements must include entity access to partner product for resale and reverse margin/commission structure",
           "when_DP2_includes_any_marketplace": "partner_profile.entitlements must include marketplace listing access and platform-specific prerequisites",
           "when_DP2_includes_co_sell": "partner_profile.entitlements must include account mapping access, joint pipeline tooling access, and lead-sharing rights",
-          "when_DP2_includes_co_marketing": "partner_profile.entitlements.co_marketing_eligible must be set to true or false",
+          "when_DP2_includes_co_marketing": "co-marketing eligibility must be set in the partner profile",
           "when_DP3_not_neither": "partner_profile.required_gates.certification_required = true. certification_record is created.",
           "when_DP4_is_yes": "partner_profile.required_gates.compliance_review_required field exists and is evaluated"
         }
@@ -2267,7 +2267,7 @@
           "when_reseller_entity_selected": "Entity receives access to partner product for resale. Margin/commission structure from partner to entity recorded in partner_profile.entitlements.",
           "when_marketplace_any_selected": "Listing entitlements assigned \u2014 marketplace access, listing slot, and any platform-specific prerequisites recorded in partner_profile.entitlements.",
           "when_co_sell_selected": "Co-sell entitlements assigned \u2014 account mapping access, joint pipeline tooling access, and lead-sharing rights recorded in partner_profile.entitlements.",
-          "when_co_marketing_selected": "Co-marketing eligibility flag set (partner_profile.entitlements.co_marketing_eligible = true). Budget access and campaign participation rights recorded."
+          "when_co_marketing_selected": "Co-marketing eligibility flag set in the partner profile. Budget access and campaign participation rights recorded."
         }
       }
     },
@@ -4969,7 +4969,7 @@
         "when_reseller_entity_selected": "Entity receives access to partner product for resale. Margin/commission structure from partner to entity recorded in the partner profile.",
         "when_marketplace_any_selected": "Listing entitlements assigned \u2014 marketplace access, listing slot, and any platform-specific prerequisites recorded in the partner profile.",
         "when_co_sell_selected": "Co-sell entitlements assigned \u2014 account mapping access, joint pipeline tooling access, and lead-sharing rights recorded in the partner profile.",
-        "when_co_marketing_selected": "Co-marketing eligibility flag set (the partner profile.co_marketing_eligible = true). Budget access and campaign participation rights recorded."
+        "when_co_marketing_selected": "Co-marketing eligibility flag set in the partner profile. Budget access and campaign participation rights recorded."
       },
       "step9_referral_attribution_direction": {
         "_description": "When both referral_inbound and referral_outbound are selected simultaneously, attribution mechanics must distinguish between the two flows to prevent double-counting and reporting confusion.",

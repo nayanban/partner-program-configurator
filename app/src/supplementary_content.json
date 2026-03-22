@@ -334,7 +334,8 @@
       ],
       "configuration_notes": {
         "DP2": "Entitlements assigned in this step vary by selected commercial motions. See structured_specification.json workflow_modification_rules.step2_entitlements_by_motion for motion-specific entitlements.",
-        "DP3_partner_cert": "When certification requirement includes partner competency certification, certification status becomes a gating condition or entitlement in this step."
+        "DP3_partner_cert": "When certification requirement includes partner competency certification, certification status becomes a gating condition or entitlement in this step.",
+        "DP1_no_integration_handoff": "When no technical integration is selected, Step 3 (Scoping & Commitment) is skipped. Step 2 hands off directly to Step 4 (Approvals Gate)."
       },
       "roles_and_responsibilities": {
         "primary_owner": {
@@ -539,26 +540,6 @@
           "configuration_note": "Fully active when any financial motion is selected (referral, reseller, marketplace, co-sell) or when co-marketing is selected (for budget mechanics). Absent when no financial motions and no co-marketing are selected."
         }
       ],
-      "minimum_to_unblock_criteria": {
-        "description": "Conditions required before Step 5 (implementation) may begin",
-        "conditions": [
-          "Security/Privacy provides preliminary approval for non-production work (e.g., sandbox/dev) or explicitly states acceptable scope for implementation work to proceed",
-          "Legal provides an approved agreement path (e.g., template selected + redline boundaries / fallback positions agreed)",
-          "Any hard 'no-go' risks have been resolved (e.g., prohibited data use, unacceptable control gaps)"
-        ],
-        "when_DP4_yes": "If Compliance/Risk is required for the use case, include either preliminary approval or a defined set of constraints that implementation can proceed under.",
-        "when_DP1_no_integration": "Step 5 is skipped entirely \u2014 minimum-to-unblock criteria apply to proceeding to Step 6 instead."
-      },
-      "go_live_criteria": {
-        "description": "Conditions required before production go-live (Step 6/7)",
-        "conditions": [
-          "Final Security/Privacy sign-off (production scope) and required evidence completed",
-          "Executed legal agreement(s) (or documented executive exception per Step 0 policy)",
-          "Confirmed commercial/finance mechanics (including attribution/payout setup if relevant)"
-        ],
-        "when_DP4_yes": "Final Compliance/Risk sign-off is also required.",
-        "when_DP4_no": "Compliance/Risk sign-off is absent from go-live criteria."
-      },
       "tie_breaker_escalation": [
         {
           "authority": "Security & Privacy",
@@ -627,7 +608,8 @@
         "DP2_motions": "Commercial/Finance track depth varies by selected motions. Legal agreement type varies (reseller agreement, marketplace platform agreement, standard partnership). See structured_specification.json for details.",
         "DP3_integration_cert": "Security testing requirements become mandatory. Specific certification standard and evidence requirements must be defined as explicit gate conditions.",
         "DP4_yes": "Compliance/Risk track fully activated. Preliminary approval required before Step 5. Final sign-off required before go-live.",
-        "DP4_no": "Compliance/Risk track entirely removed."
+        "DP4_no": "Compliance/Risk track entirely removed.",
+        "DP1_no_integration_handoff": "When no technical integration is selected, Step 5 (Implementation) is skipped. Step 4 hands off directly to Step 6 (Launch Readiness). The minimum-to-unblock / go-live distinction collapses \u2014 all approval conditions must be met before proceeding to launch."
       },
       "roles_and_responsibilities": {
         "primary_owner": {
@@ -754,6 +736,16 @@
             "responsibility": "Implementation on partner side"
           }
         ]
+      },
+      "entry_triggers": {
+        "description": "Conditions required before implementation may begin (set during Step 4 approvals).",
+        "gates": [
+          "Security/Privacy provides preliminary approval for non-production work (e.g., sandbox/dev) or explicitly states acceptable scope for implementation work to proceed",
+          "Legal provides an approved agreement path (e.g., template selected + redline boundaries / fallback positions agreed)",
+          "Any hard 'no-go' risks have been resolved (e.g., prohibited data use, unacceptable control gaps)"
+        ],
+        "when_DP4_yes": "If Compliance/Risk is required for the use case, include either preliminary approval or a defined set of constraints that implementation can proceed under.",
+        "when_DP1_no_integration": "Step 5 is skipped entirely when no technical integration is selected \u2014 these conditions apply to proceeding to Step 6 instead."
       }
     },
     "step_6": {
@@ -863,6 +855,16 @@
             "responsibility": "Approve public-facing assets where required"
           }
         ]
+      },
+      "entry_triggers": {
+        "description": "Conditions required before production go-live and launch packaging may begin (set during Step 4 approvals).",
+        "gates": [
+          "Final Security/Privacy sign-off (production scope) and required evidence completed",
+          "Executed legal agreement(s) (or documented executive exception per Step 0 policy)",
+          "Confirmed commercial/finance mechanics (including attribution/payout setup if relevant)"
+        ],
+        "when_DP4_yes": "Final Compliance/Risk sign-off is also required.",
+        "when_DP4_no": "Compliance/Risk sign-off is absent from go-live criteria."
       }
     },
     "step_7": {
