@@ -2671,7 +2671,8 @@
           "when_DP2_has_no_financial_motion": "commercial_finance track is absent from approval_record.",
           "when_DP2_includes_reseller_partner_or_entity": "legal.agreement_type = reseller_agreement",
           "when_DP2_includes_marketplace_third_party": "Additional marketplace platform agreement required in addition to partner agreement. legal track must confirm both are executed."
-        }
+        },
+        "done_label_when_no_integration": "All required approvals obtained and conditions met for launch"
       },
       "workflow_modifications": {
         "step4_legal_agreement_type": {
@@ -4930,10 +4931,10 @@
         "when_DP1_is_bidirectional": "Two parallel build streams coordinated. Both parties lead their respective implementations."
       },
       "step4_legal_agreement_type": {
-        "when_reseller_partner_selected": "legal.agreement_type = 'reseller_agreement' \u2014 covers resale rights, territory, pricing floors",
-        "when_reseller_entity_selected": "legal.agreement_type = 'reseller_agreement' \u2014 reverse reseller agreement required",
-        "when_marketplace_third_party_selected": "Additional marketplace platform agreement required (e.g. AWS Marketplace Seller Agreement, Microsoft Publisher Agreement) in addition to partner agreement",
-        "when_no_reseller_or_third_party_marketplace": "legal.agreement_type = 'standard_partnership' or 'integration_agreement'"
+        "when_reseller_partner_selected": "Reseller agreement required \u2014 covers resale rights, territory, and pricing floors",
+        "when_reseller_entity_selected": "Reverse reseller agreement required \u2014 covers entity's commission, order mechanics, and fulfillment",
+        "when_marketplace_third_party_selected": "Additional marketplace platform agreement required (e.g. AWS Marketplace, Microsoft Publisher Agreement) in addition to the partner agreement",
+        "when_no_reseller_or_third_party": "Standard partnership or integration agreement"
       },
       "step6_launch_kit_content": {
         "when_DP1_is_no_integration": "Launch kit covers commercial motion only \u2014 referral submission process, reseller ordering, marketplace listing usage. No integration guide.",
