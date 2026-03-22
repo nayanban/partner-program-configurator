@@ -29,8 +29,8 @@ const CONFIG_NOTE_LABELS = {
   'DP1_direction': 'Integration direction',
   'DP2': 'Commercial motions',
   'DP2_motions': 'Commercial motions',
-  'DP2_financial_motion': 'Financial motion active',
-  'DP2_no_financial_motion': 'No financial motion',
+  'DP2_financial_motion': 'Commercial motion active',
+  'DP2_no_financial_motion': 'No commercial motion',
   'DP2_co_sell_direction': 'Co-sell direction',
   'DP2_co_marketing': 'Co-marketing',
   'DP2_marketplace': 'Marketplace motion',
@@ -66,7 +66,14 @@ function cleanFieldPaths(text) {
     .replace(/\blifecycle_decision_record\.\w+/g, 'the lifecycle decision record')
 }
 
-const cleanText = (text) => cleanFieldPaths(cleanDPReferences(text))
+function cleanTerminology(text) {
+  if (typeof text !== 'string') return text
+  return text
+    .replace(/\bfinancial motions\b/gi, 'commercial motions')
+    .replace(/\bfinancial motion\b/gi, 'commercial motion')
+}
+
+const cleanText = (text) => cleanTerminology(cleanFieldPaths(cleanDPReferences(text)))
 
 function getContent(stepContent, field, config) {
   if (config.dp1 === 'no_integration' && stepContent[field + '_when_no_integration']) {
@@ -298,11 +305,18 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           )}
           {stepContent.entry_triggers.gates && (
             <ul className="space-y-1.5">
-              {stepContent.entry_triggers.gates.map((gate, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                  <span className="text-cyan-400 mt-0.5">✓</span><span>{gate}</span>
-                </li>
-              ))}
+              {stepContent.entry_triggers.gates
+                .filter(gate => {
+                  if (gate.includes('RevOps/Finance') && gate.includes('attribution and payout') && !computeHasFinancialMotion(config)) {
+                    return false
+                  }
+                  return true
+                })
+                .map((gate, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
+                    <span className="text-cyan-400 mt-0.5">✓</span><span>{gate}</span>
+                  </li>
+                ))}
             </ul>
           )}
           {config.dp4 === 'yes' && stepContent.entry_triggers.when_DP4_yes && (
@@ -313,9 +327,6 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           )}
           {config.dp1 === 'no_integration' && stepContent.entry_triggers.when_DP1_no_integration && (
             <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_DP1_no_integration}</p>
-          )}
-          {stepContent.entry_triggers.when_no_financial_motion && !computeHasFinancialMotion(config) && (
-            <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_no_financial_motion}</p>
           )}
           {stepContent.entry_triggers.governance_note && (
             <p className="text-xs text-slate-400 mt-3">{stepContent.entry_triggers.governance_note}</p>
@@ -520,26 +531,6 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           return (
             <AccordionSection title="Completion Criteria">
               <p className="text-sm text-slate-200 font-medium">{cc.done_label_when_no_integration}</p>
-            </AccordionSection>
-          )
-        }
-
-        // Step 4: dual labels (only when integration exists)
-        if (cc.done_label_for_step5_start) {
-          return (
-            <AccordionSection title="Completion Criteria">
-              <div className="space-y-3">
-                <div className="bg-slate-800/50 rounded-lg p-3">
-                  <div className="text-xs text-slate-400 mb-1">To unlock implementation (Step 5)</div>
-                  <p className="text-sm text-slate-200">{cc.done_label_for_step5_start}</p>
-                </div>
-                {cc.done_label_for_step6_start && (
-                  <div className="bg-slate-800/50 rounded-lg p-3">
-                    <div className="text-xs text-slate-400 mb-1">To unlock launch (Step 6/7)</div>
-                    <p className="text-sm text-slate-200">{cc.done_label_for_step6_start}</p>
-                  </div>
-                )}
-              </div>
             </AccordionSection>
           )
         }

@@ -537,7 +537,7 @@
             "Internal approvals for commercial exceptions (if allowed under Step 0 policy)"
           ],
           "always_active": false,
-          "configuration_note": "Fully active when any financial motion is selected (referral, reseller, marketplace, co-sell) or when co-marketing is selected (for budget mechanics). Absent when no financial motions and no co-marketing are selected."
+          "configuration_note": "Fully active when any commercial motion is selected (referral, reseller, marketplace, co-sell) or when co-marketing is selected (for budget mechanics). Absent when no commercial motions and no co-marketing are selected."
         }
       ],
       "tie_breaker_escalation": [
@@ -1109,10 +1109,9 @@
           "Revenue/pipeline gate: partner-sourced or partner-influenced pipeline exceeds a threshold",
           "Strategic gate: partner unlocks a priority segment/geo/vertical or a platform distribution channel",
           "Efficiency gate: support burden is within acceptable limits (or improving) such that scaling won't create operational debt",
-          "RevOps/Finance confirms attribution and payout mechanics are ready (required when financial motions are selected)"
+          "RevOps/Finance confirms attribution and payout mechanics are ready"
         ],
-        "governance_note": "Activation thresholds and periods are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0); reviewed at least quarterly and after material incidents or strategic changes.",
-        "when_no_financial_motion": "Attribution and payout readiness gate is not required when no financial motions are selected."
+        "governance_note": "Activation thresholds and periods are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0); reviewed at least quarterly and after material incidents or strategic changes."
       },
       "owns": [
         {
@@ -1155,8 +1154,7 @@
             "New segment rollout (new geography, new customer cohort)",
             "Enablement refresh (partner team + internal sales/CS/support)"
           ],
-          "configuration_dependent": true,
-          "configuration_note": "The integration-deepening activities are removed when no technical integration is selected. The enablement refresh activities include certification renewal when partner competency certification is required."
+          "configuration_dependent": true
         },
         {
           "play": "Attribution & economics mechanics",
@@ -1169,7 +1167,7 @@
             "Exception handling: how disputes are escalated and resolved"
           ],
           "configuration_dependent": true,
-          "active_when": "Any financial motion selected (referral, reseller, marketplace, co-sell)"
+          "active_when": "Any commercial motion selected (referral, reseller, marketplace, co-sell)"
         }
       ],
       "tie_breaker_escalation": [
@@ -1351,7 +1349,7 @@
         }
       ],
       "configuration_notes": {
-        "DP2_financial_motion": "Finance/RevOps has final decision authority on economics viability at renewal/re-tier/exit review when financial motions are selected.",
+        "DP2_financial_motion": "Finance/RevOps has final decision authority on economics viability at renewal/re-tier/exit review when commercial motions are selected.",
         "DP2_no_financial_motion": "Finance/RevOps authority at Step 10 is limited to general commercial constraints \u2014 no payout economics to adjudicate."
       },
       "roles_and_responsibilities": {

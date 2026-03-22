@@ -106,9 +106,9 @@ export function getActiveWorkflowModifications(stepKey, stepData, spec, config) 
 
     // Financial motion variants
     if (computeHasFinancialMotion(config) && ruleSet.when_financial_motion_selected)
-      variants.push({ label: 'Financial motion active', text: ruleSet.when_financial_motion_selected })
+      variants.push({ label: 'Commercial motion active', text: ruleSet.when_financial_motion_selected })
     if (!computeHasFinancialMotion(config) && ruleSet.when_no_financial_motion)
-      variants.push({ label: 'No financial motion', text: ruleSet.when_no_financial_motion })
+      variants.push({ label: 'No commercial motion', text: ruleSet.when_no_financial_motion })
 
     // Co-sell direction variants
     if (config.dp2.motions.includes('co_sell')) {
