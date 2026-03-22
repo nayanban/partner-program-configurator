@@ -142,11 +142,11 @@ function isFieldActive(field, config) {
   return true
 }
 
-// Change 1: two-line block with bullet marker + capitalize detail
+// Bullet item — two-line block (colon items) or plain bullet; no individual mb-* (parent space-y handles spacing)
 function BulletItem({ item }) {
   if (typeof item !== 'string') {
     return (
-      <li className="flex items-start gap-2 text-sm text-slate-300 mb-3">
+      <li className="flex items-start gap-2 text-sm text-slate-300">
         <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
         <span>{JSON.stringify(item)}</span>
       </li>
@@ -157,7 +157,7 @@ function BulletItem({ item }) {
     const label = item.slice(0, colonIdx).trim()
     const detail = item.slice(colonIdx + 1).trim()
     return (
-      <li className="flex items-start gap-2 mb-3">
+      <li className="flex items-start gap-2">
         <span className="text-slate-500 mt-1 flex-shrink-0">•</span>
         <div>
           <div className="text-sm font-semibold text-slate-200">{label}</div>
@@ -171,7 +171,7 @@ function BulletItem({ item }) {
     )
   }
   return (
-    <li className="flex items-start gap-2 text-sm text-slate-300 mb-3">
+    <li className="flex items-start gap-2 text-sm text-slate-300">
       <span className="text-slate-500 mt-0.5 flex-shrink-0">•</span>
       <span>{item}</span>
     </li>
@@ -363,7 +363,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                     <div key={i} className="border border-slate-800 rounded-lg p-3">
                       <div className="text-sm font-semibold text-slate-300 mb-2">{track.track}</div>
                       {track.items && (
-                        <ul className="space-y-0">
+                        <ul className="space-y-3">
                           {track.items.map((item, j) => (
                             <BulletItem key={j} item={item} />
                           ))}
@@ -392,7 +392,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
                   return (
                     <div key={i} className="border border-slate-800 rounded-lg p-3">
                       <div className="text-sm font-semibold text-slate-300 mb-2">{play.play}</div>
-                      <ul className="space-y-0">
+                      <ul className="space-y-3">
                         {filteredItems.map((item, j) => (
                           <BulletItem key={j} item={item} />
                         ))}
@@ -409,7 +409,7 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               )}
             </>
           ) : (
-            <ul className="space-y-0">
+            <ul className="space-y-4">
               {(Array.isArray(stepContent.owns) ? stepContent.owns : [stepContent.owns]).map((item, i) => (
                 <BulletItem key={i} item={item} />
               ))}
@@ -426,8 +426,8 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
               const isInactive = item.configuration_dependent &&
                 item.active_when && item.active_when.includes("'yes'") && config.dp4 !== 'yes'
               return (
-                <div key={i} className={`flex gap-3 ${isInactive ? 'opacity-40' : ''}`}>
-                  <div className="text-sm font-medium text-slate-300 w-36 flex-shrink-0">
+                <div key={i} className={`flex flex-col sm:flex-row gap-1 sm:gap-3 ${isInactive ? 'opacity-40' : ''}`}>
+                  <div className="text-sm font-medium text-slate-300 sm:w-36 flex-shrink-0">
                     {item.authority}
                   </div>
                   <div className="text-sm text-slate-400 flex-1">

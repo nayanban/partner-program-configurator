@@ -450,7 +450,7 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "This entire step is REMOVED when integration direction = no_integration. Handoff routes directly from Step 2 to Step 4.",
+        "DP1_no_integration": "This entire step is removed when integration direction = no_integration. Handoff routes directly from Step 2 to Step 4.",
         "DP1_direction": "Scoping ownership and focus varies by integration direction. See structured_specification.json workflow_modification_rules.step3_scoping_ownership.",
         "DP3_neither": "When certification requirement = neither, 'certified' integration path is not available. Selection is between 'supported' and 'partner-built' only.",
         "DP3_integration_cert": "When certification requirement includes integration certification, 'certified' path is available and if selected, certification is a required deliverable.",
@@ -516,7 +516,7 @@
             "Risk acceptance or mitigation requirements"
           ],
           "always_active": false,
-          "configuration_note": "This entire track is REMOVED when regulated industries is not selected. Fully active and required when regulated industries is selected."
+          "configuration_note": "This entire track is removed when regulated industries is not selected. Fully active and required when regulated industries is selected."
         },
         {
           "track": "Legal",
@@ -723,7 +723,7 @@
         }
       ],
       "configuration_notes": {
-        "DP1_no_integration": "This entire step is REMOVED when integration direction = no_integration. Handoff routes directly from Step 4 to Step 6.",
+        "DP1_no_integration": "This entire step is removed when integration direction = no_integration. Handoff routes directly from Step 4 to Step 6.",
         "DP1_direction": "Implementation ownership varies by integration direction. See structured_specification.json workflow_modification_rules.step5_implementation_ownership.",
         "DP3_integration_cert": "Certification becomes a required deliverable before handoff to Step 6. 'Joint testing, certification' is a mandatory sub-item, not conditional. Evidence collection must include certification artifacts."
       },
@@ -1134,7 +1134,7 @@
             "Enablement refresh (partner team + internal sales/CS/support)"
           ],
           "configuration_dependent": true,
-          "configuration_note": "'Deeper integration depth' item is REMOVED when no technical integration is selected. 'Enablement refresh' explicitly includes certification renewal/update when certification requirement includes partner competency certification."
+          "configuration_note": "'Deeper integration depth' item is removed when no technical integration is selected. 'Enablement refresh' explicitly includes certification renewal/update when certification requirement includes partner competency certification."
         },
         {
           "play": "Attribution & economics mechanics",
