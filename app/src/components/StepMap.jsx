@@ -75,7 +75,7 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
               <button
                 onClick={() => active && onStepClick(stepKey)}
                 disabled={!active}
-                className={`max-w-xs w-full mx-auto text-left rounded-xl p-4 border transition-all duration-200 ${
+                className={`max-w-[280px] sm:max-w-xs w-full mx-auto text-left rounded-xl p-3 sm:p-4 border transition-all duration-200 ${
                   !active
                     ? 'border-slate-800/50 bg-slate-900/20 opacity-30 cursor-default'
                     : isSelected
@@ -86,7 +86,7 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-slate-500 mb-0.5">Step {stepNum}</div>
-                    <div className={`text-sm font-semibold leading-snug ${
+                    <div className={`text-xs sm:text-sm font-semibold leading-snug ${
                       !active ? 'text-slate-500' : isSelected ? 'text-cyan-200' : 'text-slate-200'
                     }`}>
                       {stepData.step_name}
