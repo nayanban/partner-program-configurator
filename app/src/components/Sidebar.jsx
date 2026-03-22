@@ -93,7 +93,7 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
   }
 
   return (
-    <div className="w-72 flex-shrink-0 border-r border-slate-800 bg-slate-900/50 flex flex-col h-full">
+    <div className="w-full sm:w-72 flex-shrink-0 border-r border-slate-800 bg-slate-900/50 flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800">
         <div>
