@@ -3417,10 +3417,6 @@
           "when_direction_is_partner_led": "Account ownership resides with partner for duration of deal. Rules for post-deal account access must be defined. Credit: partner-sourced, entity-influenced. Account conflict risk: highest \u2014 explicit rules required if entity direct sales encounters same account.",
           "when_direction_is_jointly_led": "Account ownership is shared. Rules must address renewal, upsell, and support escalation ownership post-deal. Credit: jointly sourced \u2014 split rules defined upfront in CRM/PRM. Weekly pipeline review required."
         },
-        "step9_expansion_play_scope": {
-          "when_DP1_is_no_integration": "Expansion plays: new use case activation, new segment rollout, enablement refresh. 'Deeper integration depth (additional endpoints/modules)' is absent.",
-          "when_DP1_has_integration": "All expansion plays available including deeper integration depth."
-        },
         "step9_referral_attribution_direction": {
           "_description": "When both referral_inbound and referral_outbound are selected simultaneously, attribution mechanics must distinguish between the two flows to prevent double-counting and reporting confusion.",
           "when_only_referral_inbound_selected": "Attribution tracks partner-to-entity referrals only. Credit definitions: partner-sourced. Single attribution flow \u2014 no directional disambiguation required.",
@@ -4952,10 +4948,6 @@
         "when_direction_is_entity_led": "Account ownership resides with entity. Partner has no independent claim. Credit: entity-sourced, partner-influenced.",
         "when_direction_is_partner_led": "Account ownership resides with partner for duration of deal. Rules for post-deal account access must be defined. Credit: partner-sourced, entity-influenced. Account conflict risk: highest \u2014 explicit rules required if entity direct sales encounters same account.",
         "when_direction_is_jointly_led": "Account ownership is shared. Rules must address renewal, upsell, and support escalation ownership post-deal. Credit: jointly sourced \u2014 split rules defined upfront in CRM/PRM. Weekly pipeline review required."
-      },
-      "step9_expansion_play_scope": {
-        "when_DP1_is_no_integration": "Expansion plays: new use case activation, new segment rollout, enablement refresh. 'Deeper integration depth (additional endpoints/modules)' is absent.",
-        "when_DP1_has_integration": "All expansion plays available including deeper integration depth."
       },
       "step10_finance_revops_authority": {
         "when_financial_motion_selected": "Finance/RevOps has final decision authority on economics viability at renewal/re-tier/exit review.",
