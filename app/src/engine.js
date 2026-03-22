@@ -316,46 +316,55 @@ export function detectArchetype(config) {
 export const TOOL_RECOMMENDATIONS = [
   {
     category: 'CRM / Partner Management',
+    description: 'System of record for partner data, tiers, entitlements, pipeline tracking, and relationship management',
     tools: 'Salesforce, HubSpot, PartnerStack, Impartner',
     activeWhen: () => true,
   },
   {
     category: 'Integration Management',
+    description: 'API management, integration orchestration, sandbox environments, and partner connectivity infrastructure',
     tools: 'Pandium, Prismatic, Apigee, Kong',
     activeWhen: (config) => config.dp1 !== 'no_integration',
   },
   {
     category: 'Security & Compliance Review',
+    description: 'Automated evidence collection, compliance monitoring, security questionnaires, and trust center management',
     tools: 'Vanta, Drata, SafeBase, OneTrust',
     activeWhen: () => true,
   },
   {
     category: 'Contract & Legal',
+    description: 'Contract lifecycle management, template libraries, redlining, e-signature, and obligation tracking',
     tools: 'Ironclad, DocuSign CLM, Juro',
     activeWhen: () => true,
   },
   {
     category: 'Attribution & Revenue Ops',
+    description: 'Partner-sourced vs partner-influenced credit tracking, payout calculations, and revenue reconciliation',
     tools: 'Crossbeam, Reveal, Partnerize, Impact.com',
     activeWhen: (config) => computeHasFinancialMotion(config),
   },
   {
     category: 'Marketplace Management',
+    description: 'Cloud marketplace listing management, transaction processing, and co-sell deal registration',
     tools: 'Tackle.io, Clazar, Labra',
     activeWhen: (config) => computeHasMarketplaceMotion(config),
   },
   {
     category: 'Certification / LMS',
+    description: 'Partner training programs, competency assessments, certification tracking, and enablement content delivery',
     tools: 'WorkRamp, Skilljar, Docebo',
     activeWhen: (config) => config.dp3 !== 'neither',
   },
   {
     category: 'Co-marketing & Campaigns',
+    description: 'Joint campaign execution, MDF/co-op fund management, lead distribution, and partner marketing automation',
     tools: 'Marketo, HubSpot, ZINFI',
     activeWhen: (config) => config.dp2.motions.includes('co_marketing'),
   },
   {
     category: 'Deal Registration & Co-sell',
+    description: 'Account mapping, deal registration, pipeline sharing, and co-sell opportunity management',
     tools: 'Crossbeam, Reveal, PartnerTap',
     activeWhen: (config) => config.dp2.motions.includes('co_sell') ||
       config.dp2.motions.some(m => RESELLER_MOTIONS.includes(m)),

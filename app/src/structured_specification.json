@@ -4963,13 +4963,13 @@
       },
       "step2_entitlements_by_motion": {
         "_description": "Step 2 entitlement assignments vary by selected commercial motion. Each motion adds specific entitlements to the partner profile.",
-        "when_referral_inbound_selected": "Partner receives referral tracking access and lead submission mechanism. Referral entitlements recorded in partner_profile.entitlements.",
-        "when_referral_outbound_selected": "Entity referral process defined \u2014 how entity identifies and passes leads to partner. Reverse referral terms recorded in partner_profile.entitlements.",
-        "when_reseller_partner_selected": "Partner receives margin/discount structure, deal registration access, and reseller-specific SLAs. Reseller entitlements recorded in partner_profile.entitlements.",
-        "when_reseller_entity_selected": "Entity receives access to partner product for resale. Margin/commission structure from partner to entity recorded in partner_profile.entitlements.",
-        "when_marketplace_any_selected": "Listing entitlements assigned \u2014 marketplace access, listing slot, and any platform-specific prerequisites recorded in partner_profile.entitlements.",
-        "when_co_sell_selected": "Co-sell entitlements assigned \u2014 account mapping access, joint pipeline tooling access, and lead-sharing rights recorded in partner_profile.entitlements.",
-        "when_co_marketing_selected": "Co-marketing eligibility flag set (partner_profile.entitlements.co_marketing_eligible = true). Budget access and campaign participation rights recorded."
+        "when_referral_inbound_selected": "Partner receives referral tracking access and lead submission mechanism. Referral entitlements recorded in the partner profile.",
+        "when_referral_outbound_selected": "Entity referral process defined \u2014 how entity identifies and passes leads to partner. Reverse referral terms recorded in the partner profile.",
+        "when_reseller_partner_selected": "Partner receives margin/discount structure, deal registration access, and reseller-specific SLAs. Reseller entitlements recorded in the partner profile.",
+        "when_reseller_entity_selected": "Entity receives access to partner product for resale. Margin/commission structure from partner to entity recorded in the partner profile.",
+        "when_marketplace_any_selected": "Listing entitlements assigned \u2014 marketplace access, listing slot, and any platform-specific prerequisites recorded in the partner profile.",
+        "when_co_sell_selected": "Co-sell entitlements assigned \u2014 account mapping access, joint pipeline tooling access, and lead-sharing rights recorded in the partner profile.",
+        "when_co_marketing_selected": "Co-marketing eligibility flag set (the partner profile.co_marketing_eligible = true). Budget access and campaign participation rights recorded."
       },
       "step9_referral_attribution_direction": {
         "_description": "When both referral_inbound and referral_outbound are selected simultaneously, attribution mechanics must distinguish between the two flows to prevent double-counting and reporting confusion.",
