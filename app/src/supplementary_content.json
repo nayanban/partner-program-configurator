@@ -575,7 +575,7 @@
         "Start implementation work itself (that is Step 5), except for coordinating reviews and capturing decisions",
         "Allow indefinite 'conditional approvals' without owners and deadlines (conditions must be tracked and time-bound)"
       ],
-      "handoff": "Step 4 is complete (to start implementation) when the minimum-to-unblock criteria are met and all remaining approval conditions are documented with owners and deadlines by Partnerships Deal Desk / Program Manager; Step 5 is accepted by Solutions Engineering / Partner Engineering for implementation; progression can be blocked by Security/Privacy, Legal, and (where applicable) Compliance/Risk until minimum-to-unblock conditions are satisfied.",
+      "handoff": "Step 4 is complete when all preliminary approvals are obtained and all remaining approval conditions are documented with owners and deadlines by Partnerships Deal Desk / Program Manager; Step 5 is accepted by Solutions Engineering / Partner Engineering for implementation; progression can be blocked by Security/Privacy, Legal, and (where applicable) Compliance/Risk until approval conditions are satisfied.",
       "failure_exception_paths": [
         {
           "condition": "Security/Privacy or Compliance/Risk review fails (or imposes unacceptable conditions)",
@@ -877,8 +877,7 @@
       },
       "purpose_when_no_integration": "Make the partnership operational for users and internal teams.",
       "inputs_when_no_integration": [
-        "Approved agreements and cleared gates (Step 4)",
-        "Contractual/support obligations (Step 4)"
+        "Approved agreements, cleared gates, and contractual/support obligations (Step 4)"
       ],
       "explicitly_does_not_do_when_no_integration": [
         "Negotiate bespoke terms outside the approved agreements (those route back to Step 4)"
@@ -1062,9 +1061,7 @@
       ],
       "configuration_notes": {
         "DP1_no_integration": "Health metrics focus on commercial indicators \u2014 referral quality, pipeline accuracy, listing performance, support burden. No uptime, error rates, or latency to monitor.",
-        "DP1_has_integration": "Full health metrics active including uptime, error rates, volume, and latency.",
-        "DP2_financial_motion": "RevOps/Finance must confirm attribution and payout mechanics are ready before Step 9 activates.",
-        "DP2_no_financial_motion": "Step 9 activates without RevOps/Finance gate."
+        "DP1_has_integration": "Full health metrics active including uptime, error rates, volume, and latency."
       },
       "roles_and_responsibilities": {
         "primary_owner": {
@@ -1111,9 +1108,11 @@
           "Adoption gate: usage crosses a defined threshold or shows sustained growth",
           "Revenue/pipeline gate: partner-sourced or partner-influenced pipeline exceeds a threshold",
           "Strategic gate: partner unlocks a priority segment/geo/vertical or a platform distribution channel",
-          "Efficiency gate: support burden is within acceptable limits (or improving) such that scaling won't create operational debt"
+          "Efficiency gate: support burden is within acceptable limits (or improving) such that scaling won't create operational debt",
+          "RevOps/Finance confirms attribution and payout mechanics are ready (required when financial motions are selected)"
         ],
-        "governance_note": "Activation thresholds and periods are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0); reviewed at least quarterly and after material incidents or strategic changes."
+        "governance_note": "Activation thresholds and periods are defined and maintained by Partnerships (Partner GTM / Strategic Partnerships) in collaboration with Support/Operations and RevOps/Finance, and documented in the Partner Operating System (Step 0); reviewed at least quarterly and after material incidents or strategic changes.",
+        "when_no_financial_motion": "Attribution and payout readiness gate is not required when no financial motions are selected."
       },
       "owns": [
         {
@@ -1157,7 +1156,7 @@
             "Enablement refresh (partner team + internal sales/CS/support)"
           ],
           "configuration_dependent": true,
-          "configuration_note": "'Deeper integration depth' item is removed when no technical integration is selected. 'Enablement refresh' explicitly includes certification renewal/update when certification requirement includes partner competency certification."
+          "configuration_note": "The integration-deepening activities are removed when no technical integration is selected. The enablement refresh activities include certification renewal when partner competency certification is required."
         },
         {
           "play": "Attribution & economics mechanics",

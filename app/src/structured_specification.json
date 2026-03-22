@@ -2446,8 +2446,8 @@
       },
       "completion_criteria": {
         "step_name": "Approvals & Agreements Gate",
-        "done_label_for_step5_start": "Minimum-to-unblock criteria met \u2014 implementation may begin",
-        "done_label_for_step6_start": "Go-live criteria met \u2014 production launch may proceed",
+        "done_label_for_step5_start": "All preliminary approvals obtained \u2014 implementation may begin (Step 5)",
+        "done_label_for_step6_start": "All final approvals obtained \u2014 launch may proceed (Step 6/7)",
         "done_condition_minimum_to_unblock": {
           "description": "Conditions required before Step 5 (implementation) may begin",
           "when_DP4_is_yes": {

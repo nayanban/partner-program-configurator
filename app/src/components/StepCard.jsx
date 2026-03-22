@@ -314,6 +314,9 @@ export default function StepCard({ stepKey, stepData, contentData, config, spec 
           {config.dp1 === 'no_integration' && stepContent.entry_triggers.when_DP1_no_integration && (
             <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_DP1_no_integration}</p>
           )}
+          {stepContent.entry_triggers.when_no_financial_motion && !computeHasFinancialMotion(config) && (
+            <p className="text-sm text-slate-400 mt-3">{stepContent.entry_triggers.when_no_financial_motion}</p>
+          )}
           {stepContent.entry_triggers.governance_note && (
             <p className="text-xs text-slate-400 mt-3">{stepContent.entry_triggers.governance_note}</p>
           )}
