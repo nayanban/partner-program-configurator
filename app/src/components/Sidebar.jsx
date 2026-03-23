@@ -43,6 +43,15 @@ const CO_MARKETING_OPTIONS = [
   { value: 'joint', label: 'Joint' },
 ]
 
+const selectArrowStyle = {
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+  backgroundPosition: 'right 0.5rem center',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: '1rem',
+}
+
 export default function Sidebar({ config, onConfigChange, activeArchetype, spec, collapsed, onToggleCollapse }) {
   const hasFinancial = computeHasFinancialMotion(config)
   const activeSteps = countActiveSteps(spec, config)
@@ -128,7 +137,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
           <select
             value={config.dp1 || ''}
             onChange={e => updateDP1(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 py-1.5 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 pr-8 py-1.5 focus:outline-none focus:border-cyan-500"
+            style={selectArrowStyle}
           >
             {DP1_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -157,7 +167,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
               <select
                 value={config.dp2.co_sell_direction || ''}
                 onChange={e => setCoSell(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 py-1.5 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 pr-8 py-1.5 focus:outline-none focus:border-cyan-500"
+                style={selectArrowStyle}
               >
                 <option value="">— select —</option>
                 {CO_SELL_OPTIONS.map(o => (
@@ -172,7 +183,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
               <select
                 value={config.dp2.co_marketing_funding || ''}
                 onChange={e => setCoMarketing(e.target.value)}
-                className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 py-1.5 focus:outline-none focus:border-cyan-500"
+                className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 pr-8 py-1.5 focus:outline-none focus:border-cyan-500"
+                style={selectArrowStyle}
               >
                 <option value="">— select —</option>
                 {CO_MARKETING_OPTIONS.map(o => (
@@ -188,7 +200,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
           <select
             value={config.dp3 || ''}
             onChange={e => updateDP3(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 py-1.5 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 pr-8 py-1.5 focus:outline-none focus:border-cyan-500"
+            style={selectArrowStyle}
           >
             {DP3_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>
@@ -201,7 +214,8 @@ export default function Sidebar({ config, onConfigChange, activeArchetype, spec,
           <select
             value={config.dp4 || ''}
             onChange={e => updateDP4(e.target.value)}
-            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 py-1.5 focus:outline-none focus:border-cyan-500"
+            className="w-full bg-slate-800 border border-slate-700 rounded text-xs text-slate-200 px-2 pr-8 py-1.5 focus:outline-none focus:border-cyan-500"
+            style={selectArrowStyle}
           >
             {DP4_OPTIONS.map(o => (
               <option key={o.value} value={o.value}>{o.label}</option>

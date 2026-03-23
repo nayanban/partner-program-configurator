@@ -1,6 +1,6 @@
 import { ARCHETYPES } from '../engine'
 
-const APP_VERSION = 'v1.8.0'
+const APP_VERSION = 'v1.8.1'
 
 const ARCHETYPE_ICONS = {
   api_tech: '⬡',
@@ -27,10 +27,15 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-12">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium px-3 py-1.5 rounded-full mb-8">
+          <a
+            href="https://github.com/nayanban/partner-program-configurator/blob/main/partner_lifecycle_workflow.md"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium px-3 py-1.5 rounded-full mb-8 cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <span className="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
             Partner Lifecycle Framework
-          </div>
+          </a>
 
           <h1 className="text-5xl font-bold text-slate-50 leading-tight tracking-tight mb-4">
             Partner Program
@@ -43,7 +48,15 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
           </p>
 
           <p className="text-sm text-slate-400 mb-10">
-            Built on an 11-step partner lifecycle framework from partner acquisition to renewal.
+            Built on an 11-step partner lifecycle framework, covering acquisition through renewal, developed by{' '}
+            <a
+              href="https://www.linkedin.com/in/banerjee-nayan/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-cyan-400 underline underline-offset-2 transition-colors"
+            >
+              Nayan B.
+            </a>
           </p>
 
           {/* Primary CTA — Configure from scratch */}
