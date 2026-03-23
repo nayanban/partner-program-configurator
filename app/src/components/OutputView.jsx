@@ -116,13 +116,11 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
     setSelectedStepKey(prev => prev === stepKey ? null : stepKey)
     setShowFullDataModel(false)
     setMobileSidebarOpen(false)
-    setShowOrientation(false)
     setHasUserClickedStep(true)
   }
 
   function handleStepSelect(stepKey) {
     setSelectedStepKey(stepKey)
-    setShowOrientation(false)
     setHasUserClickedStep(true)
     setShowFullDataModel(false)
     setMobileSidebarOpen(false)
@@ -329,6 +327,12 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
             {/* Mobile step selector — visible below md, stacks above content */}
             <div className="md:hidden border-b border-slate-800 px-4 py-2 bg-slate-950 flex-shrink-0">
+              <button
+                onClick={() => setSelectedStepKey(null)}
+                className="text-sm text-cyan-400 hover:text-cyan-300 mb-2 transition-colors"
+              >
+                ← Overview
+              </button>
               <label className="text-xs text-slate-500 mb-1 block">Navigate to step</label>
               <select
                 value={selectedStepKey}
@@ -376,34 +380,38 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 const stepData = spec.workflow_steps[selectedStepKey]
                 const adj = getAdjacentSteps(selectedStepKey)
                 return (
-                  <div className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
-                    <div className="text-center md:text-left flex-1">
-                      <div className="text-sm font-semibold text-slate-200">{stepData.step_name}</div>
-                      <div className="text-xs text-slate-400">{cleanOwnerText(stepData.primary_owner)}</div>
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
+                    {/* Left: back button + step name */}
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <button
+                        onClick={() => setSelectedStepKey(null)}
+                        className="text-sm text-cyan-400 hover:text-cyan-300 flex-shrink-0 transition-colors"
+                      >
+                        ← Overview
+                      </button>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold text-slate-200 truncate">{stepData.step_name}</div>
+                        <div className="text-xs text-slate-400">{cleanOwnerText(stepData.primary_owner)}</div>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                      {adj.prev ? (
+                    {/* Right: prev/next navigation */}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      {adj.prev && (
                         <button
                           onClick={() => handleStepSelect(adj.prev)}
                           className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
                         >
                           ← {adj.prev.replace('step_', '')}. {getShortStepName(adj.prev)}
                         </button>
-                      ) : <span />}
-                      {adj.next ? (
+                      )}
+                      {adj.next && (
                         <button
                           onClick={() => handleStepSelect(adj.next)}
                           className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
                         >
                           {adj.next.replace('step_', '')}. {getShortStepName(adj.next)} →
                         </button>
-                      ) : <span />}
-                      <button
-                        onClick={() => setSelectedStepKey(null)}
-                        className="text-slate-500 hover:text-slate-200"
-                      >
-                        ✕
-                      </button>
+                      )}
                     </div>
                     <div className="flex items-center justify-center gap-1.5 py-2">
                       {Object.keys(spec.workflow_steps).map(key => {
