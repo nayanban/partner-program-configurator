@@ -8,6 +8,7 @@ import {
   generateFlowAnnotation,
   encodeConfig,
 } from '../engine'
+import { generateMarkdownSummary } from '../generateMarkdown'
 
 const SHORT_STEP_NAMES = {
   step_0: 'Definition & Maintenance',
@@ -40,6 +41,9 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const [selectedStepKey, setSelectedStepKey] = useState(null)
   const [showFullDataModel, setShowFullDataModel] = useState(false)
   const [copyStatus, setCopyStatus] = useState(null)
+  const [loadingPhase, setLoadingPhase] = useState(0)
+  const [loadingText, setLoadingText] = useState('Reading your configuration...')
+  const [progressWidth, setProgressWidth] = useState('0%')
   const [viewReady, setViewReady] = useState(false)
   const [showOrientation, setShowOrientation] = useState(true)
   const [hasUserClickedStep, setHasUserClickedStep] = useState(false)
@@ -48,9 +52,21 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const mainContentRef = useRef(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setViewReady(true), 50)
-    return () => clearTimeout(timer)
+    const timers = [
+      setTimeout(() => setProgressWidth('90%'), 50),
+      setTimeout(() => setLoadingText('Building your workflow...'), 700),
+      setTimeout(() => setLoadingText('Ready'), 1400),
+      setTimeout(() => setLoadingPhase(1), 2000),
+    ]
+    return () => timers.forEach(clearTimeout)
   }, [])
+
+  useEffect(() => {
+    if (loadingPhase === 1) {
+      const timer = setTimeout(() => setViewReady(true), 50)
+      return () => clearTimeout(timer)
+    }
+  }, [loadingPhase])
 
   useEffect(() => {
     if (selectedStepKey && !isStepActive(selectedStepKey, config)) {
@@ -72,6 +88,19 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
       prev: idx > 0 ? activeSteps[idx - 1] : null,
       next: idx < activeSteps.length - 1 ? activeSteps[idx + 1] : null,
     }
+  }
+
+  function handleDownloadSummary() {
+    const markdown = generateMarkdownSummary(config, spec, content)
+    const blob = new Blob([markdown], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'partner-program-workflow-summary.md'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   function handleShareLink() {
@@ -100,6 +129,22 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   }
 
   const flowAnnotation = generateFlowAnnotation(config, spec)
+
+  if (loadingPhase === 0) {
+    return (
+      <div className="h-screen bg-slate-950 flex flex-col items-center justify-center">
+        <div className="w-64 h-1 bg-slate-800 rounded-full overflow-hidden mb-6">
+          <div
+            className="h-full bg-cyan-400 rounded-full transition-all duration-[2000ms] ease-out"
+            style={{ width: progressWidth }}
+          />
+        </div>
+        <p className="text-sm text-slate-400 transition-opacity duration-300">
+          {loadingText}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className={`h-screen flex overflow-hidden transition-opacity duration-500 ${viewReady ? 'opacity-100' : 'opacity-0'}`}>
@@ -186,6 +231,15 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                   </a>
                 </div>
 
+                <button
+                  onClick={handleDownloadSummary}
+                  className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download
+                </button>
                 <button
                   onClick={handleShareLink}
                   className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-all"
