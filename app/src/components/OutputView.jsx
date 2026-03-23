@@ -199,6 +199,14 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                   </svg>
                   Home
                 </button>
+                {selectedStepKey && (
+                  <button
+                    onClick={() => setSelectedStepKey(null)}
+                    className="hidden md:flex items-center gap-1.5 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+                  >
+                    ← Overview
+                  </button>
+                )}
               </div>
 
               {/* Right: Share + attribution (visible at all sizes) */}
@@ -363,7 +371,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             <div className="flex flex-1 min-h-0 overflow-hidden">
 
             {/* Desktop vertical nav — hidden below md */}
-            <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto max-h-[calc(100vh-120px)] px-2 py-3">
+            <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto flex-1 min-h-0 px-2 py-3">
               <StepMap
                 variant="vertical"
                 config={config}
@@ -374,7 +382,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             </div>
 
             {/* Detail panel — full width below md */}
-            <div className="flex-1 overflow-y-auto max-h-[calc(100vh-120px)]">
+            <div className="flex-1 min-h-0 overflow-y-auto">
               {/* Sticky header — Fix 1: md breakpoint */}
               {(() => {
                 const stepData = spec.workflow_steps[selectedStepKey]
@@ -383,12 +391,6 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
                     {/* Left: back button + step name */}
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <button
-                        onClick={() => setSelectedStepKey(null)}
-                        className="text-sm text-cyan-400 hover:text-cyan-300 flex-shrink-0 transition-colors"
-                      >
-                        ← Overview
-                      </button>
                       <div className="min-w-0">
                         <div className="text-sm font-semibold text-slate-200 truncate">{stepData.step_name}</div>
                         <div className="text-xs text-slate-400">{cleanOwnerText(stepData.primary_owner)}</div>
