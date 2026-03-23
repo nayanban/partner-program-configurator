@@ -213,7 +213,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
               <div className="flex items-center gap-3 flex-shrink-0 sm:order-last">
                 <button
                   onClick={() => setSelectedStepKey(null)}
-                  className={`sm:hidden text-sm transition-colors ${selectedStepKey ? 'text-cyan-400 hover:text-cyan-300' : 'text-slate-500 pointer-events-none'}`}
+                  className={`md:hidden text-sm transition-colors ${selectedStepKey ? 'text-cyan-400 hover:text-cyan-300' : 'text-slate-500 pointer-events-none'}`}
                 >
                   Overview
                 </button>
@@ -362,7 +362,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                 const stepData = spec.workflow_steps[selectedStepKey]
                 const adj = getAdjacentSteps(selectedStepKey)
                 return (
-                  <div className="flex flex-col md:flex-row md:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-slate-800 sticky top-0 bg-slate-950 z-10 gap-2">
                     {/* Left: back button + step name */}
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <div className="min-w-0">
@@ -389,7 +389,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                         </button>
                       )}
                     </div>
-                    <div className="flex items-center justify-center gap-1.5 py-2">
+                    <div className="flex sm:hidden md:flex items-center justify-center gap-1.5 py-2">
                       {Object.keys(spec.workflow_steps).map(key => {
                         const active = isStepActive(key, config)
                         if (!active) return null
@@ -426,7 +426,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         )}
 
         {/* Footer: attribution — desktop only */}
-        <div className="hidden sm:flex flex-shrink-0 items-center justify-center gap-3 px-4 py-2 border-t border-slate-800 text-xs text-slate-500">
+        <div className="hidden md:flex flex-shrink-0 items-center justify-center gap-3 px-4 py-2 border-t border-slate-800 text-xs text-slate-500">
           <span>Built by Nayan Banerjee</span>
           <a
             href="https://www.linkedin.com/in/banerjee-nayan/"
