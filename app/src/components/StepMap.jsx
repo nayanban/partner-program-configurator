@@ -23,9 +23,10 @@ function cleanOwnerText(owner) {
   return text
 }
 
-export default function StepMap({ config, spec, onStepClick, activeStepKey, variant = 'timeline' }) {
+export default function StepMap({ config, spec, onStepClick, activeStepKey, variant = 'timeline', hasUserClickedStep = false }) {
   const stepKeys = Object.keys(spec.workflow_steps)
   const anySkipped = stepKeys.some(k => !isStepActive(k, config))
+  const firstActiveIdx = stepKeys.findIndex(k => isStepActive(k, config))
 
   if (variant === 'vertical') {
     return (
@@ -75,14 +76,17 @@ export default function StepMap({ config, spec, onStepClick, activeStepKey, vari
               <button
                 onClick={() => active && onStepClick(stepKey)}
                 disabled={!active}
-                className={`max-w-[280px] sm:max-w-xs w-full mx-auto text-left rounded-xl p-3 sm:p-4 border transition-all duration-200 ${
+                className={`relative max-w-[280px] sm:max-w-xs w-full mx-auto text-left rounded-xl p-3 sm:p-4 border transition-all duration-200 ${
                   !active
                     ? 'border-slate-800/50 bg-slate-900/20 opacity-30 cursor-default'
                     : isSelected
                     ? 'border-cyan-500 bg-cyan-500/10 shadow-lg shadow-cyan-500/10 cursor-pointer'
-                    : 'border-slate-700 bg-slate-800/60 hover:border-cyan-500/50 cursor-pointer'
+                    : 'border-slate-700 bg-slate-800/60 hover:border-cyan-400/60 hover:shadow-lg hover:shadow-cyan-500/10 hover:scale-[1.02] cursor-pointer'
                 }`}
               >
+                {idx === firstActiveIdx && !hasUserClickedStep && (
+                  <div className="absolute -inset-1 rounded-xl border-2 border-cyan-400/30 animate-pulse pointer-events-none" />
+                )}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="text-xs text-slate-500 mb-0.5">Step {stepNum}</div>

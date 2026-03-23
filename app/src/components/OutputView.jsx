@@ -40,9 +40,17 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   const [selectedStepKey, setSelectedStepKey] = useState(null)
   const [showFullDataModel, setShowFullDataModel] = useState(false)
   const [copyStatus, setCopyStatus] = useState(null)
+  const [viewReady, setViewReady] = useState(false)
+  const [showOrientation, setShowOrientation] = useState(true)
+  const [hasUserClickedStep, setHasUserClickedStep] = useState(false)
 
   // Fix 3: ref for scroll-to-top when data model opens
   const mainContentRef = useRef(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setViewReady(true), 50)
+    return () => clearTimeout(timer)
+  }, [])
 
   useEffect(() => {
     if (selectedStepKey && !isStepActive(selectedStepKey, config)) {
@@ -79,12 +87,22 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
     setSelectedStepKey(prev => prev === stepKey ? null : stepKey)
     setShowFullDataModel(false)
     setMobileSidebarOpen(false)
+    setShowOrientation(false)
+    setHasUserClickedStep(true)
+  }
+
+  function handleStepSelect(stepKey) {
+    setSelectedStepKey(stepKey)
+    setShowOrientation(false)
+    setHasUserClickedStep(true)
+    setShowFullDataModel(false)
+    setMobileSidebarOpen(false)
   }
 
   const flowAnnotation = generateFlowAnnotation(config, spec)
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className={`h-screen flex overflow-hidden transition-opacity duration-500 ${viewReady ? 'opacity-100' : 'opacity-0'}`}>
       {/* Mobile sidebar overlay */}
       {mobileSidebarOpen && (
         <div
@@ -206,15 +224,41 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
         ) : selectedStepKey === null ? (
           /* VIEW 2: Workflow Map */
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 pt-6 pb-8">
-            <p className="text-sm text-slate-300 mb-4">
-              Select a step to view its details, configuration impact, and relevant tools.
-            </p>
+            {showOrientation && (
+              <div className="mx-4 mt-4 mb-2 bg-cyan-500/10 border border-cyan-500/20 rounded-lg px-4 py-3 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-200">
+                    Your configured workflow is ready.
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1 hidden md:block">
+                    Click any step below to explore its details. Use the sidebar to adjust your configuration.
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1 md:hidden">
+                    Tap any step below to explore its details. Tap the ⚙ icon to adjust your configuration.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowOrientation(false)}
+                  className="text-slate-400 hover:text-slate-200 ml-4 flex-shrink-0 text-lg"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+            <div className="text-center mb-6">
+              <p className="text-sm text-slate-300 flex items-center justify-center gap-2">
+                <span className="text-cyan-400">↓</span>
+                Click a step to see its full details
+                <span className="text-cyan-400">↓</span>
+              </p>
+            </div>
             <StepMap
               variant="timeline"
               config={config}
               spec={spec}
               onStepClick={handleStepClick}
               activeStepKey={null}
+              hasUserClickedStep={hasUserClickedStep}
             />
             <div className="mt-6 pt-4 border-t border-slate-800">
               <button
@@ -231,12 +275,11 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
           <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
             {/* Mobile step selector — visible below md, stacks above content */}
             <div className="md:hidden border-b border-slate-800 px-4 py-2 bg-slate-950 flex-shrink-0">
+              <label className="text-xs text-slate-500 mb-1 block">Navigate to step</label>
               <select
                 value={selectedStepKey}
-                onChange={e => {
-                  if (isStepActive(e.target.value, config)) setSelectedStepKey(e.target.value)
-                }}
-                className="w-full bg-slate-800 text-slate-200 text-sm rounded-lg pl-3 pr-8 py-2.5 border border-slate-700 focus:border-cyan-500 focus:outline-none"
+                onChange={(e) => handleStepSelect(e.target.value)}
+                className="w-full bg-slate-700 text-slate-200 text-sm font-medium rounded-lg pl-3 pr-8 py-2.5 border border-slate-600 focus:border-cyan-500 focus:outline-none"
                 style={{
                   appearance: 'none',
                   WebkitAppearance: 'none',
@@ -246,11 +289,15 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                   backgroundSize: '1rem',
                 }}
               >
-                {Object.keys(spec.workflow_steps).map(key => (
-                  <option key={key} value={key} disabled={!isStepActive(key, config)}>
-                    {key.replace('step_', '')} — {SHORT_STEP_NAMES[key]}
-                  </option>
-                ))}
+                {Object.keys(spec.workflow_steps).map(key => {
+                  const stepNum = key.replace('step_', '')
+                  const active = isStepActive(key, config)
+                  return (
+                    <option key={key} value={key} disabled={!active}>
+                      {stepNum} — {SHORT_STEP_NAMES[key] || spec.workflow_steps[key].step_name}
+                    </option>
+                  )
+                })}
               </select>
             </div>
 
@@ -281,26 +328,47 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
                       <div className="text-xs text-slate-400">{cleanOwnerText(stepData.primary_owner)}</div>
                     </div>
                     <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                      <button
-                        onClick={() => setSelectedStepKey(adj.prev)}
-                        disabled={!adj.prev}
-                        className={`text-sm ${adj.prev ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-default'}`}
-                      >
-                        {adj.prev ? `← ${getShortStepName(adj.prev)}` : ''}
-                      </button>
-                      <button
-                        onClick={() => setSelectedStepKey(adj.next)}
-                        disabled={!adj.next}
-                        className={`text-sm ${adj.next ? 'text-slate-400 hover:text-slate-200' : 'text-slate-700 cursor-default'}`}
-                      >
-                        {adj.next ? `${getShortStepName(adj.next)} →` : ''}
-                      </button>
+                      {adj.prev ? (
+                        <button
+                          onClick={() => handleStepSelect(adj.prev)}
+                          className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                        >
+                          ← {adj.prev.replace('step_', '')}. {getShortStepName(adj.prev)}
+                        </button>
+                      ) : <span />}
+                      {adj.next ? (
+                        <button
+                          onClick={() => handleStepSelect(adj.next)}
+                          className="text-sm text-slate-400 hover:text-slate-200 transition-colors"
+                        >
+                          {adj.next.replace('step_', '')}. {getShortStepName(adj.next)} →
+                        </button>
+                      ) : <span />}
                       <button
                         onClick={() => setSelectedStepKey(null)}
                         className="text-slate-500 hover:text-slate-200"
                       >
                         ✕
                       </button>
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 py-2">
+                      {Object.keys(spec.workflow_steps).map(key => {
+                        const active = isStepActive(key, config)
+                        if (!active) return null
+                        const isCurrent = key === selectedStepKey
+                        return (
+                          <button
+                            key={key}
+                            onClick={() => handleStepSelect(key)}
+                            className={`rounded-full transition-all duration-200 ${
+                              isCurrent
+                                ? 'bg-cyan-400 w-3 h-3'
+                                : 'bg-slate-600 hover:bg-slate-400 w-2 h-2'
+                            }`}
+                            title={`Step ${key.replace('step_', '')}: ${getShortStepName(key)}`}
+                          />
+                        )
+                      })}
                     </div>
                   </div>
                 )
