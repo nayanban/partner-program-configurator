@@ -34,7 +34,7 @@ export function generateMarkdownSummary(config, spec, content) {
   for (const key of activeSteps) {
     const stepData = spec.workflow_steps[key]
     const stepNum = key.replace('step_', '')
-    const sc = content[key] || {}
+    const sc = content.steps?.[key] || {}
 
     lines.push(`---`)
     lines.push('')
