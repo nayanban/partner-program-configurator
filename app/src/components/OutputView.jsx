@@ -145,7 +145,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
   }
 
   return (
-    <div className={`h-screen flex overflow-hidden transition-opacity duration-500 ${viewReady ? 'opacity-100' : 'opacity-0'}`}>
+    <div className={`h-dvh flex overflow-hidden transition-opacity duration-500 ${viewReady ? 'opacity-100' : 'opacity-0'}`}>
       {/* Mobile sidebar overlay */}
       {mobileSidebarOpen && (
         <div
@@ -371,7 +371,7 @@ export default function OutputView({ config, onConfigChange, onBack, activeArche
             <div className="flex flex-1 min-h-0 overflow-hidden">
 
             {/* Desktop vertical nav — hidden below md */}
-            <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto flex-1 min-h-0 px-2 py-3">
+            <div className="hidden md:block w-48 flex-shrink-0 border-r border-slate-800 overflow-y-auto px-2 py-3">
               <StepMap
                 variant="vertical"
                 config={config}
