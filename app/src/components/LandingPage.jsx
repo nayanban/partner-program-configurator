@@ -1,6 +1,6 @@
 import { ARCHETYPES } from '../engine'
 
-const APP_VERSION = 'v1.7.7'
+const APP_VERSION = 'v1.8.0'
 
 const ARCHETYPE_ICONS = {
   api_tech: '⬡',
@@ -43,7 +43,7 @@ export default function LandingPage({ onArchetypeSelect, onDeepPath }) {
           </p>
 
           <p className="text-sm text-slate-400 mb-10">
-            Built on an 11-step partner lifecycle framework covering intake through renewal.
+            Built on an 11-step partner lifecycle framework from partner acquisition to renewal.
           </p>
 
           {/* Primary CTA — Configure from scratch */}
