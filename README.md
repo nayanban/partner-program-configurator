@@ -2,6 +2,8 @@
 
 **[→ Open the live tool](https://nayanban.github.io/partner-program-configurator/)**
 
+**[→ How I built the configurator](https://github.com/nayanban/partner-program-configurator/blob/main/How_I_Built_the_Partner_Program_Configurator.md/)**
+
 ---
 
 ## What this is
