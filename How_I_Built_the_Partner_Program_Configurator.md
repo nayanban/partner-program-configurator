@@ -2,6 +2,8 @@
 
 *An account of the approach, decisions, and the role AI played.*
 
+---
+
 ## Why I built this
 
 I was tasked with designing a partner program five years ago as part of a strategic expansion, and since then partnerships as a function has fascinated me. It can potentially mirror every other department in an organization, and I found it to be the natural home for a generalist like me. By setting things up from scratch and overcoming different coordination challenges, I developed a mental model for how the infrastructure and workflows should be structured — solving for where programs typically break down, and the key variables based on partner type, among other things.
@@ -10,11 +12,15 @@ This project started as a way to make that model shareable and to re-evaluate my
 
 I was keen to implement my learnings from using AI tools since 2023 for research, drafting and review towards writing code, and I felt that this would be a great way to understand firsthand why so many of my developer friends were both excited and anxious about the advancements in software development offered by this new utility.
 
+---
+
 ## Creating a source of truth
 
 I started by working with both ChatGPT and Claude Sonnet 4.6 to turn my view of how these programs actually run into a structured document — a generic operating manual covering the full partner lifecycle from intake through renewal and exit. Feeding each model's input to the other, the document went through fourteen versions as I decided to test the ability of these models to translate my diagrams and bullet points into prose. The exercise surfaced questions that took me into the weeds a fair bit — who has final say when Legal and Finance disagree in the approvals gate? What actually triggers the growth phase, and who decides whether the conditions are met? What happens when a partner goes dark mid-implementation? Eventually, the document covered eleven steps with consistent structure throughout.
 
 I doubt using these models saved me time in creating this document, but by forcing me to drill down granularities and consider the edge cases comprehensively at this step, it reduced my later efforts. As a side note, I found Claude more suitable for business writing. Its concise and matter-of-fact responses made it easier to identify when its attention was slipping, its citations were easier to verify, and its guidance on how to provide better prompts was more specific.
+
+---
 
 ## Structuring a configurable workflow
 
@@ -29,6 +35,8 @@ The four decision points I locked:
 3. **Is certification required, and of what type?** Separating technical/security certification from partner competency certification, because they affect different steps and different gatekeeping conditions.
 4. **Does your program operate in or serve regulated industries?** A binary that either activates or entirely removes the compliance and risk track across multiple steps.
 
+---
+
 ## Developing machine-readable logic
 
 With the decision points locked, the next phase was turning the document into something a code generator could act on without interpretation. Claude helped me understand what it needed — semantics or definitions of different data objects (what actually exists, like a partner record and what fields they have), locking the valid states (the predefined conditions), mapping the if/then rules that activate those conditions, and setting verifiable completion criteria. As Claude described it: *The pure operational logic (what activates, what blocks, what is required) lives in one structure, while the human-readable content (role descriptions, step purposes) lives in another.*
@@ -39,11 +47,15 @@ While I went into the specification work thinking of it as extraction — taking
 
 Out of curiosity, I asked Claude to summarize what corrections my review helped it conduct, and it stated the following: *an entire data entity that gates the very first step of the workflow didn't exist until the object definitions work revealed nothing was controlling entry into it. Ten state transition rules were missing entirely until the conditional logic pass forced every state to account for how it was entered and exited.*
 
+---
+
 ## Constraining the architecture
 
 Since the rules were in a separate specification, the application wasn't inventing the workflow as it went. I made this decision for a few reasons. I wanted zero hosting costs. I did not want the model to misidentify principles or outputs purposely designed to be guidance for the user to implement based on their own situation as gaps and then fill them with its own guesses — I didn't want the issues I'd faced with research and drafting to be repeated here. Further, I wanted to accurately reflect the limits of my knowledge.
 
 The deployment resulted in a static site with no backend, no database, and no accounts required — instant loads and full offline capability. Configuration state is encoded entirely in the URL, so any specific workflow can be shared by link without requiring the recipient to log in or create an account. For a reference tool, keeping the architecture simple and transparent was a deliberate choice.
+
+---
 
 ## How I used AI
 
@@ -106,6 +118,8 @@ A related challenge was continuity across sessions. AI has no persistent memory 
 
 In fact, to write this document, I started a new conversation that picked up the entire project history from exactly those files. That technique — treating session context as something you deliberately design and maintain, not something you hope the AI remembers — turned out to be one of the most practically useful things I learned.
 
+---
+
 ## Concluding thoughts
 
 Utilizing large language models for areas in which one does not have domain expertise carries a very specific risk. Consider what happens when you ask a model to both research and write a document in a fixed format and structure — it often ends up prioritizing the format and structure, and hallucinates in a logical manner, speculating confidently without citation because it focuses on the appearance of compliance through presentation. Imagine this happening in an area where you do not know the detailed flow. How do you recognize errors and verify?
@@ -115,6 +129,8 @@ Since I focused on my area, I was able to catch decision points that were logica
 Going forward, I plan to use models in an area after understanding what is needed to be precise enough to structure work, direct implementation, and verify claims.
 
 There is a direct analogy here. The same qualities that make a partner program run well — clarity, explicit ownership, progression logic, and defined completion criteria — are exactly what make an AI-assisted build reliable. One that's loosely defined requires constant judgment calls and tends to break down at the edges.
+
+---
 
 *Built by Nayan Banerjee ·* [*LinkedIn*](https://www.linkedin.com/in/banerjee-nayan/) *·* [*GitHub*](https://github.com/nayanban)
 
